@@ -1,9 +1,7 @@
 package com.example.FinanzApp.Controladores;
 
 import com.example.FinanzApp.DTOS.IngresoDTO;
-import com.example.FinanzApp.DTOS.UsuarioDTO;
 import com.example.FinanzApp.Servicios.ServicioIngreso;
-import com.example.FinanzApp.Servicios.ServicioUsuario;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +28,19 @@ public class ControladorIngreso {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @GetMapping("/IngresosCasualesAnio/{id_usuario}")
+    public ResponseEntity<List<IngresoDTO>> listarIngresosCasualesPorAnio(@PathVariable Long id_usuario) {
+
+        List<IngresoDTO> ingresos = servicioIngreso.BuscarIngresosCasualesPorAnio(id_usuario);
+
+        if (ingresos.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(ingresos);
+    }
+
 
     @GetMapping("/IngresosMensuales/{id_usuario}")
     public ResponseEntity<List<IngresoDTO>> listarIngresos(@PathVariable Long id_usuario) {
@@ -84,6 +95,19 @@ public class ControladorIngreso {
         return ResponseEntity.ok(ingresosMensuales); // Devuelve la respuesta con los ingresos encontrados
     }
 
+    @GetMapping("/ProyeccionesIngreso/{id_usuario}")
+    public ResponseEntity<Double> Proyecccion(@PathVariable Long id_usuario){
+
+        Double totalIngresos = servicioIngreso.ProyectarIngresos(id_usuario);
+
+        if (totalIngresos == 0.0) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(totalIngresos);
+
+    }
+
 
     @PutMapping("/modificar/{id_ingreso}")
     public ResponseEntity<String> modificarIngreso( @PathVariable Long id_ingreso, @RequestBody IngresoDTO ingresoDTO) {
@@ -100,6 +124,8 @@ public class ControladorIngreso {
         servicioIngreso.eliminarIngreso(id_ingreso);
         return ResponseEntity.noContent().build();
     }
+
+
 
 
 

@@ -44,6 +44,17 @@ public class ServicioIngreso implements Serializable {
         return modelMapper.map(ingresoGuardado, IngresoDTO.class);
     }
 
+    public List<IngresoDTO> BuscarIngresosCasualesPorAnio(Long id_usuario){
+
+        List<Ingreso> ingresos = repositorioIngreso.verificacion(id_usuario);
+
+        return ingresos.stream()
+                .map(ingreso -> modelMapper.map(ingreso, IngresoDTO.class))
+                .collect(Collectors.toList());
+
+    }
+
+
     public List<IngresoDTO> BuscarIngresosMensuales(Long id_usuario){
 
         List<Ingreso> ingresos = repositorioIngreso.findIngresosMensualesByUsuarioId(id_usuario);
@@ -78,7 +89,7 @@ public class ServicioIngreso implements Serializable {
     public List<IngresoDTO> BuscarIngresosMensuales(Long usuarioId, Integer anio, Integer mes) {
         List<Ingreso> ingresosMensuales = repositorioIngreso.getIngresosMensuales(usuarioId, anio, mes);
 
-        // Mapear los ingresos a DTO
+
         return ingresosMensuales.stream()
                 .map(ingreso -> modelMapper.map(ingreso, IngresoDTO.class))
                 .collect(Collectors.toList());
@@ -89,6 +100,16 @@ public class ServicioIngreso implements Serializable {
         repositorioIngreso.modificarIngreso(nombre, fecha, valor, id_ingreso);
 
     }
+
+    public Double ProyectarIngresos(Long id_usuario){
+
+        Double totalIngresos =  repositorioIngreso.calcularTotalMensual(id_usuario);
+
+        return totalIngresos;
+
+    }
+
+
 
     public void eliminarIngreso(Long id) {
         repositorioIngreso.deleteById(id);
