@@ -43,4 +43,20 @@ public class ControladorIngreso {
         return ResponseEntity.ok(ingresos);
     }
 
+    @GetMapping("/IngresosCasuales/{id_usuario}")
+    public ResponseEntity<List<IngresoDTO>> listarIngresosCasuales(@PathVariable Long id_usuario) {
+
+        List<IngresoDTO> ingresos = servicioIngreso.BuscarIngresosCasuales(id_usuario);
+
+        if (ingresos.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(ingresos);
+    }
+
+
+
+
+
 }

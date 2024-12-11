@@ -53,13 +53,22 @@ public class ServicioIngreso implements Serializable {
 
     }
 
+    public List<IngresoDTO> BuscarIngresosCasuales(Long id_usuario){
 
+        List<Ingreso> ingresos = repositorioIngreso.findIngresosCasualesDelMes(id_usuario);
 
+        return ingresos.stream()
+                .map(ingreso -> modelMapper.map(ingreso, IngresoDTO.class))
+                .collect(Collectors.toList());
+    }
 
+    public IngresoDTO BuscarIngresosTotales(Long id_usuario){
 
+        Double ingresos = repositorioIngreso.getIngTotalDeEsteMes(id_usuario);
 
+        return modelMapper.map(ingresos, IngresoDTO.class);
 
-
+    }
 
 
 }

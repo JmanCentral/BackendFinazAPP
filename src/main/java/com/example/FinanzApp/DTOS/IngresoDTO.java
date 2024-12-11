@@ -16,6 +16,5 @@ public class IngresoDTO {
     private Double valor;
     private Date fecha;
     private String tipo_ingreso;
-    private Long id_usuario;
 
 }
