@@ -56,6 +56,26 @@ public class ControladorIngreso {
     }
 
 
+    @GetMapping("/ingresostotal/{id_usuario}")
+    public ResponseEntity<Double> obtenerTotalIngresos(@PathVariable Long id_usuario) {
+        Double totalIngresos = servicioIngreso.BuscarIngresosTotales(id_usuario);
+
+        if (totalIngresos == 0.0) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(totalIngresos);
+    }
+
+
+
+
+
+
+
+
+
+
 
 
 

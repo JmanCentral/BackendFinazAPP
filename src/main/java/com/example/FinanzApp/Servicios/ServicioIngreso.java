@@ -62,13 +62,18 @@ public class ServicioIngreso implements Serializable {
                 .collect(Collectors.toList());
     }
 
-    public IngresoDTO BuscarIngresosTotales(Long id_usuario){
+    public Double BuscarIngresosTotales(Long id_usuario) {
+        // Consultar el total de ingresos directamente desde el repositorio
+        Double totalIngresos = repositorioIngreso.getIngTotalDeEsteMes(id_usuario);
 
-        Double ingresos = repositorioIngreso.getIngTotalDeEsteMes(id_usuario);
+        // Manejo de posibles valores nulos
+        if (totalIngresos == null) {
+            totalIngresos = 0.0;
+        }
 
-        return modelMapper.map(ingresos, IngresoDTO.class);
-
+        return totalIngresos;
     }
+
 
 
 }
