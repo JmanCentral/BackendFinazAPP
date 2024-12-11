@@ -15,6 +15,4 @@ public interface RepositorioUsuario extends JpaRepository<Usuario, Long>, JpaSpe
     Optional<Usuario> findByUsername(String nombreUsuario);
 
 
-
-
 }

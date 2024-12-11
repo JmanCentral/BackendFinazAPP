@@ -67,13 +67,39 @@ public class ControladorIngreso {
         return ResponseEntity.ok(totalIngresos);
     }
 
+    @GetMapping("/ingresosmensuales/{id_usuario}/{anio}/{mes}")
+    public ResponseEntity<List<IngresoDTO>> getIngresosMensuales(
+            @PathVariable("id_usuario") Long usuarioId,
+            @PathVariable("anio") Integer anio,
+            @PathVariable("mes") Integer mes) {
+
+        // Verifica que los parámetros no sean nulos
+        if (usuarioId == null || anio == null || mes == null) {
+            return ResponseEntity.badRequest().build(); // Responde con error 400 si hay parámetros nulos
+        }
+
+        // Llama al servicio para obtener los ingresos mensuales
+        List<IngresoDTO> ingresosMensuales = servicioIngreso.BuscarIngresosMensuales(usuarioId, anio, mes);
+
+        return ResponseEntity.ok(ingresosMensuales); // Devuelve la respuesta con los ingresos encontrados
+    }
 
 
+    @PutMapping("/modificar/{id_ingreso}")
+    public ResponseEntity<String> modificarIngreso( @PathVariable Long id_ingreso, @RequestBody IngresoDTO ingresoDTO) {
+
+        // Llamamos al servicio para modificar el Ingreso
+        servicioIngreso.modificarIngresos(ingresoDTO.getNombre_ingreso(), ingresoDTO.getFecha(), ingresoDTO.getValor(), id_ingreso);
+
+        return ResponseEntity.ok("Ingreso modificado correctamente");
+    }
 
 
-
-
-
+    @DeleteMapping("/EliminarIngresos/{id_ingreso}")
+    public ResponseEntity<Void> eliminarIngreso(@PathVariable("id_ingreso") Long id_ingreso) {
+        servicioIngreso.eliminarIngreso(id_ingreso);
+        return ResponseEntity.noContent().build();
+    }
 
 
 

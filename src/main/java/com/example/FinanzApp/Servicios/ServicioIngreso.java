@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +21,8 @@ import java.util.stream.Collectors;
 public class ServicioIngreso implements Serializable {
 
     private ModelMapper modelMapper;
+    private final RepositorioIngreso repositorioIngreso;
+    private final RepositorioUsuario repositorioUsuario;
 
     @Autowired
     public ServicioIngreso(ModelMapper modelMapper, RepositorioIngreso repositorioIngreso , RepositorioUsuario repositorioUsuario) {
@@ -28,8 +31,6 @@ public class ServicioIngreso implements Serializable {
         this.repositorioUsuario = repositorioUsuario;
     }
 
-    private final RepositorioIngreso repositorioIngreso;
-    private final RepositorioUsuario repositorioUsuario;
 
     public IngresoDTO RegistrarIngreso(IngresoDTO ingresoDTO, Long usuarioId) {
         Usuario usuario = repositorioUsuario.findById(usuarioId)
@@ -72,6 +73,25 @@ public class ServicioIngreso implements Serializable {
         }
 
         return totalIngresos;
+    }
+
+    public List<IngresoDTO> BuscarIngresosMensuales(Long usuarioId, Integer anio, Integer mes) {
+        List<Ingreso> ingresosMensuales = repositorioIngreso.getIngresosMensuales(usuarioId, anio, mes);
+
+        // Mapear los ingresos a DTO
+        return ingresosMensuales.stream()
+                .map(ingreso -> modelMapper.map(ingreso, IngresoDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    public void modificarIngresos(String nombre , Date fecha , Double valor , Long id_ingreso) {
+
+        repositorioIngreso.modificarIngreso(nombre, fecha, valor, id_ingreso);
+
+    }
+
+    public void eliminarIngreso(Long id) {
+        repositorioIngreso.deleteById(id);
     }
 
 
