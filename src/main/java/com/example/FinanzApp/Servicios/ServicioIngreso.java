@@ -109,8 +109,6 @@ public class ServicioIngreso implements Serializable {
 
     }
 
-
-
     public void eliminarIngreso(Long id) {
         repositorioIngreso.deleteById(id);
     }

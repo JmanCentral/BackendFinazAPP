@@ -11,7 +11,7 @@ import java.util.List;
 
 @Log4j2
 @RestController
-@RequestMapping("/Finanzapp")
+@RequestMapping("/Finanzapp/Ingresos")
 public class ControladorIngreso {
 
     @Autowired
@@ -124,11 +124,6 @@ public class ControladorIngreso {
         servicioIngreso.eliminarIngreso(id_ingreso);
         return ResponseEntity.noContent().build();
     }
-
-
-
-
-
 
 
 }
