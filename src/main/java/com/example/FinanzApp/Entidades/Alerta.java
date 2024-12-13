@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -23,7 +24,7 @@ public class Alerta implements Serializable {
     @Column(nullable = false)
     private String descripcion;
     @Column(nullable = false)
-    private String fecha;
+    private LocalDate fecha;
     @Column(nullable = false)
     private Double valor;
 

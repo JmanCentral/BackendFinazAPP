@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -14,7 +15,7 @@ public class IngresoDTO {
     private Long id_ingreso;
     private String nombre_ingreso;
     private Double valor;
-    private Date fecha;
+    private LocalDate fecha;
     private String tipo_ingreso;
 
 }

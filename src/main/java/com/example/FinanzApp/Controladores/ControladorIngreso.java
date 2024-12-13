@@ -1,5 +1,6 @@
 package com.example.FinanzApp.Controladores;
 
+import com.example.FinanzApp.DTOS.GastoDTO;
 import com.example.FinanzApp.DTOS.IngresoDTO;
 import com.example.FinanzApp.Servicios.ServicioIngreso;
 import lombok.extern.log4j.Log4j2;
@@ -110,12 +111,16 @@ public class ControladorIngreso {
 
 
     @PutMapping("/modificar/{id_ingreso}")
-    public ResponseEntity<String> modificarIngreso( @PathVariable Long id_ingreso, @RequestBody IngresoDTO ingresoDTO) {
+    public ResponseEntity<IngresoDTO> modificarIngreso( @PathVariable Long id_ingreso, @RequestBody IngresoDTO ingresoDTO) {
 
         // Llamamos al servicio para modificar el Ingreso
-        servicioIngreso.modificarIngresos(ingresoDTO.getNombre_ingreso(), ingresoDTO.getFecha(), ingresoDTO.getValor(), id_ingreso);
+        IngresoDTO gastoregistrado =   servicioIngreso.ModificarIngreso(id_ingreso , ingresoDTO);
 
-        return ResponseEntity.ok("Ingreso modificado correctamente");
+        if (gastoregistrado != null) {
+            return ResponseEntity.ok(gastoregistrado);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 

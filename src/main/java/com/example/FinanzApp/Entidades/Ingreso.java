@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -23,7 +24,7 @@ public class Ingreso {
     @Column(nullable = false)
     private Double valor;
     @Column(nullable = false)
-    private Date fecha;
+    private LocalDate fecha;
     @Column(nullable = false)
     private String tipo_ingreso;
 

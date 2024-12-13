@@ -1,7 +1,9 @@
 package com.example.FinanzApp.Servicios;
 
 
+import com.example.FinanzApp.DTOS.GastoDTO;
 import com.example.FinanzApp.DTOS.IngresoDTO;
+import com.example.FinanzApp.Entidades.Gasto;
 import com.example.FinanzApp.Entidades.Ingreso;
 import com.example.FinanzApp.Entidades.Usuario;
 import com.example.FinanzApp.Repositorios.RepositorioIngreso;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Data
@@ -95,10 +98,36 @@ public class ServicioIngreso implements Serializable {
                 .collect(Collectors.toList());
     }
 
-    public void modificarIngresos(String nombre , Date fecha , Double valor , Long id_ingreso) {
+    public IngresoDTO ModificarIngreso(Long id_ingreso, IngresoDTO ingresoDTO) {
+        // Buscar el gasto por su ID en el repositorio
+        Optional<Ingreso> ingresoOptional = repositorioIngreso.findById(id_ingreso);
 
-        repositorioIngreso.modificarIngreso(nombre, fecha, valor, id_ingreso);
+        // Validar si el gasto existe
+        if (ingresoOptional.isPresent()) {
+            Ingreso ingreso = ingresoOptional.get();
 
+            // Actualizar los campos del gasto con los datos del DTO
+            ingreso.setNombre_ingreso(ingresoDTO.getNombre_ingreso());
+            ingreso.setTipo_ingreso(ingresoDTO.getTipo_ingreso());
+            ingreso.setValor(ingresoDTO.getValor());
+            ingreso.setFecha(ingresoDTO.getFecha());
+
+            // Guardar los cambios en el repositorio
+            Ingreso ingresoActualizado = repositorioIngreso.save(ingreso);
+
+            // Convertir la entidad actualizada de nuevo en un DTO para retornarlo
+            IngresoDTO ingresoActualizadoDTO = new IngresoDTO();
+            ingresoActualizadoDTO.setId_ingreso(ingresoActualizado.getId_ingreso());
+            ingresoActualizadoDTO.setNombre_ingreso(ingresoActualizado.getNombre_ingreso());
+            ingresoActualizadoDTO.setTipo_ingreso(ingresoActualizado.getTipo_ingreso());
+            ingresoActualizadoDTO.setValor(ingresoActualizado.getValor());
+            ingresoActualizadoDTO.setFecha(ingresoActualizado.getFecha());
+
+            return  ingresoActualizadoDTO;
+        } else {
+            // Lanza una excepción si el gasto no existe
+            throw new RuntimeException("El gasto con ID " + id_ingreso + " no existe.");
+        }
     }
 
     public Double ProyectarIngresos(Long id_usuario){

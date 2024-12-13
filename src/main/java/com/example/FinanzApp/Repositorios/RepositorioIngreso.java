@@ -1,5 +1,6 @@
 package com.example.FinanzApp.Repositorios;
 
+import com.example.FinanzApp.Entidades.Gasto;
 import com.example.FinanzApp.Entidades.Ingreso;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface RepositorioIngreso  extends JpaRepository<Ingreso, Long>, JpaSpecificationExecutor<Ingreso> {
 
@@ -49,15 +51,10 @@ public interface RepositorioIngreso  extends JpaRepository<Ingreso, Long>, JpaSp
                                        @Param("mes") Integer mes);
 
 
-    @Modifying
-    @Transactional
-    @Query("UPDATE Ingreso SET nombre_ingreso = :nombre, fecha = :fecha, valor = :valor WHERE id_ingreso = :id")
-    void modificarIngreso(@Param("nombre") String nombre,
-                          @Param("fecha") Date fecha,
-                          @Param("valor") Double valor,
-                          @Param("id") Long id);
+    Optional<Ingreso> findById(Long id_ingreso);
 
     void deleteById(Long id);
+
 
     @Query("SELECT SUM(i.valor) * 1.05 " +
             "FROM Ingreso i " +

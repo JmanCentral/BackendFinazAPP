@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -23,7 +24,7 @@ public class Gasto implements Serializable {
     @Column(nullable = false)
     private String categoria;
     @Column(nullable = false)
-    private Date fecha;
+    private LocalDate fecha;
     @Column(nullable = false)
     private Double valor;
 

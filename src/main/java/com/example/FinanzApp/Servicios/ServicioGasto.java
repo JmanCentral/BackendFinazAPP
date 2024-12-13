@@ -13,7 +13,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Data
@@ -69,6 +71,113 @@ public class ServicioGasto {
         return repositorioGasto.getValorGastosMesCategoria(id_usuario , categoria);
 
     }
+
+    public Double ValorGastosMes (Long id_usuario){
+
+        return repositorioGasto.getValorGastosMes(id_usuario);
+
+    }
+
+
+    public List<GastoDTO> BuscarGastosPorFechas(Long id_usuario , LocalDate fechaInf , LocalDate fechaSup){
+
+        List<Gasto> gastos  = repositorioGasto.getGastosPorFechas(id_usuario , fechaInf , fechaSup );
+
+        return gastos.stream()
+                .map(gasto -> modelMapper.map(gasto, GastoDTO.class))
+                .collect(Collectors.toList());
+
+    }
+
+    public List<GastoDTO> OrdenarAscendentemente(Long id_usuario){
+
+        List<Gasto> gastos  = repositorioGasto.findByUsuarioIdOrderByValorAsc(id_usuario);
+
+        return gastos.stream()
+                .map(gasto -> modelMapper.map(gasto, GastoDTO.class))
+                .collect(Collectors.toList());
+
+    }
+
+    public List<GastoDTO> OrdenarDescendentemente(Long id_usuario){
+
+        List<Gasto> gastos  = repositorioGasto.findByUsuarioIdOrderByValorDesc(id_usuario);
+
+        return gastos.stream()
+                .map(gasto -> modelMapper.map(gasto, GastoDTO.class))
+                .collect(Collectors.toList());
+
+    }
+
+    public List<GastoDTO> OrdenarPorValorAlto(Long id_usuario){
+
+        List<Gasto> gastos  = repositorioGasto.getValorMasAlto(id_usuario);
+
+        return gastos.stream()
+                .map(gasto -> modelMapper.map(gasto, GastoDTO.class))
+                .collect(Collectors.toList());
+
+    }
+
+    public List<GastoDTO> OrdenarPorValorBajo(Long id_usuario){
+
+        List<Gasto> gastos  = repositorioGasto.getValorMasBajo(id_usuario);
+
+        return gastos.stream()
+                .map(gasto -> modelMapper.map(gasto, GastoDTO.class))
+                .collect(Collectors.toList());
+
+    }
+
+    public Double ObtenerPromedioDeGastos(Long id_usuario){
+
+        return  repositorioGasto.getPromedioGastosMes(id_usuario);
+
+    }
+
+
+    public void EliminarGasto (Long id_gasto){
+
+        repositorioGasto.deleteById(id_gasto);
+    }
+
+    public GastoDTO ModificarGasto(Long id_gasto, GastoDTO gastoDTO) {
+        // Buscar el gasto por su ID en el repositorio
+        Optional<Gasto> gastoOptional = repositorioGasto.findById(id_gasto);
+
+        // Validar si el gasto existe
+        if (gastoOptional.isPresent()) {
+            Gasto gasto = gastoOptional.get();
+
+            // Actualizar los campos del gasto con los datos del DTO
+            gasto.setNombre_gasto(gastoDTO.getNombre_gasto());
+            gasto.setCategoria(gastoDTO.getCategoria());
+            gasto.setValor(gastoDTO.getValor());
+            gasto.setFecha(gastoDTO.getFecha());
+
+            // Guardar los cambios en el repositorio
+            Gasto gastoActualizado = repositorioGasto.save(gasto);
+
+            // Convertir la entidad actualizada de nuevo en un DTO para retornarlo
+            GastoDTO gastoActualizadoDTO = new GastoDTO();
+            gastoActualizadoDTO.setId_gasto(gastoActualizado.getId_gasto());
+            gastoActualizadoDTO.setNombre_gasto(gastoActualizado.getNombre_gasto());
+            gastoActualizadoDTO.setCategoria(gastoActualizado.getCategoria());
+            gastoActualizadoDTO.setValor(gastoActualizado.getValor());
+            gastoActualizadoDTO.setFecha(gastoActualizado.getFecha());
+
+            return gastoActualizadoDTO;
+        } else {
+            // Lanza una excepción si el gasto no existe
+            throw new RuntimeException("El gasto con ID " + id_gasto + " no existe.");
+        }
+    }
+
+
+
+
+
+
 
 
 }

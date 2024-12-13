@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -14,7 +15,7 @@ public class GastoDTO {
     private Long id_gasto;
     private String nombre_gasto;
     private String categoria;
-    private Date fecha;
+    private LocalDate fecha;
     private Double valor;
 
 }
