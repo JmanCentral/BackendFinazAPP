@@ -1,5 +1,6 @@
 package com.example.FinanzApp.Repositorios;
 
+import com.example.FinanzApp.DTOS.CategoriaTotalDTO;
 import com.example.FinanzApp.Entidades.Gasto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -34,7 +35,7 @@ public interface RepositorioGasto extends JpaRepository<Gasto, Long>, JpaSpecifi
             "AND EXTRACT(YEAR FROM g.fecha) = EXTRACT(YEAR FROM CURRENT_DATE) " +
             "AND EXTRACT(MONTH FROM g.fecha) = EXTRACT(MONTH FROM CURRENT_DATE)")
     Double getValorGastosMesCategoria(@Param("usuarioId") Long usuarioId,
-                                                @Param("categoria") String categoria);
+                                      @Param("categoria") String categoria);
 
 
     @Query("SELECT SUM(g.valor) FROM Gasto g WHERE g.usuario.id_usuario = :usuarioId AND EXTRACT(YEAR FROM g.fecha) = EXTRACT(YEAR FROM CURRENT_DATE) AND EXTRACT(MONTH FROM g.fecha) = EXTRACT(MONTH FROM CURRENT_DATE)")
@@ -46,8 +47,8 @@ public interface RepositorioGasto extends JpaRepository<Gasto, Long>, JpaSpecifi
 
     @Query("SELECT g FROM Gasto g WHERE g.usuario.id_usuario = :idUsuario AND g.fecha BETWEEN :fechaInf AND :fechaSup")
     List<Gasto> getGastosPorFechas(@Param("idUsuario") Long idUsuario,
-                                             @Param("fechaInf") LocalDate fechaInf,
-                                             @Param("fechaSup") LocalDate fechaSup);
+                                   @Param("fechaInf") LocalDate fechaInf,
+                                   @Param("fechaSup") LocalDate fechaSup);
 
 
     @Query("SELECT g FROM Gasto g WHERE g.usuario.id_usuario= :usuarioId ORDER BY g.valor ASC")
@@ -62,10 +63,28 @@ public interface RepositorioGasto extends JpaRepository<Gasto, Long>, JpaSpecifi
     @Query("SELECT g FROM Gasto g WHERE g.usuario.id_usuario= :usuarioId ORDER BY g.valor  ASC LIMIT 1")
     List<Gasto> getValorMasBajo(@Param("usuarioId") Long usuarioId);
 
-    @Query ("SELECT AVG(g.valor) FROM Gasto g WHERE g.usuario.id_usuario = :usuarioId AND EXTRACT(YEAR FROM g.fecha) = EXTRACT(YEAR FROM CURRENT_DATE) \n" +
+    @Query("SELECT AVG(g.valor) FROM Gasto g WHERE g.usuario.id_usuario = :usuarioId AND EXTRACT(YEAR FROM g.fecha) = EXTRACT(YEAR FROM CURRENT_DATE) \n" +
             "AND EXTRACT(MONTH FROM g.fecha) = EXTRACT(MONTH FROM CURRENT_DATE)  ")
     Double getPromedioGastosMes(@Param("usuarioId") Long usuarioId);
 
+    @Query("SELECT g.nombre_gasto FROM Gasto g WHERE g.usuario.id_usuario = :usuarioId " +
+            "GROUP BY g.nombre_gasto ORDER BY COUNT (g.nombre_gasto) DESC LIMIT 1")
+    String getDescripcionRecurrente(@Param("usuarioId") Long usuarioId);
+
+    @Query("SELECT (COALESCE(SUM(g.valor), 0) / COALESCE(SUM(i.valor), 1)) * 100 " +
+            "FROM Gasto g, Ingreso i " +
+            "WHERE g.usuario.id_usuario = :usuarioId AND i.usuario.id_usuario = :usuarioId")
+    Double getPorcentajeGastosSobreIngresos(@Param("usuarioId") Long usuarioId);
+
+    @Query("SELECT g.categoria, SUM(g.valor) as totalValor " +
+            "FROM Gasto g " +
+            "WHERE g.usuario.id_usuario = :usuarioId " +
+            "GROUP BY g.categoria " +
+            "ORDER BY totalValor DESC")
+    List<Object[]> getCategoriasConMasGastos(@Param("usuarioId") Long usuarioId);
+
+    @Query("SELECT SUM(g.valor) / COUNT(DISTINCT g.fecha) AS gastoPromedioDiario FROM Gasto g WHERE g.usuario.id_usuario = :usuarioId ")
+    Double getGastoPromedioDiarioTotal(@Param("usuarioId") Long usuarioId);
 
 
 }

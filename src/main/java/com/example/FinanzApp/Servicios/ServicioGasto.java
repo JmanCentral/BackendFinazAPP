@@ -1,5 +1,6 @@
 package com.example.FinanzApp.Servicios;
 
+import com.example.FinanzApp.DTOS.CategoriaTotalDTO;
 import com.example.FinanzApp.DTOS.GastoDTO;
 import com.example.FinanzApp.DTOS.IngresoDTO;
 import com.example.FinanzApp.Entidades.Gasto;
@@ -135,11 +136,34 @@ public class ServicioGasto {
 
     }
 
+    public String ObtenerGastoRecurrente (Long id_usuario){
 
-    public void EliminarGasto (Long id_gasto){
+        return repositorioGasto.getDescripcionRecurrente(id_usuario);
 
-        repositorioGasto.deleteById(id_gasto);
     }
+
+    public Double PorcentajeGastosSobreIngresos (Long id_usuario) {
+
+        return repositorioGasto.getPorcentajeGastosSobreIngresos(id_usuario);
+
+    }
+
+    public List<CategoriaTotalDTO> ordenarPorCategoriaMasAlta(Long idUsuario) {
+        List<Object[]> resultados = repositorioGasto.getCategoriasConMasGastos(idUsuario);
+
+        // Mapear los resultados a CategoriaTotalDTO
+        return resultados.stream()
+                .map(row -> new CategoriaTotalDTO((String) row[0], (Double) row[1]))
+                .collect(Collectors.toList());
+    }
+
+
+    public Double ObtenerPromedioDiario (Long id_usuario) {
+
+        return repositorioGasto.getGastoPromedioDiarioTotal(id_usuario);
+
+    }
+
 
     public GastoDTO ModificarGasto(Long id_gasto, GastoDTO gastoDTO) {
         // Buscar el gasto por su ID en el repositorio
@@ -174,10 +198,9 @@ public class ServicioGasto {
     }
 
 
+    public void EliminarGasto (Long id_gasto){
 
-
-
-
-
+        repositorioGasto.deleteById(id_gasto);
+    }
 
 }

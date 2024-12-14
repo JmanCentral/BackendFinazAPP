@@ -65,4 +65,5 @@ public interface RepositorioIngreso  extends JpaRepository<Ingreso, Long>, JpaSp
     Double calcularTotalMensual(@Param("usuarioId") Long usuarioId);
 
 
+
 }

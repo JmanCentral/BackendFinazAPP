@@ -1,4 +1,5 @@
 package com.example.FinanzApp.Controladores;
+import com.example.FinanzApp.DTOS.CategoriaTotalDTO;
 import com.example.FinanzApp.DTOS.GastoDTO;
 import com.example.FinanzApp.DTOS.IngresoDTO;
 import com.example.FinanzApp.Servicios.ServicioGasto;
@@ -161,6 +162,54 @@ public class ControladorGasto {
 
     }
 
+    @GetMapping("/ObtenerGastoRecurrente/{id_usuario}")
+    public ResponseEntity<String> GastoRecurrente(@PathVariable Long id_usuario) {
+
+        String gastos = servicioGasto.ObtenerGastoRecurrente(id_usuario);
+
+        if (gastos.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(gastos);
+    }
+
+    @GetMapping("/ObtenerPorcentaje/{id_usuario}")
+    public ResponseEntity<Double> Porcentaje(@PathVariable Long id_usuario) {
+
+        Double gastos = servicioGasto.PorcentajeGastosSobreIngresos(id_usuario);
+
+        if (gastos != null ) {
+            return ResponseEntity.ok(gastos);
+        }
+        return ResponseEntity.badRequest().build();
+
+    }
+
+    @GetMapping("/CategoriaMasAlta/{id_usuario}")
+    public ResponseEntity<List<CategoriaTotalDTO>> ListarCategorias(@PathVariable Long id_usuario) {
+
+        List<CategoriaTotalDTO>  gastos = servicioGasto.ordenarPorCategoriaMasAlta(id_usuario);
+
+        if (gastos.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(gastos);
+
+    }
+
+    @GetMapping("/ObtenerPromedioDiario/{id_usuario}")
+    public ResponseEntity<Double> PromedioDiario(@PathVariable Long id_usuario) {
+
+        Double gastos = servicioGasto.ObtenerPromedioDiario(id_usuario);
+
+        if (gastos != null ) {
+            return ResponseEntity.ok(gastos);
+        }
+        return ResponseEntity.badRequest().build();
+
+    }
+
 
     @PutMapping("/ModificarGastos/{id_gasto}")
     public ResponseEntity<GastoDTO> modificarGasto(@RequestBody GastoDTO gasto, @PathVariable Long id_gasto) {
@@ -181,14 +230,6 @@ public class ControladorGasto {
         servicioGasto.EliminarGasto(id_gasto);
         return ResponseEntity.noContent().build();
     }
-
-
-
-
-
-
-
-
 
 
 }
