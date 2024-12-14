@@ -18,6 +18,7 @@ public class ControladorUsuario {
 
     @Autowired
     ServicioUsuario servicioUsuario;
+
     @PostMapping("/registro")
     public ResponseEntity<UsuarioDTO> registrarUsuario(@RequestBody UsuarioDTO usuario) {
 
@@ -31,16 +32,5 @@ public class ControladorUsuario {
 
     }
 
-    @PostMapping("/VerificarUsuario")
-    public ResponseEntity<UsuarioDTO> verificarUsuario(@RequestBody UsuarioDTO usuarioDTO) {
-
-        UsuarioDTO usuarioVerificado = servicioUsuario.verificarUusario(usuarioDTO.getUsername(), usuarioDTO.getContrasena());
-
-        if (usuarioVerificado != null) {
-            return ResponseEntity.ok(usuarioVerificado);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
     }
 
-}
