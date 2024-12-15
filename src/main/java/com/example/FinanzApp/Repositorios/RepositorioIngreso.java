@@ -16,6 +16,8 @@ import java.util.Optional;
 public interface RepositorioIngreso  extends JpaRepository<Ingreso, Long>, JpaSpecificationExecutor<Ingreso> {
 
 
+
+
     @Query("SELECT i FROM Ingreso i " +
             "WHERE i.usuario.id_usuario = :usuarioId " +
             "AND i.tipo_ingreso = 'casual' " +
