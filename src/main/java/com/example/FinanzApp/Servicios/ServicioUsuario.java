@@ -36,7 +36,7 @@ public class ServicioUsuario implements Serializable {
         nuevoUsuario.setUsername(usuarioDTO.getUsername());
         nuevoUsuario.setNombre(usuarioDTO.getNombre());
         nuevoUsuario.setApellido(usuarioDTO.getApellido());
-        nuevoUsuario.setContrasena(usuarioDTO.getContrasena());
+        nuevoUsuario.setPassword(usuarioDTO.getPassword());
 
 
         Usuario usuarioGuardado = repositorioUsuario.save(nuevoUsuario);
@@ -45,9 +45,9 @@ public class ServicioUsuario implements Serializable {
 
     }
 
-    public UsuarioDTO verificarUusario (String username , String contrasena) {
+    public UsuarioDTO verificarUusario (String username , String password) {
 
-        Optional<Usuario> usuarios = repositorioUsuario.findByUsernameAndContrasena(username, contrasena);
+        Optional<Usuario> usuarios = repositorioUsuario.findByUsernameAndPassword(username, password);
 
         if (usuarios.isEmpty()) {
             return null;

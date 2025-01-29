@@ -10,7 +10,7 @@ public interface RepositorioUsuario extends JpaRepository<Usuario, Long>, JpaSpe
 
     Optional<Usuario> findById(Long id);
 
-    Optional<Usuario> findByUsernameAndContrasena(String nombreUsuario , String contrasena);
+    Optional<Usuario> findByUsernameAndPassword(String nombreUsuario , String password);
 
     Optional<Usuario> findByUsername(String nombreUsuario);
 

@@ -34,7 +34,7 @@ public class ControladorUsuario {
     @PostMapping("/VerificarUsuario")
     public ResponseEntity<UsuarioDTO> verificarUsuario(@RequestBody UsuarioDTO usuarioDTO) {
 
-        UsuarioDTO usuarioVerificado = servicioUsuario.verificarUusario(usuarioDTO.getUsername(), usuarioDTO.getContrasena());
+        UsuarioDTO usuarioVerificado = servicioUsuario.verificarUusario(usuarioDTO.getUsername(), usuarioDTO.getPassword());
 
         if (usuarioVerificado != null) {
             return ResponseEntity.ok(usuarioVerificado);
