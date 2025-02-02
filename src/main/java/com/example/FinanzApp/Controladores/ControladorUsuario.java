@@ -1,15 +1,15 @@
 package com.example.FinanzApp.Controladores;
 
 import com.example.FinanzApp.DTOS.UsuarioDTO;
+import com.example.FinanzApp.Entidades.Usuario;
 import com.example.FinanzApp.Servicios.ServicioUsuario;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @Log4j2
 @RestController
@@ -41,6 +41,19 @@ public class ControladorUsuario {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+    }
+
+    @GetMapping("/ObtenerUsuario/{id_usuario}")
+    public ResponseEntity<UsuarioDTO> obtenerUsuario(@PathVariable Long id_usuario) {
+
+        UsuarioDTO usuario = servicioUsuario.obtenerUusarioPorID(id_usuario);
+
+        if (usuario != null) {
+            return ResponseEntity.ok(usuario);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
     }
 
 }

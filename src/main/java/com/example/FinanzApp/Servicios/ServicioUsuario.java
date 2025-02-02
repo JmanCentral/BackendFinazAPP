@@ -45,6 +45,20 @@ public class ServicioUsuario implements Serializable {
 
     }
 
+    public UsuarioDTO obtenerUusarioPorID (long id_uuario) {
+
+        Optional<Usuario> usuario = repositorioUsuario.findById(id_uuario);
+
+        if (usuario.isPresent()) {
+
+            return modelMapper.map(usuario.get(), UsuarioDTO.class);
+        } else {
+
+            return null;
+        }
+
+    }
+
     public UsuarioDTO verificarUusario (String username , String password) {
 
         Optional<Usuario> usuarios = repositorioUsuario.findByUsernameAndPassword(username, password);
