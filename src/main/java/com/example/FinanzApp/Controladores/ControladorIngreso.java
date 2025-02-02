@@ -20,7 +20,7 @@ public class ControladorIngreso {
     ServicioIngreso servicioIngreso;
 
     @PostMapping("/registrarIngreso/{id_usuario}")
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<IngresoDTO> registrarUsuario(@RequestBody IngresoDTO ingreso , @PathVariable Long id_usuario) {
 
         IngresoDTO ingresoInsertado = servicioIngreso.RegistrarIngreso(ingreso , id_usuario);
