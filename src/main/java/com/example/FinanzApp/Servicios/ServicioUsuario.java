@@ -21,6 +21,7 @@ import org.modelmapper.ModelMapper;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -60,6 +61,21 @@ public class ServicioUsuario implements UserDetailsService {
 
         Usuario usuarioGuardado = repositorioUsuario.save(nuevoUsuario);
         return modelMapper.map(usuarioGuardado, UsuarioDTO.class);
+    }
+
+
+    public UsuarioDTO obtenerUusarioPorID (long id_uuario) {
+
+        Optional<Usuario> usuario = repositorioUsuario.findById(id_uuario);
+
+        if (usuario.isPresent()) {
+
+            return modelMapper.map(usuario.get(), UsuarioDTO.class);
+        } else {
+
+            return null;
+        }
+
     }
 
 
