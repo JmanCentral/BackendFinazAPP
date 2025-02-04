@@ -1,6 +1,7 @@
 package com.example.FinanzApp.Config;
 
 import com.example.FinanzApp.Entidades.Usuario;
+import com.example.FinanzApp.Repositorios.RepositorioUsuario;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
@@ -21,11 +23,12 @@ import java.util.Map;
 public class JwtAutenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 
-    private JwtUtils jwtUtils;
+    private final JwtUtils jwtUtils;
+    private final RepositorioUsuario repositorioUsuario; // 👈 Agregar repositorio
 
-    public JwtAutenticationFilter(JwtUtils jwtUtils) {
+    public JwtAutenticationFilter(JwtUtils jwtUtils, RepositorioUsuario repositorioUsuario) {
         this.jwtUtils = jwtUtils;
-
+        this.repositorioUsuario = repositorioUsuario; // 👈 Inyectar repositorio
     }
 
     @Override
@@ -58,22 +61,29 @@ public class JwtAutenticationFilter extends UsernamePasswordAuthenticationFilter
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
 
-        User user = (User) authResult.getPrincipal();
-        String token = jwtUtils.generateToken(user.getUsername());
+        User user = (User) authResult.getPrincipal(); // Obtiene UserDetails
+
+        // Obtener el usuario completo desde la base de datos
+        Usuario usuario = repositorioUsuario.findByUsername(user.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+
+        // Generar token con el ID del usuario incluido
+        String token = jwtUtils.generateToken(usuario.getId_usuario(), usuario.getUsername()); // 👈 Modifica jwtUtils
 
         response.addHeader("Authorization", "Bearer " + token);
 
-        Map<String , Object> httpPesponse = new HashMap<>();
-        httpPesponse.put("token", token);
-        httpPesponse.put("mensaje", "Autenticación exitosa");
-        httpPesponse.put("nombre", user.getUsername());
+        Map<String , Object> httpResponse = new HashMap<>();
+        httpResponse.put("token", token);
+        httpResponse.put("mensaje", "Autenticación exitosa");
+        httpResponse.put("id", usuario.getId_usuario()); // 👈 Agregar ID
+        httpResponse.put("nombre", usuario.getUsername());
 
-
-        response.getWriter().write(new ObjectMapper().writeValueAsString(httpPesponse));
+        response.getWriter().write(new ObjectMapper().writeValueAsString(httpResponse));
         response.setStatus(200);
         response.setContentType("application/json");
         response.getWriter().flush();
 
         super.successfulAuthentication(request, response, chain, authResult);
     }
+
 }

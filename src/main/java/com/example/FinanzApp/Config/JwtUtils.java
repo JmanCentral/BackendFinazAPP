@@ -25,10 +25,11 @@ public class JwtUtils {
 
     //Crear un token
 
-    public String generateToken(String username) {
+    public String generateToken(Long userId , String username) {
 
         return Jwts.builder()
                 .setSubject(username)
+                .claim("id", userId)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(timeExpiration)))
                 .signWith(getSignatureKey(), SignatureAlgorithm.HS256)

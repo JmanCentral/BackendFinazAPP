@@ -69,10 +69,10 @@ public class ControladorAlerta {
 
     }
 
-    @PutMapping("/ModificarAlerta/{id_usuario}")
-    public ResponseEntity <AlertaDTO> ModificarAlerta(@PathVariable Long id_usuario , AlertaDTO alerta) {
+    @PutMapping("/ModificarAlerta/{id_alerta}")
+    public ResponseEntity <AlertaDTO> ModificarAlerta(@PathVariable Long id_alerta , AlertaDTO alerta) {
 
-        AlertaDTO  AlertaModificada = servicioAlerta.ModificarAlerta(id_usuario , alerta);
+        AlertaDTO  AlertaModificada = servicioAlerta.ModificarAlerta(id_alerta , alerta);
 
         if (AlertaModificada != null) {
             return ResponseEntity.ok(AlertaModificada);

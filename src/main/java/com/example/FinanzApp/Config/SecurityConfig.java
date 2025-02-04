@@ -1,6 +1,7 @@
 package com.example.FinanzApp.Config;
 
 
+import com.example.FinanzApp.Repositorios.RepositorioUsuario;
 import com.example.FinanzApp.Servicios.ServicioUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -36,10 +37,15 @@ public class SecurityConfig {
     @Autowired
     JwtAuthorizationFilter jwtAuthorizationFilter;
 
+    @Lazy
+    @Autowired
+    RepositorioUsuario repositorioUsuario;
+
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity , AuthenticationManager authenticationManager) throws Exception {
 
-        JwtAutenticationFilter jwtAutenticationFilter = new JwtAutenticationFilter(jwtUtils);
+        JwtAutenticationFilter jwtAutenticationFilter = new JwtAutenticationFilter(jwtUtils , repositorioUsuario);
         jwtAutenticationFilter.setAuthenticationManager(authenticationManager);
         jwtAutenticationFilter.setFilterProcessesUrl("/Finanzapp/login");
 
