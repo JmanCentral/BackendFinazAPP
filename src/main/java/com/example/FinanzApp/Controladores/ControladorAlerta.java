@@ -35,10 +35,11 @@ public class ControladorAlerta {
 
         List <AlertaDTO>  AlertaConsultada = servicioAlerta.ObtenerAlerta(id_usuario);
 
-        if (!AlertaConsultada.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        } else {
+        if (AlertaConsultada.isEmpty()) {
             return ResponseEntity.ok(AlertaConsultada);
+
+        } else {
+            return ResponseEntity.badRequest().build();
         }
 
     }
@@ -49,9 +50,10 @@ public class ControladorAlerta {
         List <AlertaDTO>  AlertaConsultada = servicioAlerta.ObtenerAlertaFecha(id_usuario);
 
         if (!AlertaConsultada.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        } else {
             return ResponseEntity.ok(AlertaConsultada);
+
+        } else {
+            return ResponseEntity.badRequest().build();
         }
 
     }
@@ -62,9 +64,10 @@ public class ControladorAlerta {
         List <AlertaDTO>  AlertaConsultada = servicioAlerta.ObtenerAlertaEsteMes(id_usuario);
 
         if (!AlertaConsultada.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        } else {
             return ResponseEntity.ok(AlertaConsultada);
+        } else {
+            return ResponseEntity.badRequest().build();
+
         }
 
     }
@@ -76,7 +79,6 @@ public class ControladorAlerta {
 
         if (AlertaModificada != null) {
             return ResponseEntity.ok(AlertaModificada);
-
         } else {
             return ResponseEntity.badRequest().build();
         }

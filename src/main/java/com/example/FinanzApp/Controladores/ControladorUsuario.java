@@ -26,7 +26,6 @@ public class ControladorUsuario {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-
     }
 
     @GetMapping("/ObtenerUsuario/{id_usuario}")
