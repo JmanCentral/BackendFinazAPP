@@ -9,6 +9,7 @@ import com.example.FinanzApp.Entidades.Usuario;
 import com.example.FinanzApp.Repositorios.RepositorioGasto;
 import com.example.FinanzApp.Repositorios.RepositorioIngreso;
 import com.example.FinanzApp.Repositorios.RepositorioUsuario;
+import jakarta.persistence.Tuple;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,12 @@ public class ServicioGasto {
     public Double ObtenerDisponible(Long id_usuario){
 
         return repositorioGasto.getDisponible(id_usuario);
+
+    }
+
+    public Double ObtenerDisponiblePorFechas (Long id_usuario , LocalDate fechaInf , LocalDate fechaSup ){
+
+        return repositorioGasto.getDisponiblePorFechas(id_usuario, fechaInf, fechaSup);
 
     }
 
@@ -110,23 +117,19 @@ public class ServicioGasto {
 
     }
 
-    public List<GastoDTO> OrdenarPorValorAlto(Long id_usuario){
+    public GastoDTO OrdenarPorValorAlto(Long id_usuario){
 
-        List<Gasto> gastos  = repositorioGasto.getValorMasAlto(id_usuario);
+        Gasto gastos  = repositorioGasto.getValorMasAlto(id_usuario);
 
-        return gastos.stream()
-                .map(gasto -> modelMapper.map(gasto, GastoDTO.class))
-                .collect(Collectors.toList());
+        return modelMapper.map(gastos, GastoDTO.class);
 
     }
 
-    public List<GastoDTO> OrdenarPorValorBajo(Long id_usuario){
+    public GastoDTO OrdenarPorValorBajo(Long id_usuario){
 
-        List<Gasto> gastos  = repositorioGasto.getValorMasBajo(id_usuario);
+        Gasto gastos  = repositorioGasto.getValorMasBajo(id_usuario);
 
-        return gastos.stream()
-                .map(gasto -> modelMapper.map(gasto, GastoDTO.class))
-                .collect(Collectors.toList());
+        return modelMapper.map(gastos, GastoDTO.class);
 
     }
 
@@ -148,13 +151,17 @@ public class ServicioGasto {
 
     }
 
-    public List<CategoriaTotalDTO> ordenarPorCategoriaMasAlta(Long idUsuario) {
-        List<Object[]> resultados = repositorioGasto.getCategoriasConMasGastos(idUsuario);
+    public CategoriaTotalDTO ordenarPorCategoriaMasAlta(Long idUsuario) {
 
-        // Mapear los resultados a CategoriaTotalDTO
-        return resultados.stream()
-                .map(row -> new CategoriaTotalDTO((String) row[0], (Double) row[1]))
-                .collect(Collectors.toList());
+        Object[] resultados = repositorioGasto.getCategoriaConMasGastos(idUsuario);
+
+        if (resultados != null && resultados.length == 2) {
+            String categoria = (String) resultados[0]; // Primera columna
+            Double totalValor = (Double) resultados[1]; // Segunda columna
+            return new CategoriaTotalDTO(categoria, totalValor);
+        } else {
+            return null;
+        }
     }
 
 

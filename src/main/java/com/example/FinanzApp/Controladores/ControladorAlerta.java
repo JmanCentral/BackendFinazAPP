@@ -35,10 +35,11 @@ public class ControladorAlerta {
 
         List <AlertaDTO>  AlertaConsultada = servicioAlerta.ObtenerAlerta(id_usuario);
 
-        if (!AlertaConsultada.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        } else {
+        if (AlertaConsultada.isEmpty()) {
             return ResponseEntity.ok(AlertaConsultada);
+
+        } else {
+            return ResponseEntity.badRequest().build();
         }
 
     }
@@ -49,9 +50,10 @@ public class ControladorAlerta {
         List <AlertaDTO>  AlertaConsultada = servicioAlerta.ObtenerAlertaFecha(id_usuario);
 
         if (!AlertaConsultada.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        } else {
             return ResponseEntity.ok(AlertaConsultada);
+
+        } else {
+            return ResponseEntity.badRequest().build();
         }
 
     }
@@ -62,21 +64,21 @@ public class ControladorAlerta {
         List <AlertaDTO>  AlertaConsultada = servicioAlerta.ObtenerAlertaEsteMes(id_usuario);
 
         if (!AlertaConsultada.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        } else {
             return ResponseEntity.ok(AlertaConsultada);
+        } else {
+            return ResponseEntity.badRequest().build();
+
         }
 
     }
 
-    @PutMapping("/ModificarAlerta/{id_usuario}")
-    public ResponseEntity <AlertaDTO> ModificarAlerta(@PathVariable Long id_usuario , AlertaDTO alerta) {
+    @PutMapping("/ModificarAlerta/{id_alerta}")
+    public ResponseEntity <AlertaDTO> ModificarAlerta(@PathVariable Long id_alerta , AlertaDTO alerta) {
 
-        AlertaDTO  AlertaModificada = servicioAlerta.ModificarAlerta(id_usuario , alerta);
+        AlertaDTO  AlertaModificada = servicioAlerta.ModificarAlerta(id_alerta , alerta);
 
         if (AlertaModificada != null) {
             return ResponseEntity.ok(AlertaModificada);
-
         } else {
             return ResponseEntity.badRequest().build();
         }
@@ -84,8 +86,8 @@ public class ControladorAlerta {
     }
 
     @DeleteMapping("/EliminarAlertas/{id_alerta}")
-    public ResponseEntity<Void> eliminarAlerta(@PathVariable("id_ingreso") Long id_alerta) {
-        servicioAlerta.EliminarAlerta(id_alerta);
+    public ResponseEntity<Void> eliminarAlerta(@PathVariable("id_alerta") Long id_alerta) {
+        servicioAlerta. EliminarAlerta(id_alerta);
         return ResponseEntity.noContent().build();
     }
 

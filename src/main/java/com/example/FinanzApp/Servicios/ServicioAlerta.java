@@ -11,6 +11,7 @@ import com.example.FinanzApp.Repositorios.RepositorioIngreso;
 import com.example.FinanzApp.Repositorios.RepositorioUsuario;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,6 +28,20 @@ public class ServicioAlerta {
     private  final RepositorioGasto repositorioGasto;
     private final RepositorioIngreso repositorioIngreso;
     private final RepositorioUsuario repositorioUsuario;
+
+
+    @Autowired
+    public ServicioAlerta(RepositorioAlerta repositorioAlerta,
+                          ModelMapper modelMapper,
+                          RepositorioGasto repositorioGasto,
+                          RepositorioIngreso repositorioIngreso,
+                          RepositorioUsuario repositorioUsuario) {
+        this.repositorioAlerta = repositorioAlerta;
+        this.modelMapper = modelMapper;
+        this.repositorioGasto = repositorioGasto;
+        this.repositorioIngreso = repositorioIngreso;
+        this.repositorioUsuario = repositorioUsuario;
+    }
 
     public AlertaDTO RegistrarAlerta (AlertaDTO alertaDTO ,Long  usuarioId) {
 
@@ -72,11 +87,11 @@ public class ServicioAlerta {
 
     }
 
-    public AlertaDTO ModificarAlerta(Long id_gasto, AlertaDTO alertaDTO) {
+    public AlertaDTO ModificarAlerta(Long id_alerta, AlertaDTO alertaDTO) {
         // Buscar el gasto por su ID en el repositorio
-        Optional<Alerta> AlertaOptional = repositorioAlerta.findById(id_gasto);
+        Optional<Alerta> AlertaOptional = repositorioAlerta.findById(id_alerta);
 
-        // Validar si el gasto existe
+        // Validar si la alerta existe
         if (AlertaOptional.isPresent()) {
             Alerta alerta = AlertaOptional.get();
 

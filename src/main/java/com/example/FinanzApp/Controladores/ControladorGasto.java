@@ -45,6 +45,20 @@ public class ControladorGasto {
 
     }
 
+    @GetMapping("/ObtenerDineroDisponiblePorFechas/{id_usuario}/{fecha_inicial}/{fecha_final}")
+
+    public ResponseEntity<Double> ObtenerMoneyDispobnible(@PathVariable Long id_usuario, @PathVariable LocalDate fecha_inicial, @PathVariable LocalDate fecha_final) {
+
+        Double Disponible = servicioGasto.ObtenerDisponiblePorFechas(id_usuario , fecha_inicial, fecha_final);
+
+        if (Disponible != null) {
+            return ResponseEntity.ok(Disponible);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+
+    }
+
     @GetMapping("/GastosMesCategoria/{id_usuario}/{categoria}")
     public ResponseEntity <List<GastoDTO>> obtenerGastosMesCategoria(@PathVariable Long id_usuario, @PathVariable String categoria) {
 
@@ -111,11 +125,11 @@ public class ControladorGasto {
         }
 
     @GetMapping("/ObtenerGastoAlto/{id_usuario}")
-    public ResponseEntity<List<GastoDTO>> ListarGastoAlto(@PathVariable Long id_usuario) {
+    public ResponseEntity <GastoDTO> ListarGastoAlto(@PathVariable Long id_usuario) {
 
-        List<GastoDTO>  gastos = servicioGasto.OrdenarPorValorAlto(id_usuario);
+        GastoDTO  gastos = servicioGasto.OrdenarPorValorAlto(id_usuario);
 
-        if (gastos.isEmpty()) {
+        if (gastos == null ) {
             return ResponseEntity.noContent().build();
         }
 
@@ -124,16 +138,15 @@ public class ControladorGasto {
     }
 
     @GetMapping("/ObtenerGastoBajo/{id_usuario}")
-    public ResponseEntity<List<GastoDTO>> ListarGastoBajo(@PathVariable Long id_usuario) {
+    public ResponseEntity<GastoDTO> ListarGastoBajo(@PathVariable Long id_usuario) {
 
-        List<GastoDTO>  gastos = servicioGasto.OrdenarPorValorBajo(id_usuario);
+        GastoDTO  gastos = servicioGasto.OrdenarPorValorBajo(id_usuario);
 
-        if (gastos.isEmpty()) {
+        if (gastos == null) {
             return ResponseEntity.noContent().build();
         }
 
         return ResponseEntity.ok(gastos);
-
     }
 
 
@@ -167,7 +180,7 @@ public class ControladorGasto {
 
         String gastos = servicioGasto.ObtenerGastoRecurrente(id_usuario);
 
-        if (gastos.isEmpty()) {
+        if (gastos == null) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(gastos);
@@ -186,11 +199,11 @@ public class ControladorGasto {
     }
 
     @GetMapping("/CategoriaMasAlta/{id_usuario}")
-    public ResponseEntity<List<CategoriaTotalDTO>> ListarCategorias(@PathVariable Long id_usuario) {
+    public ResponseEntity<CategoriaTotalDTO> ListarCategorias(@PathVariable Long id_usuario) {
 
-        List<CategoriaTotalDTO>  gastos = servicioGasto.ordenarPorCategoriaMasAlta(id_usuario);
+        CategoriaTotalDTO  gastos = servicioGasto.ordenarPorCategoriaMasAlta(id_usuario);
 
-        if (gastos.isEmpty()) {
+        if (gastos == null) {
             return ResponseEntity.noContent().build();
         }
 
