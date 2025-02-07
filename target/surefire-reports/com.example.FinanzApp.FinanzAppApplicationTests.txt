@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.example.FinanzApp.FinanzAppApplicationTests
--------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 30.98 s -- in com.example.FinanzApp.FinanzAppApplicationTests

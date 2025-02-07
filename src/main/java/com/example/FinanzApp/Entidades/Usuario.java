@@ -27,8 +27,8 @@ public class Usuario implements Serializable {
     private String nombre;
     @Column(name = "APELLIDO")
     private String apellido;
-    @Column(name = "PASSWORD")
-    private String password;
+    @Column(name = "CONTRASENA")
+    private String contrasena;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ingreso> ingresos;
