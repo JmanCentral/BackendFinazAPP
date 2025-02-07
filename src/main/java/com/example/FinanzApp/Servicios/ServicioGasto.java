@@ -58,6 +58,12 @@ public class ServicioGasto {
 
     }
 
+    public Double ObtenerDisponiblePorFechas (Long id_usuario , LocalDate fechaInf , LocalDate fechaSup ){
+
+        return repositorioGasto.getDisponiblePorFechas(id_usuario, fechaInf, fechaSup);
+
+    }
+
     public List<GastoDTO> BuscarGastosMesCategoria(Long id_usuario , String categoria){
 
         List<Gasto> gastos  = repositorioGasto.getGastosMesCategoria(id_usuario , categoria);

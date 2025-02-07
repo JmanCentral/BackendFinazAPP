@@ -87,7 +87,7 @@ public class ControladorAlerta {
 
     @DeleteMapping("/EliminarAlertas/{id_alerta}")
     public ResponseEntity<Void> eliminarAlerta(@PathVariable("id_alerta") Long id_alerta) {
-        servicioAlerta.EliminarAlerta(id_alerta);
+        servicioAlerta. EliminarAlerta(id_alerta);
         return ResponseEntity.noContent().build();
     }
 

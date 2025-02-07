@@ -53,6 +53,8 @@ public interface RepositorioIngreso  extends JpaRepository<Ingreso, Long>, JpaSp
                                        @Param("mes") Integer mes);
 
 
+
+
     Optional<Ingreso> findById(Long id_ingreso);
 
     void deleteById(Long id);
