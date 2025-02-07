@@ -111,11 +111,11 @@ public class ControladorGasto {
         }
 
     @GetMapping("/ObtenerGastoAlto/{id_usuario}")
-    public ResponseEntity<List<GastoDTO>> ListarGastoAlto(@PathVariable Long id_usuario) {
+    public ResponseEntity <GastoDTO> ListarGastoAlto(@PathVariable Long id_usuario) {
 
-        List<GastoDTO>  gastos = servicioGasto.OrdenarPorValorAlto(id_usuario);
+        GastoDTO  gastos = servicioGasto.OrdenarPorValorAlto(id_usuario);
 
-        if (gastos.isEmpty()) {
+        if (gastos == null ) {
             return ResponseEntity.noContent().build();
         }
 
@@ -124,16 +124,15 @@ public class ControladorGasto {
     }
 
     @GetMapping("/ObtenerGastoBajo/{id_usuario}")
-    public ResponseEntity<List<GastoDTO>> ListarGastoBajo(@PathVariable Long id_usuario) {
+    public ResponseEntity<GastoDTO> ListarGastoBajo(@PathVariable Long id_usuario) {
 
-        List<GastoDTO>  gastos = servicioGasto.OrdenarPorValorBajo(id_usuario);
+        GastoDTO  gastos = servicioGasto.OrdenarPorValorBajo(id_usuario);
 
-        if (gastos.isEmpty()) {
+        if (gastos == null) {
             return ResponseEntity.noContent().build();
         }
 
         return ResponseEntity.ok(gastos);
-
     }
 
 
@@ -167,7 +166,7 @@ public class ControladorGasto {
 
         String gastos = servicioGasto.ObtenerGastoRecurrente(id_usuario);
 
-        if (gastos.isEmpty()) {
+        if (gastos == null) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(gastos);
@@ -186,11 +185,11 @@ public class ControladorGasto {
     }
 
     @GetMapping("/CategoriaMasAlta/{id_usuario}")
-    public ResponseEntity<List<CategoriaTotalDTO>> ListarCategorias(@PathVariable Long id_usuario) {
+    public ResponseEntity<CategoriaTotalDTO> ListarCategorias(@PathVariable Long id_usuario) {
 
-        List<CategoriaTotalDTO>  gastos = servicioGasto.ordenarPorCategoriaMasAlta(id_usuario);
+        CategoriaTotalDTO  gastos = servicioGasto.ordenarPorCategoriaMasAlta(id_usuario);
 
-        if (gastos.isEmpty()) {
+        if (gastos == null) {
             return ResponseEntity.noContent().build();
         }
 

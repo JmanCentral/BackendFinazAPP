@@ -91,7 +91,7 @@ public class ServicioAlerta {
         // Buscar el gasto por su ID en el repositorio
         Optional<Alerta> AlertaOptional = repositorioAlerta.findById(id_alerta);
 
-        // Validar si el gasto existe
+        // Validar si la alerta existe
         if (AlertaOptional.isPresent()) {
             Alerta alerta = AlertaOptional.get();
 
