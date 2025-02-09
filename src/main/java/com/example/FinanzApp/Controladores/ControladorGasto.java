@@ -1,7 +1,7 @@
 package com.example.FinanzApp.Controladores;
 import com.example.FinanzApp.DTOS.CategoriaTotalDTO;
 import com.example.FinanzApp.DTOS.GastoDTO;
-import com.example.FinanzApp.DTOS.IngresoDTO;
+import com.example.FinanzApp.DTOS.ProyeccionDTO;
 import com.example.FinanzApp.Servicios.ServicioGasto;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -198,10 +198,11 @@ public class ControladorGasto {
 
     }
 
+
     @GetMapping("/CategoriaMasAlta/{id_usuario}")
     public ResponseEntity<CategoriaTotalDTO> ListarCategorias(@PathVariable Long id_usuario) {
 
-        CategoriaTotalDTO  gastos = servicioGasto.ordenarPorCategoriaMasAlta(id_usuario);
+        CategoriaTotalDTO  gastos = servicioGasto.obtenerCategoriaMasAlta(id_usuario);
 
         if (gastos == null) {
             return ResponseEntity.noContent().build();
@@ -210,6 +211,7 @@ public class ControladorGasto {
         return ResponseEntity.ok(gastos);
 
     }
+
 
     @GetMapping("/ObtenerPromedioDiario/{id_usuario}")
     public ResponseEntity<Double> PromedioDiario(@PathVariable Long id_usuario) {
@@ -249,6 +251,14 @@ public class ControladorGasto {
         }
 
     }
+
+    @GetMapping("/frecuentes/{usuarioId}")
+    public ResponseEntity<List<ProyeccionDTO>> obtenerGastosFrecuentes(@PathVariable Long usuarioId) {
+        return ResponseEntity.ok(servicioGasto.obtenerGastosFrecuentes(usuarioId));
+    }
+
+
+
 
     @DeleteMapping("/EliminarTodosLosGastos/{id_usuario}/{categoria}")
     public ResponseEntity<Void> eliminarGastos(@PathVariable("id_usuario") Long idUsuario,

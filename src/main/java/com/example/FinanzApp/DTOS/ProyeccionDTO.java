@@ -2,13 +2,13 @@ package com.example.FinanzApp.DTOS;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
-public class CategoriaTotalDTO {
 
-    private String categoria;
+public class ProyeccionDTO {
+    private String descripcion;
+    private Integer cantidad;
     private Double total;
+
 }

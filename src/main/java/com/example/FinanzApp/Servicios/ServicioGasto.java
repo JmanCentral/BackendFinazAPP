@@ -2,16 +2,14 @@ package com.example.FinanzApp.Servicios;
 
 import com.example.FinanzApp.DTOS.CategoriaTotalDTO;
 import com.example.FinanzApp.DTOS.GastoDTO;
-import com.example.FinanzApp.DTOS.IngresoDTO;
-import com.example.FinanzApp.DTOS.RecordatorioDTO;
+import com.example.FinanzApp.DTOS.ProyeccionDTO;
+import com.example.FinanzApp.Entidades.CategoriaTotal;
 import com.example.FinanzApp.Entidades.Gasto;
-import com.example.FinanzApp.Entidades.Ingreso;
-import com.example.FinanzApp.Entidades.Recordatorio;
+import com.example.FinanzApp.Entidades.GastoProjection;
 import com.example.FinanzApp.Entidades.Usuario;
 import com.example.FinanzApp.Repositorios.RepositorioGasto;
 import com.example.FinanzApp.Repositorios.RepositorioIngreso;
 import com.example.FinanzApp.Repositorios.RepositorioUsuario;
-import jakarta.persistence.Tuple;
 import jakarta.transaction.Transactional;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
@@ -154,18 +152,6 @@ public class ServicioGasto {
 
     }
 
-    public CategoriaTotalDTO ordenarPorCategoriaMasAlta(Long idUsuario) {
-
-        Object[] resultados = repositorioGasto.getCategoriaConMasGastos(idUsuario);
-
-        if (resultados != null && resultados.length == 2) {
-            String categoria = (String) resultados[0]; // Primera columna
-            Double totalValor = (Double) resultados[1]; // Segunda columna
-            return new CategoriaTotalDTO(categoria, totalValor);
-        } else {
-            return null;
-        }
-    }
 
 
     public Double ObtenerPromedioDiario (Long id_usuario) {
@@ -226,6 +212,24 @@ public class ServicioGasto {
     @Transactional
     public void eliminarTodosLosGastos(String Categoria , Long id_usuario) {
         repositorioGasto.deleteByUsuarioIdAndCategoria(id_usuario , Categoria);
+    }
+
+    public List<ProyeccionDTO> obtenerGastosFrecuentes(Long usuarioId) {
+        List<GastoProjection> gastosProjections = repositorioGasto.findGastosFrecuentes(usuarioId);
+
+        return gastosProjections.stream()
+                .map(g -> new ProyeccionDTO(g.getDescripcion(), g.getCantidad(), g.getTotal()))
+                .collect(Collectors.toList());
+    }
+
+    public CategoriaTotalDTO obtenerCategoriaMasAlta(Long usuarioId) {
+        CategoriaTotal resultados = repositorioGasto.getCategoriaConMasGastos(usuarioId);
+
+        if (resultados == null) {
+            return new CategoriaTotalDTO("Sin datos", 0.0);
+        }
+
+        return new CategoriaTotalDTO(String.valueOf(resultados.getCategoria()), resultados.getTotal());
     }
 
 }
