@@ -3,13 +3,16 @@ package com.example.FinanzApp.Servicios;
 import com.example.FinanzApp.DTOS.CategoriaTotalDTO;
 import com.example.FinanzApp.DTOS.GastoDTO;
 import com.example.FinanzApp.DTOS.IngresoDTO;
+import com.example.FinanzApp.DTOS.RecordatorioDTO;
 import com.example.FinanzApp.Entidades.Gasto;
 import com.example.FinanzApp.Entidades.Ingreso;
+import com.example.FinanzApp.Entidades.Recordatorio;
 import com.example.FinanzApp.Entidades.Usuario;
 import com.example.FinanzApp.Repositorios.RepositorioGasto;
 import com.example.FinanzApp.Repositorios.RepositorioIngreso;
 import com.example.FinanzApp.Repositorios.RepositorioUsuario;
 import jakarta.persistence.Tuple;
+import jakarta.transaction.Transactional;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -208,6 +211,21 @@ public class ServicioGasto {
     public void EliminarGasto (Long id_gasto){
 
         repositorioGasto.deleteById(id_gasto);
+    }
+
+    public List<GastoDTO> ListarPorNombres(String nombre ,String  categoria , Long id_usuario) {
+
+        List<Gasto> gastos = repositorioGasto.findByNombreGastoAndCategoriaAndUsuarioId(nombre , categoria , id_usuario);
+
+        return gastos.stream()
+                .map(gasto -> modelMapper.map(gasto, GastoDTO.class))
+                .collect(Collectors.toList());
+
+    }
+
+    @Transactional
+    public void eliminarTodosLosGastos(String Categoria , Long id_usuario) {
+        repositorioGasto.deleteByUsuarioIdAndCategoria(id_usuario , Categoria);
     }
 
 }

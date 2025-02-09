@@ -1,0 +1,29 @@
+package com.example.FinanzApp.Repositorios;
+
+
+import com.example.FinanzApp.Entidades.Ingreso;
+import com.example.FinanzApp.Entidades.Recordatorio;
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface RepositorioRecordatorio  extends JpaRepository<Recordatorio, Long>, JpaSpecificationExecutor<Recordatorio>  {
+
+    Optional<Recordatorio> findById(Long aLong);
+
+    @Query("SELECT r FROM Recordatorio r WHERE r.usuario.id_usuario = :usuarioId")
+    List<Recordatorio> findByUsuarioId(Long usuarioId);
+
+    @Query("SELECT r from Recordatorio r WHERE r.nombre = :nombre")
+    Optional<Recordatorio> findByNombre(String nombre);
+
+    void deleteById(Long id_recordatorio);
+
+    @Transactional
+    void deleteAll();
+
+}

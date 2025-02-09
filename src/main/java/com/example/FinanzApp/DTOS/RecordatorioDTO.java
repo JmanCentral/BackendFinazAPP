@@ -9,12 +9,14 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AlertaDTO {
 
-    private Long id_alerta;
+public class RecordatorioDTO {
+
+    private Long id_recordatorio;
     private String nombre;
-    private String descripcion;
+    private String estado;
     private LocalDate fecha;
+    private int dias_recordatorio;
     private Double valor;
 
 }

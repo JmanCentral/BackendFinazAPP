@@ -9,6 +9,7 @@ import com.example.FinanzApp.Repositorios.RepositorioAlerta;
 import com.example.FinanzApp.Repositorios.RepositorioGasto;
 import com.example.FinanzApp.Repositorios.RepositorioIngreso;
 import com.example.FinanzApp.Repositorios.RepositorioUsuario;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Data
+@AllArgsConstructor
 public class ServicioAlerta {
 
 
@@ -30,20 +32,8 @@ public class ServicioAlerta {
     private final RepositorioUsuario repositorioUsuario;
 
 
-    @Autowired
-    public ServicioAlerta(RepositorioAlerta repositorioAlerta,
-                          ModelMapper modelMapper,
-                          RepositorioGasto repositorioGasto,
-                          RepositorioIngreso repositorioIngreso,
-                          RepositorioUsuario repositorioUsuario) {
-        this.repositorioAlerta = repositorioAlerta;
-        this.modelMapper = modelMapper;
-        this.repositorioGasto = repositorioGasto;
-        this.repositorioIngreso = repositorioIngreso;
-        this.repositorioUsuario = repositorioUsuario;
-    }
 
-    public AlertaDTO RegistrarAlerta (AlertaDTO alertaDTO ,Long  usuarioId) {
+    public AlertaDTO RegistrarAlerta (AlertaDTO alertaDTO , Long  usuarioId) {
 
         Usuario usuario = repositorioUsuario.findById(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
@@ -124,8 +114,5 @@ public class ServicioAlerta {
         repositorioAlerta.deleteById(id_alerta);
 
     }
-
-
-
 
 }

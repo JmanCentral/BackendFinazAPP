@@ -237,12 +237,31 @@ public class ControladorGasto {
 
     }
 
+    @GetMapping("/ListarPorNombre/{id_usuario}/{nombre}/{categoria}")
+    public ResponseEntity<List<GastoDTO>> ListarPornombres (@PathVariable String nombre ,@PathVariable String categoria , @PathVariable Long id_usuario ) {
+
+        List<GastoDTO> gastos = servicioGasto.ListarPorNombres(nombre , categoria , id_usuario);
+
+        if (gastos == null) {
+            return ResponseEntity.noContent().build();
+        }   else {
+            return ResponseEntity.ok(gastos);
+        }
+
+    }
+
+    @DeleteMapping("/EliminarTodosLosGastos/{id_usuario}/{categoria}")
+    public ResponseEntity<Void> eliminarGastos(@PathVariable("id_usuario") Long idUsuario,
+                                               @PathVariable("categoria") String categoria) {
+        servicioGasto.eliminarTodosLosGastos(categoria , idUsuario);
+        return ResponseEntity.noContent().build();
+    }
+
 
     @DeleteMapping("/EliminarGastos/{id_gasto}")
     public ResponseEntity<Void> eliminarGasto(@PathVariable("id_gasto") Long id_gasto) {
         servicioGasto.EliminarGasto(id_gasto);
         return ResponseEntity.noContent().build();
     }
-
 
 }

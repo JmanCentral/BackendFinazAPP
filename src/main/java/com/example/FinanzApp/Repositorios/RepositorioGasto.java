@@ -3,8 +3,10 @@ package com.example.FinanzApp.Repositorios;
 import com.example.FinanzApp.DTOS.CategoriaTotalDTO;
 import com.example.FinanzApp.Entidades.Gasto;
 import jakarta.persistence.Tuple;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -63,7 +65,7 @@ public interface RepositorioGasto extends JpaRepository<Gasto, Long>, JpaSpecifi
 
 
     @Query("SELECT g FROM Gasto g WHERE g.usuario.id_usuario= :usuarioId ORDER BY g.valor ASC")
-    List<Gasto> findByUsuarioIdOrderByValorAsc(@Param("usuarioId") Long usuarioId);
+        List<Gasto> findByUsuarioIdOrderByValorAsc(@Param("usuarioId") Long usuarioId);
 
     @Query("SELECT g FROM Gasto g WHERE g.usuario.id_usuario= :usuarioId ORDER BY g.valor DESC")
     List<Gasto> findByUsuarioIdOrderByValorDesc(@Param("usuarioId") Long usuarioId);
@@ -97,6 +99,19 @@ public interface RepositorioGasto extends JpaRepository<Gasto, Long>, JpaSpecifi
 
     @Query("SELECT SUM(g.valor) / COUNT(DISTINCT g.fecha) AS gastoPromedioDiario FROM Gasto g WHERE g.usuario.id_usuario = :usuarioId ")
     Double getGastoPromedioDiarioTotal(@Param("usuarioId") Long usuarioId);
+
+
+    @Query("SELECT g FROM Gasto g WHERE g.nombre_gasto = :nombreGasto AND g.categoria = :categoria AND g.usuario.id_usuario = :usuarioId")
+    List<Gasto> findByNombreGastoAndCategoriaAndUsuarioId(@Param("nombreGasto") String nombreGasto,
+                                                          @Param("categoria") String categoria,
+                                                          @Param("usuarioId") Long usuarioId);
+
+
+    @Modifying
+    @Query("DELETE FROM Gasto g WHERE g.usuario.id_usuario = :usuarioId AND g.categoria = :categoria")
+    void deleteByUsuarioIdAndCategoria(@Param("usuarioId") Long usuarioId,
+                                                @Param("categoria") String categoria);
+
 
 
 }
