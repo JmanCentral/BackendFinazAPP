@@ -26,7 +26,7 @@ public class Recordatorio {
     @Column(nullable = false)
     private LocalDate fecha;
     @Column(nullable = false)
-    private int dias_recordatorio;
+    private Long dias_recordatorio;
     @Column(nullable = false)
     private Double valor;
 

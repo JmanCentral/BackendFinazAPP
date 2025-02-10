@@ -223,13 +223,10 @@ public class ServicioGasto {
     }
 
     public CategoriaTotalDTO obtenerCategoriaMasAlta(Long usuarioId) {
+
         CategoriaTotal resultados = repositorioGasto.getCategoriaConMasGastos(usuarioId);
 
-        if (resultados == null) {
-            return new CategoriaTotalDTO("Sin datos", 0.0);
-        }
-
-        return new CategoriaTotalDTO(String.valueOf(resultados.getCategoria()), resultados.getTotal());
+        return new CategoriaTotalDTO((resultados.getCategoria()), resultados.getTotalvalor());
     }
 
 }

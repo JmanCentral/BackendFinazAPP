@@ -16,7 +16,7 @@ public class RecordatorioDTO {
     private String nombre;
     private String estado;
     private LocalDate fecha;
-    private int dias_recordatorio;
+    private Long dias_recordatorio;
     private Double valor;
 
 }
