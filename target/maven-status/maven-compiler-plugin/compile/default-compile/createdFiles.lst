@@ -1,13 +1,17 @@
+com\example\FinanzApp\DTOS\ProyeccionDTO.class
 com\example\FinanzApp\DTOS\GastoDTO.class
 com\example\FinanzApp\Controladores\ControladorIngreso.class
 com\example\FinanzApp\Entidades\ERole.class
+com\example\FinanzApp\Servicios\ServicioRecordatorio.class
 com\example\FinanzApp\Repositorios\RepositorioAlerta.class
 com\example\FinanzApp\Repositorios\RepositorioGasto.class
 com\example\FinanzApp\Repositorios\RepositorioUsuario.class
 com\example\FinanzApp\Servicios\ServicioAlerta.class
+com\example\FinanzApp\Entidades\CategoriaTotal.class
 com\example\FinanzApp\Servicios\ServicioGasto.class
-com\example\FinanzApp\DTOS\DisponibleDTO.class
 com\example\FinanzApp\Servicios\ServicioIngreso.class
+com\example\FinanzApp\Controladores\ControladorRecordatorio.class
+com\example\FinanzApp\DTOS\RecordatorioDTO.class
 com\example\FinanzApp\DTOS\CategoriaTotalDTO.class
 com\example\FinanzApp\Config\ExceptionHandling.class
 com\example\FinanzApp\Entidades\Usuario.class
@@ -20,6 +24,7 @@ com\example\FinanzApp\Entidades\Ingreso.class
 com\example\FinanzApp\Entidades\Recordatorio.class
 com\example\FinanzApp\Servicios\ServicioUsuario.class
 com\example\FinanzApp\Repositorios\RepositorioIngreso.class
+com\example\FinanzApp\Repositorios\RepositorioRecordatorio.class
 com\example\FinanzApp\Entidades\Alerta.class
 com\example\FinanzApp\Entidades\Gasto.class
 com\example\FinanzApp\Controladores\ControladorAlerta.class
@@ -31,3 +36,4 @@ com\example\FinanzApp\Config\SecurityConfig.class
 com\example\FinanzApp\Entidades\Roles.class
 com\example\FinanzApp\Repositorios\RepositorioRoles.class
 com\example\FinanzApp\Controladores\ControladorUsuario.class
+com\example\FinanzApp\Entidades\GastoProjection.class
