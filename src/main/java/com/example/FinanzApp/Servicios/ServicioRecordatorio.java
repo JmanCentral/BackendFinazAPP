@@ -6,6 +6,7 @@ import com.example.FinanzApp.Entidades.Recordatorio;
 import com.example.FinanzApp.Entidades.Usuario;
 import com.example.FinanzApp.Repositorios.RepositorioRecordatorio;
 import com.example.FinanzApp.Repositorios.RepositorioUsuario;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
@@ -89,15 +90,17 @@ public class ServicioRecordatorio {
 
         }
 
+    @Transactional
     public void eliminarTodosLosRecordatorios(Long id_usuario) {
         repositorioRecordatorio.deleteByUsuario(id_usuario);
     }
 
-    public RecordatorioDTO BuscarPorNombre(String nombre) {
-        Optional<Recordatorio> recordatorio = repositorioRecordatorio.findByNombre(nombre);
+    public  List<RecordatorioDTO> BuscarPorNombre(String nombre) {
+        List<Recordatorio> recordatorios = repositorioRecordatorio.findByNombre(nombre);
 
-        return recordatorio.map(r -> modelMapper.map(r, RecordatorioDTO.class))
-                .orElse(null); // O puedes lanzar una excepción personalizada
+        return recordatorios.stream()
+                .map(recordatorio -> modelMapper.map(recordatorio, RecordatorioDTO.class))
+                .collect(Collectors.toList());
     }
 
 }

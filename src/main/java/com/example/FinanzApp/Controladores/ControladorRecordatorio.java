@@ -73,9 +73,9 @@ public class ControladorRecordatorio {
     }
 
     @GetMapping("/BuscarPorNombre/{nombre}")
-    public ResponseEntity<RecordatorioDTO> BuscarPorNombre(@PathVariable String nombre ) {
+    public ResponseEntity<List<RecordatorioDTO>> BuscarPorNombre(@PathVariable String nombre ) {
 
-        RecordatorioDTO recordatorioDTO = servicioRecordatorio.BuscarPorNombre(nombre);
+        List<RecordatorioDTO> recordatorioDTO = servicioRecordatorio.BuscarPorNombre(nombre);
 
         if (recordatorioDTO != null) {
             return ResponseEntity.ok(recordatorioDTO);

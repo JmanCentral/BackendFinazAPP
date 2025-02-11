@@ -204,6 +204,7 @@ public class ControladorGasto {
 
         return ResponseEntity.ok(servicioGasto.obtenerCategoriaMasAlta(id_usuario));
 
+
     }
 
 

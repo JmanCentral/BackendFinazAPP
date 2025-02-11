@@ -1,9 +1,7 @@
 package com.example.FinanzApp.Repositorios;
 
 
-import com.example.FinanzApp.Entidades.Ingreso;
 import com.example.FinanzApp.Entidades.Recordatorio;
-import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -21,7 +19,7 @@ public interface RepositorioRecordatorio  extends JpaRepository<Recordatorio, Lo
     List<Recordatorio> findByUsuarioId(Long usuarioId);
 
     @Query("SELECT r from Recordatorio r WHERE r.nombre = :nombre")
-    Optional<Recordatorio> findByNombre(String nombre);
+    List<Recordatorio> findByNombre(String nombre);
 
     void deleteById(Long id_recordatorio);
 

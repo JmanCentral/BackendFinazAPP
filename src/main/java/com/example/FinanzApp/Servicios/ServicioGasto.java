@@ -223,10 +223,17 @@ public class ServicioGasto {
     }
 
     public CategoriaTotalDTO obtenerCategoriaMasAlta(Long usuarioId) {
-
         CategoriaTotal resultados = repositorioGasto.getCategoriaConMasGastos(usuarioId);
 
-        return new CategoriaTotalDTO((resultados.getCategoria()), resultados.getTotalvalor());
+        if (resultados == null) {
+            throw new RuntimeException("No se encontraron resultados para el usuario: " + usuarioId);
+        }
+
+        // Log values for debugging
+        System.out.println("Categoria: " + resultados.getCategoria());
+        System.out.println("Total: " + resultados.getTotalValor());
+
+        return new CategoriaTotalDTO(resultados.getCategoria(), resultados.getTotalValor());
     }
 
 }
