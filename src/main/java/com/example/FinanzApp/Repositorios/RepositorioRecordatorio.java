@@ -6,7 +6,9 @@ import com.example.FinanzApp.Entidades.Recordatorio;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +25,9 @@ public interface RepositorioRecordatorio  extends JpaRepository<Recordatorio, Lo
 
     void deleteById(Long id_recordatorio);
 
-    @Transactional
-    void deleteAll();
+    @Modifying
+    @Query("DELETE FROM Recordatorio r WHERE r.usuario.id_usuario = :usuarioId")
+    void deleteByUsuario(@Param("usuarioId") Long usuarioId);
+
 
 }

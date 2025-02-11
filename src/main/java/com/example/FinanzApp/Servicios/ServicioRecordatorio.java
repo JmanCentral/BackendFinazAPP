@@ -89,8 +89,8 @@ public class ServicioRecordatorio {
 
         }
 
-    public void eliminarTodosLosRecordatorios() {
-        repositorioRecordatorio.deleteAll();
+    public void eliminarTodosLosRecordatorios(Long id_usuario) {
+        repositorioRecordatorio.deleteByUsuario(id_usuario);
     }
 
     public RecordatorioDTO BuscarPorNombre(String nombre) {

@@ -66,9 +66,9 @@ public class ControladorRecordatorio {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/eliminartodos")
-    public ResponseEntity<String> eliminarTodos() {
-        servicioRecordatorio.eliminarTodosLosRecordatorios();
+    @DeleteMapping("/eliminartodos/{id_usuario}")
+    public ResponseEntity<String> eliminarTodos(@PathVariable Long id_usuario) {
+        servicioRecordatorio.eliminarTodosLosRecordatorios(id_usuario);
         return ResponseEntity.ok("Todos los recordatorios han sido eliminados.");
     }
 
