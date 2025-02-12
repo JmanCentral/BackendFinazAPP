@@ -125,6 +125,18 @@ public class ControladorIngreso {
         }
     }
 
+    @GetMapping("/AhorroMensual/{id_usuario}")
+    public ResponseEntity<Double> obtenerAhorro(@PathVariable Long id_usuario) {
+
+        Double totalIngresos = servicioIngreso.AhorroMensual(id_usuario);
+
+        if (totalIngresos == 0.0) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(totalIngresos);
+    }
+
 
     @DeleteMapping("/EliminarIngresos/{id_ingreso}")
     public ResponseEntity<Void> eliminarIngreso(@PathVariable("id_ingreso") Long id_ingreso) {

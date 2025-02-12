@@ -17,8 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Data
@@ -229,11 +228,30 @@ public class ServicioGasto {
             throw new RuntimeException("No se encontraron resultados para el usuario: " + usuarioId);
         }
 
-        // Log values for debugging
         System.out.println("Categoria: " + resultados.getCategoria());
-        System.out.println("Total: " + resultados.getTotalValor());
+        System.out.println("Total: " + resultados.getTotalvalor());
 
-        return new CategoriaTotalDTO(resultados.getCategoria(), resultados.getTotalValor());
+        return new CategoriaTotalDTO(resultados.getCategoria(), resultados.getTotalvalor());
     }
+
+    public CategoriaTotalDTO getCategoriaConMasGastos(Long usuarioId) {
+
+        List<Gasto> gastos = repositorioGasto.findByUsuario(usuarioId); // Recuperar todos los gastos del usuario
+
+        Map<String, Double> sumaPorCategoria = new HashMap<>();
+
+        for (Gasto gasto : gastos) {
+            sumaPorCategoria.put(gasto.getCategoria(),
+                    sumaPorCategoria.getOrDefault(gasto.getCategoria(), 0.0) + gasto.getValor());
+        }
+
+        return sumaPorCategoria.entrySet().stream()
+                .max(Comparator.comparingDouble(Map.Entry::getValue))
+                .map(entry -> new CategoriaTotalDTO(entry.getKey(), entry.getValue()))
+                .orElse(null);
+    }
+
+
+
 
 }

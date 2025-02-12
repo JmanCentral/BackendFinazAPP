@@ -1,23 +1,15 @@
 package com.example.FinanzApp.Repositorios;
 
-import com.example.FinanzApp.Entidades.Gasto;
 import com.example.FinanzApp.Entidades.Ingreso;
-import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 public interface RepositorioIngreso  extends JpaRepository<Ingreso, Long>, JpaSpecificationExecutor<Ingreso> {
-
-
-
-
+    
     @Query("SELECT i FROM Ingreso i " +
             "WHERE i.usuario.id_usuario = :usuarioId " +
             "AND i.tipo_ingreso = 'casual' " +
@@ -53,12 +45,23 @@ public interface RepositorioIngreso  extends JpaRepository<Ingreso, Long>, JpaSp
                                        @Param("mes") Integer mes);
 
 
-
-
     Optional<Ingreso> findById(Long id_ingreso);
 
-    void deleteById(Long id);
+    @Query("SELECT ( " +
+            "  COALESCE((SELECT SUM(i.valor) FROM Ingreso i " +
+            "  WHERE i.usuario.id_usuario = :usuarioId " +
+            "  AND EXTRACT(YEAR FROM i.fecha) = EXTRACT(YEAR FROM CURRENT_DATE) " +
+            "  AND EXTRACT(MONTH FROM i.fecha) = EXTRACT(MONTH FROM CURRENT_DATE)), 0) " +
+            "  - " +
+            "  COALESCE((SELECT SUM(g.valor) FROM Gasto g " +
+            "  WHERE g.usuario.id_usuario = :usuarioId " +
+            "  AND EXTRACT(YEAR FROM g.fecha) = EXTRACT(YEAR FROM CURRENT_DATE) " +
+            "  AND EXTRACT(MONTH FROM g.fecha) = EXTRACT(MONTH FROM CURRENT_DATE)), 0) " +
+            ")")
+    Double calcularAhorroPosible(@Param("usuarioId") Long usuarioId);
 
+
+    void deleteById(Long id);
 
     @Query("SELECT SUM(i.valor) * 1.05 " +
             "FROM Ingreso i " +

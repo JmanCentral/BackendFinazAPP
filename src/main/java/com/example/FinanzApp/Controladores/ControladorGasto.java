@@ -202,8 +202,7 @@ public class ControladorGasto {
     @GetMapping("/CategoriaMasAlta/{id_usuario}")
     public ResponseEntity<CategoriaTotalDTO> ListarCategorias(@PathVariable Long id_usuario) {
 
-        return ResponseEntity.ok(servicioGasto.obtenerCategoriaMasAlta(id_usuario));
-
+        return ResponseEntity.ok(servicioGasto.getCategoriaConMasGastos(id_usuario));
 
     }
 
