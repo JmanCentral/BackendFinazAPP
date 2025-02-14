@@ -36,19 +36,38 @@ public class JwtUtils {
                 .compact();
     }
 
-    /*
-    // Crear un token de recuperación de contraseña
-    public String generatePasswordResetToken(String email) {
+
+    public String generateTokenEmail(String email) {
         return Jwts.builder()
                 .setSubject(email)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 900_000)) // 15 minutos
-                .signWith(getSignatureKey(), SignatureAlgorithm.HS256)
+                .signWith(getSignatureKey(), SignatureAlgorithm.HS256) // 🔹 Corrección aquí
                 .compact();
     }
 
+    public String extractEmail(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSignatureKey()) // 🔹 Corrección aquí
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getSubject();
+    }
 
-     */
+    private boolean isTokenExpired(String token) {
+        Date expiration = Jwts.parserBuilder()
+                .setSigningKey(getSignatureKey()) // 🔹 Corrección aquí
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getExpiration();
+        return expiration.before(new Date());
+    }
+
+    public boolean validateTokenEmail(String token, String email) {
+        return extractEmail(token).equals(email) && !isTokenExpired(token);
+    }
 
     //validad token de acceso
     public boolean validateToken(String token) {

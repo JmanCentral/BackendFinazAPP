@@ -23,12 +23,14 @@ public class Usuario implements Serializable {
     private Long id_usuario;
     @Column(name = "USERNAME" , unique = true)
     private String username;
+    @Column(nullable = false, name = "EMAIL" , unique = true)
+    private String email;
     @Column(name = "NOMBRE")
     private String nombre;
     @Column(name = "APELLIDO")
     private String apellido;
-    @Column(name = "PASSWORD")
-    private String password;
+    @Column(name = "CONTRASENA")
+    private String contrasena;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ingreso> ingresos;
