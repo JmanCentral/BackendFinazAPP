@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CategoriaTotalDTO {
 
-    private String  categoria;
-    private Double  totalValor;
-
+    private String categoria;
+    private Double totalvalor;
 }

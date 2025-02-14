@@ -2,21 +2,22 @@ package com.example.FinanzApp.Servicios;
 
 import com.example.FinanzApp.DTOS.CategoriaTotalDTO;
 import com.example.FinanzApp.DTOS.GastoDTO;
-import com.example.FinanzApp.DTOS.IngresoDTO;
+import com.example.FinanzApp.DTOS.ProyeccionDTO;
+import com.example.FinanzApp.Entidades.CategoriaTotal;
 import com.example.FinanzApp.Entidades.Gasto;
-import com.example.FinanzApp.Entidades.Ingreso;
+import com.example.FinanzApp.Entidades.GastoProjection;
 import com.example.FinanzApp.Entidades.Usuario;
 import com.example.FinanzApp.Repositorios.RepositorioGasto;
 import com.example.FinanzApp.Repositorios.RepositorioIngreso;
 import com.example.FinanzApp.Repositorios.RepositorioUsuario;
+import jakarta.transaction.Transactional;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Data
@@ -54,6 +55,12 @@ public class ServicioGasto {
     public Double ObtenerDisponible(Long id_usuario){
 
         return repositorioGasto.getDisponible(id_usuario);
+
+    }
+
+    public Double ObtenerDisponiblePorFechas (Long id_usuario , LocalDate fechaInf , LocalDate fechaSup ){
+
+        return repositorioGasto.getDisponiblePorFechas(id_usuario, fechaInf, fechaSup);
 
     }
 
@@ -110,23 +117,19 @@ public class ServicioGasto {
 
     }
 
-    public List<GastoDTO> OrdenarPorValorAlto(Long id_usuario){
+    public GastoDTO OrdenarPorValorAlto(Long id_usuario){
 
-        List<Gasto> gastos  = repositorioGasto.getValorMasAlto(id_usuario);
+        Gasto gastos  = repositorioGasto.getValorMasAlto(id_usuario);
 
-        return gastos.stream()
-                .map(gasto -> modelMapper.map(gasto, GastoDTO.class))
-                .collect(Collectors.toList());
+        return modelMapper.map(gastos, GastoDTO.class);
 
     }
 
-    public List<GastoDTO> OrdenarPorValorBajo(Long id_usuario){
+    public GastoDTO OrdenarPorValorBajo(Long id_usuario){
 
-        List<Gasto> gastos  = repositorioGasto.getValorMasBajo(id_usuario);
+        Gasto gastos  = repositorioGasto.getValorMasBajo(id_usuario);
 
-        return gastos.stream()
-                .map(gasto -> modelMapper.map(gasto, GastoDTO.class))
-                .collect(Collectors.toList());
+        return modelMapper.map(gastos, GastoDTO.class);
 
     }
 
@@ -148,14 +151,6 @@ public class ServicioGasto {
 
     }
 
-    public List<CategoriaTotalDTO> ordenarPorCategoriaMasAlta(Long idUsuario) {
-        List<Object[]> resultados = repositorioGasto.getCategoriasConMasGastos(idUsuario);
-
-        // Mapear los resultados a CategoriaTotalDTO
-        return resultados.stream()
-                .map(row -> new CategoriaTotalDTO((String) row[0], (Double) row[1]))
-                .collect(Collectors.toList());
-    }
 
 
     public Double ObtenerPromedioDiario (Long id_usuario) {
@@ -202,5 +197,61 @@ public class ServicioGasto {
 
         repositorioGasto.deleteById(id_gasto);
     }
+
+    public List<GastoDTO> ListarPorNombres(String nombre ,String  categoria , Long id_usuario) {
+
+        List<Gasto> gastos = repositorioGasto.findByNombreGastoAndCategoriaAndUsuarioId(nombre , categoria , id_usuario);
+
+        return gastos.stream()
+                .map(gasto -> modelMapper.map(gasto, GastoDTO.class))
+                .collect(Collectors.toList());
+
+    }
+
+    @Transactional
+    public void eliminarTodosLosGastos(String Categoria , Long id_usuario) {
+        repositorioGasto.deleteByUsuarioIdAndCategoria(id_usuario , Categoria);
+    }
+
+    public List<ProyeccionDTO> obtenerGastosFrecuentes(Long usuarioId) {
+        List<GastoProjection> gastosProjections = repositorioGasto.findGastosFrecuentes(usuarioId);
+
+        return gastosProjections.stream()
+                .map(g -> new ProyeccionDTO(g.getDescripcion(), g.getCantidad(), g.getTotal()))
+                .collect(Collectors.toList());
+    }
+
+    public CategoriaTotalDTO obtenerCategoriaMasAlta(Long usuarioId) {
+        CategoriaTotal resultados = repositorioGasto.getCategoriaConMasGastos(usuarioId);
+
+        if (resultados == null) {
+            throw new RuntimeException("No se encontraron resultados para el usuario: " + usuarioId);
+        }
+
+        System.out.println("Categoria: " + resultados.getCategoria());
+        System.out.println("Total: " + resultados.getTotalvalor());
+
+        return new CategoriaTotalDTO(resultados.getCategoria(), resultados.getTotalvalor());
+    }
+
+    public CategoriaTotalDTO getCategoriaConMasGastos(Long usuarioId) {
+
+        List<Gasto> gastos = repositorioGasto.findByUsuario(usuarioId); // Recuperar todos los gastos del usuario
+
+        Map<String, Double> sumaPorCategoria = new HashMap<>();
+
+        for (Gasto gasto : gastos) {
+            sumaPorCategoria.put(gasto.getCategoria(),
+                    sumaPorCategoria.getOrDefault(gasto.getCategoria(), 0.0) + gasto.getValor());
+        }
+
+        return sumaPorCategoria.entrySet().stream()
+                .max(Comparator.comparingDouble(Map.Entry::getValue))
+                .map(entry -> new CategoriaTotalDTO(entry.getKey(), entry.getValue()))
+                .orElse(null);
+    }
+
+
+
 
 }

@@ -9,8 +9,10 @@ import com.example.FinanzApp.Repositorios.RepositorioAlerta;
 import com.example.FinanzApp.Repositorios.RepositorioGasto;
 import com.example.FinanzApp.Repositorios.RepositorioIngreso;
 import com.example.FinanzApp.Repositorios.RepositorioUsuario;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Data
+@AllArgsConstructor
 public class ServicioAlerta {
 
 
@@ -28,7 +31,9 @@ public class ServicioAlerta {
     private final RepositorioIngreso repositorioIngreso;
     private final RepositorioUsuario repositorioUsuario;
 
-    public AlertaDTO RegistrarAlerta (AlertaDTO alertaDTO ,Long  usuarioId) {
+
+
+    public AlertaDTO RegistrarAlerta (AlertaDTO alertaDTO , Long  usuarioId) {
 
         Usuario usuario = repositorioUsuario.findById(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
@@ -72,11 +77,11 @@ public class ServicioAlerta {
 
     }
 
-    public AlertaDTO ModificarAlerta(Long id_gasto, AlertaDTO alertaDTO) {
+    public AlertaDTO ModificarAlerta(Long id_alerta, AlertaDTO alertaDTO) {
         // Buscar el gasto por su ID en el repositorio
-        Optional<Alerta> AlertaOptional = repositorioAlerta.findById(id_gasto);
+        Optional<Alerta> AlertaOptional = repositorioAlerta.findById(id_alerta);
 
-        // Validar si el gasto existe
+        // Validar si la alerta existe
         if (AlertaOptional.isPresent()) {
             Alerta alerta = AlertaOptional.get();
 
@@ -109,8 +114,5 @@ public class ServicioAlerta {
         repositorioAlerta.deleteById(id_alerta);
 
     }
-
-
-
 
 }

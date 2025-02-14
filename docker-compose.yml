@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  app_vet:
+    build: /
+    mem_limit: 512m
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: jdbc:postgresql://FinanzAPP:5432/FinanzAPP
+      DB_USER_NAME: postgres
+      DB_PASSWORD: edding350
+    restart: always
+    depends_on:
+      FinanzAPP:
+        condition: service_healthy
+
+  FinanzAPP:
+    image: postgres:15
+    ports:
+      - "5433:5433"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: edding350
+      POSTGRES_DB: FinanzAPP
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      timeout: 10s
+      retries: 10
