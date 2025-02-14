@@ -36,6 +36,20 @@ public class JwtUtils {
                 .compact();
     }
 
+    /*
+    // Crear un token de recuperación de contraseña
+    public String generatePasswordResetToken(String email) {
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 900_000)) // 15 minutos
+                .signWith(getSignatureKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+
+     */
+
     //validad token de acceso
     public boolean validateToken(String token) {
         try {
