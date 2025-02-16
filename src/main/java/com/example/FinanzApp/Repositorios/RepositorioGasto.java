@@ -18,6 +18,7 @@ public interface RepositorioGasto extends JpaRepository<Gasto, Long>, JpaSpecifi
 
     @Query("SELECT " +
             "COALESCE(SUM(i.valor), 0) - COALESCE((SELECT SUM(g.valor) FROM Gasto g WHERE g.usuario.id_usuario = :usuarioId), 0) " +
+            " - COALESCE((SELECT SUM(d.monto) FROM Deposito d WHERE d.usuario.id_usuario = :usuarioId), 0) " +
             "FROM Ingreso i WHERE i.usuario.id_usuario = :usuarioId")
     Double getDisponible(@Param("usuarioId") Long usuarioId);
 
