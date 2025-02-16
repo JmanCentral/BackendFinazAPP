@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "https://jmancentral.github.io/ContraAngular")
 @RestController
 @RequestMapping("/api/password")
 public class PasswordController {

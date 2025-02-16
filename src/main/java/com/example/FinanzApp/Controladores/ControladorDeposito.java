@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/Finanzapp/Deposito")
 public class ControladorDeposito {
@@ -26,5 +28,15 @@ public class ControladorDeposito {
         }
 
     }
+    @GetMapping("/ObtenerDepositos/{id_alcancia}")
+    public ResponseEntity<List<DepositoDTO>> BuscarPorID(@PathVariable Long id_alcancia) {
 
+        List<DepositoDTO> depositos = servicioDeposito.ObtenerDepositos(id_alcancia);
+
+        if (depositos != null) {
+            return ResponseEntity.ok(depositos);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

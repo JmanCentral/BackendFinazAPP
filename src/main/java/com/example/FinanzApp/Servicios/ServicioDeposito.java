@@ -14,6 +14,9 @@ import lombok.Data;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Data
 @AllArgsConstructor
@@ -48,5 +51,13 @@ public class ServicioDeposito {
         return modelMapper.map(deposito1, DepositoDTO.class);
     }
 
+    public List<DepositoDTO> ObtenerDepositos(Long idAlcancia) {
+
+        List<Deposito> depositos  = repositorioDeposito.findByAlcancia(idAlcancia);
+
+        return depositos.stream()
+                .map(deposito-> modelMapper.map(deposito, DepositoDTO.class))
+                .collect(Collectors.toList());
+    }
 
 }
