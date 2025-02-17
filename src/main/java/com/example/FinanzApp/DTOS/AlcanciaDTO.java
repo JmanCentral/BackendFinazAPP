@@ -12,5 +12,7 @@ public class AlcanciaDTO {
     private Double meta;
     private Double saldoActual = 0.0;
     private String codigo;
+    private String filePath;
     private LocalDate fechaCreacion;
+
 }

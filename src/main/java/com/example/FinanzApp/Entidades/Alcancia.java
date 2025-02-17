@@ -25,6 +25,9 @@ public class Alcancia {
     @Column(nullable = false)
     private LocalDate fechaCreacion;
 
+    @Column(nullable = false)
+    private String filePath;
+
     @Column(nullable = false, unique = true)
     private String codigo;
 
