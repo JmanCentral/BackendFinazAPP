@@ -11,7 +11,7 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    private static final String FRONTEND_URL = "https://jmancentral.github.io/ContraAngular/reset-password?token=";
+    private static final String FRONTEND_URL = "http://localhost:4200/reset-password?token=";
 
     public void sendPasswordResetEmail(String to, String token) {
         String resetUrl = FRONTEND_URL + token; // Construcción de la URL aquí

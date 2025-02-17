@@ -29,7 +29,7 @@ public class ServicioAlcancia {
     @Autowired
     private ModelMapper modelMapper;
 
-    public AlcanciaDTO crearAlcancia(AlcanciaDTO alcancia,Long usuarioId) {
+    public AlcanciaDTO crearAlcancia(AlcanciaDTO alcancia, Long usuarioId) {
         Usuario usuario = repositorioUsuario.findById(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
@@ -41,15 +41,15 @@ public class ServicioAlcancia {
         return modelMapper.map(alcancias, AlcanciaDTO.class);
     }
 
-    public AlcanciaDTO buscarAlcancia(String codigo) {
+    public List<AlcanciaDTO> buscarAlcancia(String codigo) {
 
-        // Buscar la alcancía por código
-        Alcancia alcancia = repositorioAlcancia.findByCodigo(codigo)
-                .orElseThrow(() -> new RuntimeException("Alcancia no encontrada con código: " + codigo));
+        List<Alcancia> alcancias = repositorioAlcancia.findByCodigo(codigo);
 
-        // Mapear la entidad Alcancia a AlcanciaDTO
-        return modelMapper.map(alcancia, AlcanciaDTO.class);
+        return alcancias.stream()
+                .map(alcancia -> modelMapper.map(alcancia, AlcanciaDTO.class))
+                .collect(Collectors.toList());
     }
+
 
     public List<AlcanciaDTO> buscarAlcanciasporUser (Long id_usuario){
 

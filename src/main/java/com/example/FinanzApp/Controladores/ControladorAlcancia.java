@@ -29,9 +29,9 @@ public class ControladorAlcancia {
     }
 
     @GetMapping("/BuscarPorCodigo/{codigo}")
-    public ResponseEntity<AlcanciaDTO> BuscarPorCodigo(@PathVariable String codigo) {
+    public ResponseEntity<List<AlcanciaDTO>> BuscarPorCodigo(@PathVariable String codigo) {
 
-        AlcanciaDTO alcancia = servicioAlcancia.buscarAlcancia(codigo);
+        List<AlcanciaDTO> alcancia = servicioAlcancia.buscarAlcancia(codigo);
         if (alcancia != null) {
             return ResponseEntity.ok(alcancia);
         } else {

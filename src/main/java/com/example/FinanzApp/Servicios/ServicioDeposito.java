@@ -36,13 +36,12 @@ public class ServicioDeposito {
 
         // Convertir el DTO a la entidad Deposito
         Deposito deposito = modelMapper.map(depositoDTO, Deposito.class);
-
         deposito.setUsuario(usuario);
         deposito.setAlcancia(alcancia);
 
         alcancia.setSaldoActual(alcancia.getSaldoActual() + deposito.getMonto());
 
-        repositorioDeposito.save(deposito);
+        // Guardar primero la alcancía con el saldo actualizado
         repositorioAlcancia.save(alcancia);
 
         // Guardar el depósito en la base de datos

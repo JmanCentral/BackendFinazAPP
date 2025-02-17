@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface RepositorioAlcancia extends JpaRepository<Alcancia, Long> {
 
-    Optional<Alcancia> findByCodigo(String codigo);
+    List<Alcancia> findByCodigo(String codigo);
 
     @Query("SELECT j FROM Alcancia j WHERE j.usuario.id_usuario = :userId")
     List<Alcancia> findAlcanciasByUserId(@Param("userId") Long userId);
