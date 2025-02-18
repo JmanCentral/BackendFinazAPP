@@ -31,5 +31,8 @@ public class Alcancia {
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
+
+    @OneToOne(mappedBy = "alcancia", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Imagen imagen;
 }
 
