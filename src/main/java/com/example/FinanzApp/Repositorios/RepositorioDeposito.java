@@ -2,6 +2,7 @@ package com.example.FinanzApp.Repositorios;
 
 import com.example.FinanzApp.Entidades.Deposito;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -18,6 +19,12 @@ public interface RepositorioDeposito extends JpaRepository<Deposito, Long> {
             "AND EXTRACT(YEAR FROM i.fecha) = EXTRACT(YEAR FROM CURRENT_DATE) " +
             "AND EXTRACT(MONTH FROM i.fecha) = EXTRACT(MONTH FROM CURRENT_DATE)")
     Double getValorDepositosMes(@Param("usuarioId") Long usuarioId);
+
+    @Modifying
+    @Query("DELETE FROM Deposito d WHERE d.usuario.id_usuario = :idusuario AND d.alcancia.idAlcancia = :idalcancia AND d.idDeposito = :iddeposito")
+    void deleteByUserAndAlcanciasAndDepositos(@Param("idusuario") Long idUsuario,
+                                               @Param("idalcancia") Long idAlcancia,
+                                               @Param("iddeposito") Long idDeposito);
 
 
 

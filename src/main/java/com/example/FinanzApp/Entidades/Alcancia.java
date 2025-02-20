@@ -25,7 +25,7 @@ public class Alcancia {
     @Column(nullable = false)
     private LocalDate fechaCreacion;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 10)
     private String codigo;
 
     @ManyToOne

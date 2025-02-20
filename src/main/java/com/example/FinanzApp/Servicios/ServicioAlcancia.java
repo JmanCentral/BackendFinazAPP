@@ -1,20 +1,14 @@
 package com.example.FinanzApp.Servicios;
-
+import com.example.FinanzApp.Components.CodigoGenerador;
 import com.example.FinanzApp.DTOS.AlcanciaDTO;
-import com.example.FinanzApp.DTOS.AlertaDTO;
-import com.example.FinanzApp.DTOS.IngresoDTO;
 import com.example.FinanzApp.Entidades.Alcancia;
-import com.example.FinanzApp.Entidades.Alerta;
-import com.example.FinanzApp.Entidades.Ingreso;
 import com.example.FinanzApp.Entidades.Usuario;
 import com.example.FinanzApp.Repositorios.RepositorioAlcancia;
 import com.example.FinanzApp.Repositorios.RepositorioUsuario;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,12 +23,17 @@ public class ServicioAlcancia {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private CodigoGenerador codigoGenerador;
+
     public AlcanciaDTO crearAlcancia(AlcanciaDTO alcancia, Long usuarioId) {
         Usuario usuario = repositorioUsuario.findById(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         Alcancia nuevaAlcancia = modelMapper.map(alcancia, Alcancia.class);
         nuevaAlcancia.setUsuario(usuario);
+
+        nuevaAlcancia.setCodigo(codigoGenerador.generarCodigo());
 
         Alcancia alcancias = repositorioAlcancia.save(nuevaAlcancia);
 
@@ -59,5 +58,7 @@ public class ServicioAlcancia {
                     .map(alcancia -> modelMapper.map(alcancia, AlcanciaDTO.class))
                     .collect(Collectors.toList());
     }
+
+
 }
 

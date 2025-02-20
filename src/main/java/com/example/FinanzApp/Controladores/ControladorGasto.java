@@ -86,16 +86,11 @@ public class ControladorGasto {
 
     @GetMapping("/ObtenerValorGastosMes/{id_usuario}")
     public ResponseEntity<Double> ObtenerValorGeneral(@PathVariable Long id_usuario) {
-
         Double ValorGeneral = servicioGasto.ValorGastosMes(id_usuario);
 
-        if (ValorGeneral != null) {
-            return ResponseEntity.ok(ValorGeneral);
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
-
+        return ResponseEntity.ok(ValorGeneral != null ? ValorGeneral : 0.0);
     }
+
 
     @GetMapping("/GastosMesCategoria/{id_usuario}/{fecha_inicial}/{fecha_final}")
     public ResponseEntity <List<GastoDTO>> listarGastosPorFechas(@PathVariable Long id_usuario, @PathVariable LocalDate fecha_inicial, @PathVariable LocalDate fecha_final) {

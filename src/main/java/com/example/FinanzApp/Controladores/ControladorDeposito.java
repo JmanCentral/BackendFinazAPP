@@ -52,4 +52,12 @@ public class ControladorDeposito {
         }
 
     }
+
+
+    @DeleteMapping("/EliminarDeposito/{id_usuario}/{id_alcancia}/{id_deposito}")
+    public ResponseEntity<Void> EliminarDeposito(@PathVariable Long  id_usuario ,@PathVariable Long  id_alcancia , @PathVariable Long id_deposito) {
+
+        servicioDeposito.EliminarDeposito(id_usuario , id_alcancia , id_deposito);
+        return ResponseEntity.noContent().build();
+    }
 }

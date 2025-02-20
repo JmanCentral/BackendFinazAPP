@@ -1,14 +1,14 @@
 package com.example.FinanzApp.Servicios;
 
-import com.example.FinanzApp.DTOS.AlertaDTO;
+
 import com.example.FinanzApp.DTOS.DepositoDTO;
 import com.example.FinanzApp.Entidades.Alcancia;
-import com.example.FinanzApp.Entidades.Alerta;
 import com.example.FinanzApp.Entidades.Deposito;
 import com.example.FinanzApp.Entidades.Usuario;
 import com.example.FinanzApp.Repositorios.RepositorioAlcancia;
 import com.example.FinanzApp.Repositorios.RepositorioDeposito;
 import com.example.FinanzApp.Repositorios.RepositorioUsuario;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
@@ -59,10 +59,31 @@ public class ServicioDeposito {
                 .collect(Collectors.toList());
     }
 
+
+
     public Double ObtenerValorGastosMesDepositos (Long id_usuario){
 
         return repositorioDeposito.getValorDepositosMes(id_usuario);
 
     }
+
+    @Transactional
+    public void EliminarDeposito(Long usuarioId, Long alcanciaId, Long depositoId) {
+        // Buscar el depósito antes de eliminarlo para obtener el monto
+        Deposito deposito = repositorioDeposito.findById(depositoId)
+                .orElseThrow(() -> new RuntimeException("Depósito no encontrado"));
+
+        // Buscar la alcancía asociada
+        Alcancia alcancia = repositorioAlcancia.findById(alcanciaId)
+                .orElseThrow(() -> new RuntimeException("Alcancía no encontrada"));
+
+        // Restar el monto del depósito al saldo actual de la alcancía
+        alcancia.setSaldoActual(alcancia.getSaldoActual() - deposito.getMonto());
+
+        repositorioAlcancia.save(alcancia);
+
+        repositorioDeposito.deleteByUserAndAlcanciasAndDepositos(usuarioId, alcanciaId, depositoId);
+    }
+
 
 }
