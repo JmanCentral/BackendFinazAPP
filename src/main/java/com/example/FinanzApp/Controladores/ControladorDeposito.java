@@ -39,4 +39,17 @@ public class ControladorDeposito {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @GetMapping("/ObtenerValorGastosMesDeposito/{id_usuario}")
+    public ResponseEntity<Double> ObtenerValorGeneral(@PathVariable Long id_usuario) {
+
+        Double ValorGeneral = servicioDeposito.ObtenerValorGastosMesDepositos(id_usuario);
+
+        if (ValorGeneral != null) {
+            return ResponseEntity.ok(ValorGeneral);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+
+    }
 }

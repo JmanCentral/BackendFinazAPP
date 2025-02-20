@@ -59,4 +59,10 @@ public class ServicioDeposito {
                 .collect(Collectors.toList());
     }
 
+    public Double ObtenerValorGastosMesDepositos (Long id_usuario){
+
+        return repositorioDeposito.getValorDepositosMes(id_usuario);
+
+    }
+
 }
