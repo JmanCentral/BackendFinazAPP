@@ -26,7 +26,7 @@ public class ServicioImagen {
     private final RepositorioAlcancia repositorioAlcancia;
     private ModelMapper modelMapper;
 
-    private final String UPLOAD_DIR = "uploads/"; // Carpeta donde se guardarán las imágenes
+    private final String UPLOAD_DIR = "uploads/";
 
     public ImagenDTO guardarImagen(Long idAlcancia, MultipartFile archivo) throws IOException {
         Alcancia alcancia = repositorioAlcancia.findById(idAlcancia)

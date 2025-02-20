@@ -1,6 +1,7 @@
 package com.example.FinanzApp.Controladores;
 
 import com.example.FinanzApp.DTOS.AlcanciaDTO;
+import com.example.FinanzApp.DTOS.UsuarioDTO;
 import com.example.FinanzApp.Servicios.ServicioAlcancia;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -50,4 +51,17 @@ public class ControladorAlcancia {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @GetMapping("/BuscarAlcanciasPorUsuario/{id_alcancia}")
+    public ResponseEntity<List<String>> BuscarPorIDUser(@PathVariable Long id_alcancia) {
+
+        List<String> tokens = servicioAlcancia.obtenerUsuariosParaNotificar(id_alcancia);
+
+        if (!tokens.isEmpty()) {
+            return ResponseEntity.ok(tokens);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
+    }
+
 }

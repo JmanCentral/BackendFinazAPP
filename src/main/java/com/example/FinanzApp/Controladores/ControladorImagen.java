@@ -2,6 +2,7 @@ package com.example.FinanzApp.Controladores;
 
 import com.example.FinanzApp.DTOS.ImagenDTO;
 import com.example.FinanzApp.Servicios.ServicioImagen;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import java.io.IOException;
 @RequestMapping("/api/imagenes")
 public class ControladorImagen {
 
+    @Autowired
     ServicioImagen servicioImagen;
 
     @PostMapping("/guardar")

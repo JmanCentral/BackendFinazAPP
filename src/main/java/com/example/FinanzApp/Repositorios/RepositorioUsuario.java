@@ -18,4 +18,5 @@ public interface RepositorioUsuario extends JpaRepository<Usuario, Long>, JpaSpe
     Optional<Usuario> findByEmail(String email);
 
 
+
 }

@@ -29,6 +29,8 @@ public class Usuario implements Serializable {
     private String nombre;
     @Column(name = "APELLIDO")
     private String apellido;
+    @Column(name = "TOKEN")
+    private String token;
     @Column(name = "CONTRASENA")
     private String contrasena;
 

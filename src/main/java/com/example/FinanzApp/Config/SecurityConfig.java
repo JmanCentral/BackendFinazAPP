@@ -52,7 +52,7 @@ public class SecurityConfig {
         return httpSecurity
                 .csrf().disable()
                 .authorizeHttpRequests(auth-> {
-                    auth.requestMatchers("/Finanzapp/registro", "/Finanzapp/login" , "/api/password/forgot" , "/api/password/reset" , "/api/imagenes/guardar","/registro_image").permitAll();
+                    auth.requestMatchers("/Finanzapp/registro", "/Finanzapp/login" , "/api/password/forgot" , "/api/password/reset" , "/api/imagenes/guardar","/imagenes/subir").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
