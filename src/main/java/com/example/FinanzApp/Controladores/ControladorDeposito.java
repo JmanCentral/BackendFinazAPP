@@ -1,6 +1,5 @@
 package com.example.FinanzApp.Controladores;
 
-import com.example.FinanzApp.DTOS.AlcanciaDTO;
 import com.example.FinanzApp.DTOS.DepositoDTO;
 import com.example.FinanzApp.Servicios.ServicioDeposito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,10 +53,25 @@ public class ControladorDeposito {
     }
 
 
-    @DeleteMapping("/EliminarDeposito/{id_usuario}/{id_alcancia}/{id_deposito}")
-    public ResponseEntity<Void> EliminarDeposito(@PathVariable Long  id_usuario ,@PathVariable Long  id_alcancia , @PathVariable Long id_deposito) {
+    @PutMapping("/ModificarDepositos/{id_deposito}/{id_alcancia}")
+    public ResponseEntity<DepositoDTO> modificarGasto(@RequestBody DepositoDTO depositoDTO, @PathVariable Long id_deposito , @PathVariable Long id_alcancia ) {
 
-        servicioDeposito.EliminarDeposito(id_usuario , id_alcancia , id_deposito);
+        DepositoDTO depositoregistrado = servicioDeposito.ModificarDeposito(depositoDTO , id_deposito , id_alcancia);
+
+        if (depositoregistrado  != null) {
+            return ResponseEntity.ok(depositoregistrado );
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+
+    @DeleteMapping("/EliminarDeposito/{id_deposito}/{id_alcancia}")
+    public ResponseEntity<Void> EliminarDeposito(@PathVariable Long id_deposito , @PathVariable Long  id_alcancia ) {
+
+        servicioDeposito.EliminarDeposito(id_deposito ,id_alcancia );
         return ResponseEntity.noContent().build();
     }
+
+
 }

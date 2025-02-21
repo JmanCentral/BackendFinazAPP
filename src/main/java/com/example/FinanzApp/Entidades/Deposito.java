@@ -25,6 +25,5 @@ public class Deposito {
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
 
-
 }
 

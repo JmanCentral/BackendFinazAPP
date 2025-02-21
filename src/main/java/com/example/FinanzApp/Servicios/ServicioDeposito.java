@@ -67,23 +67,63 @@ public class ServicioDeposito {
 
     }
 
+
     @Transactional
-    public void EliminarDeposito(Long usuarioId, Long alcanciaId, Long depositoId) {
-        // Buscar el depósito antes de eliminarlo para obtener el monto
+    public DepositoDTO ModificarDeposito(DepositoDTO depositoDTO,Long idDeposito, Long idAlcancia) {
+
+        Deposito deposito = repositorioDeposito.findById(idDeposito)
+                .orElseThrow(() -> new RuntimeException("Depósito no encontrado"));
+
+        // Validar que el depósito pertenece a la alcancía especificada
+        if (!deposito.getAlcancia().getIdAlcancia().equals(idAlcancia)) {
+            throw new RuntimeException("El depósito no pertenece a la alcancía especificada.");
+        }
+
+        Double montoAnterior = deposito.getMonto();
+
+        deposito.setMonto(depositoDTO.getMonto());
+        deposito.setFecha(depositoDTO.getFecha());
+        deposito.setNombre_depositante(depositoDTO.getNombre_depositante());
+
+        Alcancia alcancia = deposito.getAlcancia();
+
+        Double nuevoSaldo = alcancia.getSaldoActual() - montoAnterior + depositoDTO.getMonto();
+        alcancia.setSaldoActual(nuevoSaldo);
+
+        repositorioAlcancia.save(alcancia);
+        Deposito depositoActualizado = repositorioDeposito.save(deposito);
+
+        // Convertir la entidad actualizada de nuevo en un DTO para retornarlo
+        DepositoDTO depositoActualizadoDTO = new DepositoDTO();
+        depositoActualizadoDTO.setIdDeposito(depositoActualizado.getIdDeposito());
+        depositoActualizadoDTO.setMonto(depositoActualizado.getMonto());
+        depositoActualizadoDTO.setFecha(depositoActualizado.getFecha());
+        depositoActualizadoDTO.setNombre_depositante(depositoActualizado.getNombre_depositante());
+
+        return depositoActualizadoDTO;
+    }
+
+
+
+
+
+    @Transactional
+    public void EliminarDeposito(Long depositoId , Long alcanciaId ) {
+
+
         Deposito deposito = repositorioDeposito.findById(depositoId)
                 .orElseThrow(() -> new RuntimeException("Depósito no encontrado"));
 
-        // Buscar la alcancía asociada
         Alcancia alcancia = repositorioAlcancia.findById(alcanciaId)
                 .orElseThrow(() -> new RuntimeException("Alcancía no encontrada"));
 
-        // Restar el monto del depósito al saldo actual de la alcancía
         alcancia.setSaldoActual(alcancia.getSaldoActual() - deposito.getMonto());
 
         repositorioAlcancia.save(alcancia);
 
-        repositorioDeposito.deleteByUserAndAlcanciasAndDepositos(usuarioId, alcanciaId, depositoId);
+        repositorioDeposito.deleteByDepositos(depositoId, alcanciaId);
     }
+
 
 
 }
