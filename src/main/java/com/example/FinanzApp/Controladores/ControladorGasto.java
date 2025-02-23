@@ -1,7 +1,7 @@
 package com.example.FinanzApp.Controladores;
 import com.example.FinanzApp.DTOS.CategoriaTotalDTO;
 import com.example.FinanzApp.DTOS.GastoDTO;
-import com.example.FinanzApp.DTOS.IngresoDTO;
+import com.example.FinanzApp.DTOS.ProyeccionDTO;
 import com.example.FinanzApp.Servicios.ServicioGasto;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,16 +86,11 @@ public class ControladorGasto {
 
     @GetMapping("/ObtenerValorGastosMes/{id_usuario}")
     public ResponseEntity<Double> ObtenerValorGeneral(@PathVariable Long id_usuario) {
-
         Double ValorGeneral = servicioGasto.ValorGastosMes(id_usuario);
 
-        if (ValorGeneral != null) {
-            return ResponseEntity.ok(ValorGeneral);
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
-
+        return ResponseEntity.ok(ValorGeneral != null ? ValorGeneral : 0.0);
     }
+
 
     @GetMapping("/GastosMesCategoria/{id_usuario}/{fecha_inicial}/{fecha_final}")
     public ResponseEntity <List<GastoDTO>> listarGastosPorFechas(@PathVariable Long id_usuario, @PathVariable LocalDate fecha_inicial, @PathVariable LocalDate fecha_final) {
@@ -198,18 +193,14 @@ public class ControladorGasto {
 
     }
 
+
     @GetMapping("/CategoriaMasAlta/{id_usuario}")
     public ResponseEntity<CategoriaTotalDTO> ListarCategorias(@PathVariable Long id_usuario) {
 
-        CategoriaTotalDTO  gastos = servicioGasto.ordenarPorCategoriaMasAlta(id_usuario);
-
-        if (gastos == null) {
-            return ResponseEntity.noContent().build();
-        }
-
-        return ResponseEntity.ok(gastos);
+        return ResponseEntity.ok(servicioGasto.getCategoriaConMasGastos(id_usuario));
 
     }
+
 
     @GetMapping("/ObtenerPromedioDiario/{id_usuario}")
     public ResponseEntity<Double> PromedioDiario(@PathVariable Long id_usuario) {
@@ -237,12 +228,39 @@ public class ControladorGasto {
 
     }
 
+    @GetMapping("/ListarPorNombre/{id_usuario}/{nombre}/{categoria}")
+    public ResponseEntity<List<GastoDTO>> ListarPornombres (@PathVariable String nombre ,@PathVariable String categoria , @PathVariable Long id_usuario ) {
+
+        List<GastoDTO> gastos = servicioGasto.ListarPorNombres(nombre , categoria , id_usuario);
+
+        if (gastos == null) {
+            return ResponseEntity.noContent().build();
+        }   else {
+            return ResponseEntity.ok(gastos);
+        }
+
+    }
+
+    @GetMapping("/frecuentes/{usuarioId}")
+    public ResponseEntity<List<ProyeccionDTO>> obtenerGastosFrecuentes(@PathVariable Long usuarioId) {
+        return ResponseEntity.ok(servicioGasto.obtenerGastosFrecuentes(usuarioId));
+    }
+
+
+
+
+    @DeleteMapping("/EliminarTodosLosGastos/{id_usuario}/{categoria}")
+    public ResponseEntity<Void> eliminarGastos(@PathVariable("id_usuario") Long idUsuario,
+                                               @PathVariable("categoria") String categoria) {
+        servicioGasto.eliminarTodosLosGastos(categoria , idUsuario);
+        return ResponseEntity.noContent().build();
+    }
+
 
     @DeleteMapping("/EliminarGastos/{id_gasto}")
     public ResponseEntity<Void> eliminarGasto(@PathVariable("id_gasto") Long id_gasto) {
         servicioGasto.EliminarGasto(id_gasto);
         return ResponseEntity.noContent().build();
     }
-
 
 }

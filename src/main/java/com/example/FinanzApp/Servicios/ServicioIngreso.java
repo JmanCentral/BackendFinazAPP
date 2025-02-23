@@ -138,10 +138,18 @@ public class ServicioIngreso implements Serializable {
 
     }
 
+    public Double AhorroMensual (Long id_usuario) {
+
+        Double totalingresos = repositorioIngreso.calcularAhorroPosible(id_usuario);
+
+        return totalingresos;
+    }
+
+
+
     public void eliminarIngreso(Long id) {
         repositorioIngreso.deleteById(id);
     }
-
 
 
 }

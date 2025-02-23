@@ -1,10 +1,12 @@
 package com.example.FinanzApp.Repositorios;
 
-import com.example.FinanzApp.DTOS.CategoriaTotalDTO;
+import com.example.FinanzApp.Entidades.CategoriaTotal;
+import com.example.FinanzApp.Entidades.GastoProjection;
 import com.example.FinanzApp.Entidades.Gasto;
-import jakarta.persistence.Tuple;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -16,6 +18,7 @@ public interface RepositorioGasto extends JpaRepository<Gasto, Long>, JpaSpecifi
 
     @Query("SELECT " +
             "COALESCE(SUM(i.valor), 0) - COALESCE((SELECT SUM(g.valor) FROM Gasto g WHERE g.usuario.id_usuario = :usuarioId), 0) " +
+            " - COALESCE((SELECT SUM(d.monto) FROM Deposito d WHERE d.usuario.id_usuario = :usuarioId), 0) " +
             "FROM Ingreso i WHERE i.usuario.id_usuario = :usuarioId")
     Double getDisponible(@Param("usuarioId") Long usuarioId);
 
@@ -63,7 +66,7 @@ public interface RepositorioGasto extends JpaRepository<Gasto, Long>, JpaSpecifi
 
 
     @Query("SELECT g FROM Gasto g WHERE g.usuario.id_usuario= :usuarioId ORDER BY g.valor ASC")
-    List<Gasto> findByUsuarioIdOrderByValorAsc(@Param("usuarioId") Long usuarioId);
+        List<Gasto> findByUsuarioIdOrderByValorAsc(@Param("usuarioId") Long usuarioId);
 
     @Query("SELECT g FROM Gasto g WHERE g.usuario.id_usuario= :usuarioId ORDER BY g.valor DESC")
     List<Gasto> findByUsuarioIdOrderByValorDesc(@Param("usuarioId") Long usuarioId);
@@ -93,10 +96,33 @@ public interface RepositorioGasto extends JpaRepository<Gasto, Long>, JpaSpecifi
             "GROUP BY g.categoria " +
             "ORDER BY totalValor DESC " +
             "LIMIT 1")
-    Object[] getCategoriaConMasGastos(@Param("usuarioId") Long usuarioId);
+    CategoriaTotal getCategoriaConMasGastos(@Param("usuarioId") Long usuarioId);
+
+
+    @Query("SELECT g FROM Gasto g WHERE g.usuario.id_usuario = :usuarioId")
+    List<Gasto> findByUsuario(@Param("usuarioId") Long usuarioId);
+
+    @Query("SELECT g.nombre_gasto AS descripcion, COUNT(g) AS cantidad, SUM(g.valor) AS total " +
+            "FROM Gasto g WHERE g.usuario.id_usuario = :usuarioId AND g.valor < 100000000 " +
+            "GROUP BY g.nombre_gasto ORDER BY total DESC")
+    List<GastoProjection> findGastosFrecuentes(@Param("usuarioId") Long usuarioId);
+
 
     @Query("SELECT SUM(g.valor) / COUNT(DISTINCT g.fecha) AS gastoPromedioDiario FROM Gasto g WHERE g.usuario.id_usuario = :usuarioId ")
     Double getGastoPromedioDiarioTotal(@Param("usuarioId") Long usuarioId);
+
+
+    @Query("SELECT g FROM Gasto g WHERE g.nombre_gasto = :nombreGasto AND g.categoria = :categoria AND g.usuario.id_usuario = :usuarioId")
+    List<Gasto> findByNombreGastoAndCategoriaAndUsuarioId(@Param("nombreGasto") String nombreGasto,
+                                                          @Param("categoria") String categoria,
+                                                          @Param("usuarioId") Long usuarioId);
+
+
+    @Modifying
+    @Query("DELETE FROM Gasto g WHERE g.usuario.id_usuario = :usuarioId AND g.categoria = :categoria")
+    void deleteByUsuarioIdAndCategoria(@Param("usuarioId") Long usuarioId,
+                                                @Param("categoria") String categoria);
+
 
 
 }

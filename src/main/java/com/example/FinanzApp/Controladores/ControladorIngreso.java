@@ -1,12 +1,10 @@
 package com.example.FinanzApp.Controladores;
 
-import com.example.FinanzApp.DTOS.GastoDTO;
 import com.example.FinanzApp.DTOS.IngresoDTO;
 import com.example.FinanzApp.Servicios.ServicioIngreso;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -123,6 +121,18 @@ public class ControladorIngreso {
         } else {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping("/AhorroMensual/{id_usuario}")
+    public ResponseEntity<Double> obtenerAhorro(@PathVariable Long id_usuario) {
+
+        Double totalIngresos = servicioIngreso.AhorroMensual(id_usuario);
+
+        if (totalIngresos == 0.0) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(totalIngresos);
     }
 
 
