@@ -60,7 +60,6 @@ public class Usuario implements Serializable {
     )
     private Set<Roles> roles;
 
-
 }
 
 
