@@ -1,5 +1,6 @@
 package com.example.FinanzApp.Controladores;
 import com.example.FinanzApp.DTOS.AlcanciaDTO;
+import com.example.FinanzApp.DTOS.GastoDTO;
 import com.example.FinanzApp.Servicios.ServicioAlcancia;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -49,4 +50,24 @@ public class ControladorAlcancia {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @PutMapping("/ModificarAlcancias/{id_alcancia}")
+    public ResponseEntity<AlcanciaDTO> modificarGasto(@RequestBody AlcanciaDTO alcancia, @PathVariable Long id_alcancia) {
+
+        AlcanciaDTO alcanciaregistrada = servicioAlcancia.ModificarAlcancia(alcancia , id_alcancia);
+
+        if (alcanciaregistrada != null) {
+            return ResponseEntity.ok(alcanciaregistrada);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+
+    @DeleteMapping("/EliminarAlcancia/{id_alcancia}")
+    public ResponseEntity<Void> eliminarAlcancia(@PathVariable("id_alcancia") Long idAlcancia) {
+        servicioAlcancia.eliminarAlcancia(idAlcancia);
+        return ResponseEntity.noContent().build();
+    }
+
 }

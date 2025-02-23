@@ -225,7 +225,6 @@ public class ControladorGasto {
         } else {
             return ResponseEntity.badRequest().build();
         }
-
     }
 
     @GetMapping("/ListarPorNombre/{id_usuario}/{nombre}/{categoria}")

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -27,6 +29,9 @@ public class Alcancia {
 
     @Column(nullable = false, unique = true, length = 10)
     private String codigo;
+
+    @OneToMany(mappedBy = "alcancia", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Deposito> depositos = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = false)

@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,6 +59,41 @@ public class ServicioAlcancia {
                     .map(alcancia -> modelMapper.map(alcancia, AlcanciaDTO.class))
                     .collect(Collectors.toList());
     }
+
+    public AlcanciaDTO ModificarAlcancia(AlcanciaDTO alcanciaDTO , Long idAlcancia ) {
+
+        Optional<Alcancia> alcanciaOptional = repositorioAlcancia.findById(idAlcancia);
+
+        if (alcanciaOptional.isPresent()) {
+            Alcancia alcancia = alcanciaOptional.get();
+
+            alcancia.setNombre_alcancia(alcanciaDTO.getNombre_alcancia());
+            alcancia.setMeta(alcanciaDTO.getMeta());
+            alcancia.setSaldoActual(alcanciaDTO.getSaldoActual());
+            alcancia.setCodigo(alcanciaDTO.getCodigo());
+            alcancia.setFechaCreacion(alcanciaDTO.getFechaCreacion());
+
+            Alcancia alcanciaActualizada = repositorioAlcancia.save(alcancia);
+
+            AlcanciaDTO alcanciaActualizadaDTO = new AlcanciaDTO();
+            alcanciaActualizadaDTO.setIdAlcancia(alcanciaActualizada.getIdAlcancia());
+            alcanciaActualizadaDTO.setNombre_alcancia(alcanciaActualizada.getNombre_alcancia());
+            alcanciaActualizadaDTO.setMeta(alcanciaActualizada.getMeta());
+            alcanciaActualizadaDTO.setSaldoActual(alcanciaActualizada.getSaldoActual());
+            alcanciaActualizadaDTO.setCodigo(alcanciaActualizada.getCodigo());
+            alcanciaActualizadaDTO.setFechaCreacion(alcanciaActualizada.getFechaCreacion());
+
+            return alcanciaActualizadaDTO;
+        } else {
+            // Lanza una excepción si la alcancía no existe
+            throw new RuntimeException("La alcancía con ID " + idAlcancia + " no existe.");
+        }
+    }
+
+    public void eliminarAlcancia(Long id) {
+        repositorioAlcancia.deleteById(id);
+    }
+
 
 
 }

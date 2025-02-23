@@ -1,6 +1,7 @@
 package com.example.FinanzApp.Repositorios;
 
 import com.example.FinanzApp.Entidades.Alcancia;
+import com.example.FinanzApp.Entidades.Gasto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,5 +17,11 @@ public interface RepositorioAlcancia extends JpaRepository<Alcancia, Long> {
 
     @Query("SELECT j FROM Alcancia j WHERE j.usuario.id_usuario = :userId")
     List<Alcancia> findAlcanciasByUserId(@Param("userId") Long userId);
+
+
+    void deleteById(Long idAlcancia);
+
+    Optional<Alcancia> findById(Long id_gasto);
+
 
 }
