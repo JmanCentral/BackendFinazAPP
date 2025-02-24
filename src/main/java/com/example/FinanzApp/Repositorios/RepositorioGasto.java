@@ -41,6 +41,10 @@ public interface RepositorioGasto extends JpaRepository<Gasto, Long>, JpaSpecifi
             @Param("categoria") String categoria
     );
 
+    @Query("SELECT g FROM Gasto g WHERE g.usuario.id_usuario = :usuarioId")
+    List<Gasto> findGastosByUsuarioId(@Param("usuarioId") Long usuarioId);
+
+
 
     @Query("SELECT SUM(g.valor) " +
             "FROM Gasto g " +

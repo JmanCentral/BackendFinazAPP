@@ -245,9 +245,6 @@ public class ControladorGasto {
         return ResponseEntity.ok(servicioGasto.obtenerGastosFrecuentes(usuarioId));
     }
 
-
-
-
     @DeleteMapping("/EliminarTodosLosGastos/{id_usuario}/{categoria}")
     public ResponseEntity<Void> eliminarGastos(@PathVariable("id_usuario") Long idUsuario,
                                                @PathVariable("categoria") String categoria) {
