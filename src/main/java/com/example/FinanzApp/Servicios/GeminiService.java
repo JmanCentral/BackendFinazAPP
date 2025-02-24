@@ -2,108 +2,131 @@ package com.example.FinanzApp.Servicios;
 
 import com.example.FinanzApp.Config.APIgemini;
 import com.example.FinanzApp.DTOS.ConsejosDTO;
-import com.example.FinanzApp.Entidades.Gasto;
-import com.example.FinanzApp.Repositorios.RepositorioGasto;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import org.modelmapper.ModelMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.hibernate.query.sqm.tree.SqmNode.log;
-
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public class GeminiService {
 
-    private final String API_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=";
+    private static final String API_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=";
 
     @Autowired
     private APIgemini apiGemini;
 
     @Autowired
-    private RestTemplate restTemplate;
+    private WebClient.Builder webClientBuilder;
 
-    @Autowired
-    RepositorioGasto repositorioGasto;
-
-
-    public ConsejosDTO obtenerConsejos(Long usuarioId) {
+    public Mono<ConsejosDTO> obtenerConsejos() {
         String url = API_URL + apiGemini.getApiKey();
 
-        // 1. Obtener los gastos del usuario
-        List<Gasto> gastos = repositorioGasto.findGastosByUsuarioId(usuarioId);
+        String prompt = "Dame 10 Consejos  actuales que mejoren mis finanzas personales , basados en datos como el DANE en Colombia. " +
+                "Responde en formato de lista numerada del 1 al 10, sin usar ':' y trata de ser coherente.";
 
-        // 2. Si no hay gastos, retornar DTO vacío con mensaje informativo
-        if (gastos.isEmpty()) {
-            log.warn("No se encontraron gastos para el usuario con ID {}");
-            return new ConsejosDTO(List.of("No hay gastos registrados para generar consejos."));
-        }
-
-        // 3. Construir el mensaje con los gastos del usuario
-        StringBuilder gastosTexto = new StringBuilder("Mis gastos son:\n");
-        for (Gasto gasto : gastos) {
-            gastosTexto.append("- ")
-                    .append(gasto.getCategoria()).append(": $")
-                    .append(gasto.getValor()).append(" (")
-                    .append(gasto.getNombre_gasto()).append(")\n");
-        }
-
-        // 4. Crear el prompt para la API de Gemini
-        String prompt = gastosTexto.toString() +
-                "\nDame 10 consejos personalizados para mejorar mis gastos, " +
-                "basados en los datos proporcionados de categoría, valor y nombre del gasto de las compras que he hecho. " +
-                "Responde en formato de lista numerada del 1 al 10, sin usar : y trata de er coherente en base a los datos que te proporciono.";
-
-        // 5. Construir la solicitud JSON
         String requestJson = "{\"contents\":[{\"parts\":[{\"text\":\"" + prompt + "\"}]}]}";
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> requestEntity = new HttpEntity<>(requestJson, headers);
+        return webClientBuilder.build()
+                .post()
+                .uri(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(requestJson)
+                .retrieve()
+                .bodyToMono(JsonNode.class)
+                .doOnNext(response -> log.info("Respuesta de Gemini API: {}", response.toPrettyString())) // Imprime la respuesta
+                .map(this::mapearConsejos)
+                .doOnNext(dto -> log.info("DTO mapeado: {}", dto))
+                .onErrorResume(e -> {
+                    log.error("Error al llamar a la API de Gemini: {}", e.getMessage());
+                    return Mono.just(new ConsejosDTO());
+                });
 
-        // 6. Llamar a la API de Gemini
-        ResponseEntity<JsonNode> response;
-        try {
-            response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, JsonNode.class);
-        } catch (Exception e) {
-            log.error("Error al llamar a la API de Gemini: {}");
-            return new ConsejosDTO(List.of("No se pudo obtener consejos en este momento."));
-        }
-
-        // 7. Procesar la respuesta
-        return mapearConsejos(response.getBody());
     }
 
     private ConsejosDTO mapearConsejos(JsonNode rootNode) {
+        log.info("Iniciando el mapeo de consejos desde la respuesta de la API");
+
         JsonNode candidates = rootNode.path("candidates");
         if (!candidates.isArray() || candidates.isEmpty()) {
-            return new ConsejosDTO(List.of("No se obtuvieron consejos válidos."));
+            log.warn("No se encontraron candidatos en la respuesta de la API");
+            return new ConsejosDTO();
         }
 
         JsonNode content = candidates.get(0).path("content").path("parts");
         if (!content.isArray() || content.isEmpty()) {
-            return new ConsejosDTO(List.of("No se encontraron consejos en la respuesta."));
+            log.warn("No se encontró contenido en la respuesta de la API");
+            return new ConsejosDTO();
         }
 
         String texto = content.get(0).path("text").asText();
+        log.debug("Texto recibido de la API: {}", texto);
+
         List<String> consejos = Arrays.stream(texto.split("\n"))
                 .map(this::limpiarConsejo)
                 .limit(10)
                 .toList();
 
-        return new ConsejosDTO(consejos);
+        log.info("Número de consejos obtenidos: {}", consejos.size());
+
+        // Mapear manualmente los consejos al DTO
+        ConsejosDTO dto = new ConsejosDTO();
+        if (consejos.size() > 0) {
+            dto.setConsejo1(consejos.get(0));
+            log.debug("Consejo 1: {}", consejos.get(0));
+        }
+        if (consejos.size() > 1) {
+            dto.setConsejo2(consejos.get(1));
+            log.debug("Consejo 2: {}", consejos.get(1));
+        }
+        if (consejos.size() > 2) {
+            dto.setConsejo3(consejos.get(2));
+            log.debug("Consejo 3: {}", consejos.get(2));
+        }
+        if (consejos.size() > 3) {
+            dto.setConsejo4(consejos.get(3));
+            log.debug("Consejo 4: {}", consejos.get(3));
+        }
+        if (consejos.size() > 4) {
+            dto.setConsejo5(consejos.get(4));
+            log.debug("Consejo 5: {}", consejos.get(4));
+        }
+        if (consejos.size() > 5) {
+            dto.setConsejo6(consejos.get(5));
+            log.debug("Consejo 6: {}", consejos.get(5));
+        }
+        if (consejos.size() > 6) {
+            dto.setConsejo7(consejos.get(6));
+            log.debug("Consejo 7: {}", consejos.get(6));
+        }
+        if (consejos.size() > 7) {
+            dto.setConsejo8(consejos.get(7));
+            log.debug("Consejo 8: {}", consejos.get(7));
+        }
+        if (consejos.size() > 8) {
+            dto.setConsejo9(consejos.get(8));
+            log.debug("Consejo 9: {}", consejos.get(8));
+        }
+        if (consejos.size() > 9) {
+            dto.setConsejo10(consejos.get(9));
+            log.debug("Consejo 10: {}", consejos.get(9));
+        }
+
+        log.info("Finalizado el mapeo de consejos");
+        return dto;
     }
 
     private String limpiarConsejo(String consejo) {
         return consejo.replaceAll("^\\d+\\.\\s*", "").trim();
     }
-
 }

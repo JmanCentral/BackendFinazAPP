@@ -11,6 +11,16 @@ import java.util.List;
 @NoArgsConstructor
 
 public class ConsejosDTO {
-    private List<String> consejos;
+
+    private String consejo1;
+    private String consejo2;
+    private String consejo3;
+    private String consejo4;
+    private String consejo5;
+    private String consejo6;
+    private String consejo7;
+    private String consejo8;
+    private String consejo9;
+    private String consejo10;
 }
 

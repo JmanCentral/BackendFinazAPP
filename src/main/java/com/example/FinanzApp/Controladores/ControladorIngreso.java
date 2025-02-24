@@ -35,6 +35,7 @@ public class ControladorIngreso {
 
         List<IngresoDTO> ingresos = servicioIngreso.BuscarIngresosCasualesPorAnio(id_usuario);
 
+
         if (ingresos.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -48,6 +49,7 @@ public class ControladorIngreso {
 
         List<IngresoDTO> ingresos = servicioIngreso.BuscarIngresosMensuales(id_usuario);
 
+
         if (ingresos.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -59,6 +61,7 @@ public class ControladorIngreso {
     public ResponseEntity<List<IngresoDTO>> listarIngresosCasuales(@PathVariable Long id_usuario) {
 
         List<IngresoDTO> ingresos = servicioIngreso.BuscarIngresosCasuales(id_usuario);
+
 
         if (ingresos.isEmpty()) {
             return ResponseEntity.noContent().build();

@@ -4,6 +4,7 @@ import com.example.FinanzApp.DTOS.GastoDTO;
 import com.example.FinanzApp.DTOS.ProyeccionDTO;
 import com.example.FinanzApp.Servicios.ServicioGasto;
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.util.List;
 @Log4j2
 @RestController
 @RequestMapping("/Finanzapp/Gastos")
+@Slf4j
 public class ControladorGasto {
 
     @Autowired
