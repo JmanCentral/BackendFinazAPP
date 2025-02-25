@@ -2,10 +2,12 @@ package com.example.FinanzApp.Controladores;
 
 import com.example.FinanzApp.Config.JwtUtils;
 import com.example.FinanzApp.DTOS.EmailRequest;
+import com.example.FinanzApp.DTOS.RespuestaCorreo;
 import com.example.FinanzApp.Entidades.Usuario;
 import com.example.FinanzApp.Repositorios.RepositorioUsuario;
 import com.example.FinanzApp.Servicios.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -27,17 +29,19 @@ public class PasswordController {
 
 
     @PostMapping("/forgot")
-    public ResponseEntity<String> forgotPassword(@RequestBody EmailRequest emailRequest) {
+    public ResponseEntity<RespuestaCorreo> forgotPassword(@RequestBody EmailRequest emailRequest) {
         Optional<Usuario> usuario = repositorioUsuario.findByEmail(emailRequest.getEmail());
 
         if (usuario.isEmpty()) {
-            return ResponseEntity.badRequest().body("El correo no está registrado.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } else {
+
+            String token = jwtUtil.generateTokenEmail(emailRequest.getEmail());
+            emailService.sendPasswordResetEmail(emailRequest.getEmail(), token); // Solo pasamos el token
+
+            return ResponseEntity.ok(new RespuestaCorreo("Correo de recuperación enviado.", true));
+
         }
-
-        String token = jwtUtil.generateTokenEmail(emailRequest.getEmail());
-        emailService.sendPasswordResetEmail(emailRequest.getEmail(), token); // Solo pasamos el token
-
-        return ResponseEntity.ok("Correo de recuperación enviado.");
     }
 
 

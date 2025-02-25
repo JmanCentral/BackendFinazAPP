@@ -27,4 +27,3 @@ public class ControladorConsejos {
                 .doOnError(e -> log.error("Error en obtenerConsejos: {}", e.getMessage()));
     }
 }
-

@@ -3,10 +3,9 @@ package com.example.FinanzApp.Servicios;
 import com.example.FinanzApp.Config.APIgemini;
 import com.example.FinanzApp.DTOS.ConsejosDTO;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -15,25 +14,23 @@ import reactor.core.publisher.Mono;
 import java.util.Arrays;
 import java.util.List;
 
+
 @Service
 @AllArgsConstructor
-@NoArgsConstructor
 @Slf4j
 public class GeminiService {
 
-    private static final String API_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=";
+    private static final String API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=";
 
-    @Autowired
-    private APIgemini apiGemini;
 
-    @Autowired
-    private WebClient.Builder webClientBuilder;
+    private final APIgemini apiGemini;
+
+    private final WebClient.Builder webClientBuilder;
 
     public Mono<ConsejosDTO> obtenerConsejos() {
         String url = API_URL + apiGemini.getApiKey();
 
-        String prompt = "Dame 10 Consejos  actuales que mejoren mis finanzas personales , basados en datos como el DANE en Colombia. " +
-                "Responde en formato de lista numerada del 1 al 10, sin usar ':' y trata de ser coherente.";
+        String prompt = "Dame 10 Consejos que mejoren mis finanzas personales en colombia estructurados. no empieces con aqui tienes 10 consejos .... devuelveme solo los numerales";
 
         String requestJson = "{\"contents\":[{\"parts\":[{\"text\":\"" + prompt + "\"}]}]}";
 
@@ -129,4 +126,6 @@ public class GeminiService {
     private String limpiarConsejo(String consejo) {
         return consejo.replaceAll("^\\d+\\.\\s*", "").trim();
     }
+
+
 }
