@@ -4,6 +4,7 @@ import com.example.FinanzApp.DTOS.GastoDTO;
 import com.example.FinanzApp.DTOS.ProyeccionDTO;
 import com.example.FinanzApp.Servicios.ServicioGasto;
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.util.List;
 @Log4j2
 @RestController
 @RequestMapping("/Finanzapp/Gastos")
+@Slf4j
 public class ControladorGasto {
 
     @Autowired
@@ -86,16 +88,11 @@ public class ControladorGasto {
 
     @GetMapping("/ObtenerValorGastosMes/{id_usuario}")
     public ResponseEntity<Double> ObtenerValorGeneral(@PathVariable Long id_usuario) {
-
         Double ValorGeneral = servicioGasto.ValorGastosMes(id_usuario);
 
-        if (ValorGeneral != null) {
-            return ResponseEntity.ok(ValorGeneral);
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
-
+        return ResponseEntity.ok(ValorGeneral != null ? ValorGeneral : 0.0);
     }
+
 
     @GetMapping("/GastosMesCategoria/{id_usuario}/{fecha_inicial}/{fecha_final}")
     public ResponseEntity <List<GastoDTO>> listarGastosPorFechas(@PathVariable Long id_usuario, @PathVariable LocalDate fecha_inicial, @PathVariable LocalDate fecha_final) {
@@ -230,7 +227,6 @@ public class ControladorGasto {
         } else {
             return ResponseEntity.badRequest().build();
         }
-
     }
 
     @GetMapping("/ListarPorNombre/{id_usuario}/{nombre}/{categoria}")
@@ -250,9 +246,6 @@ public class ControladorGasto {
     public ResponseEntity<List<ProyeccionDTO>> obtenerGastosFrecuentes(@PathVariable Long usuarioId) {
         return ResponseEntity.ok(servicioGasto.obtenerGastosFrecuentes(usuarioId));
     }
-
-
-
 
     @DeleteMapping("/EliminarTodosLosGastos/{id_usuario}/{categoria}")
     public ResponseEntity<Void> eliminarGastos(@PathVariable("id_usuario") Long idUsuario,

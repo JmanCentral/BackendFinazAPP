@@ -6,6 +6,7 @@ import com.example.FinanzApp.Entidades.Roles;
 import com.example.FinanzApp.Entidades.Usuario;
 import com.example.FinanzApp.Repositorios.RepositorioRoles;
 import com.example.FinanzApp.Repositorios.RepositorioUsuario;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 
 @Data
 @Service
+@AllArgsConstructor
 public class ServicioUsuario implements UserDetailsService {
 
     private ModelMapper modelMapper;
@@ -34,18 +36,15 @@ public class ServicioUsuario implements UserDetailsService {
     private final RepositorioUsuario repositorioUsuario;
     private final RepositorioRoles repositorioRoles;
 
-    @Autowired
-    public ServicioUsuario(ModelMapper modelMapper, RepositorioUsuario repositorioUsuario , PasswordEncoder passwordEncoder , RepositorioRoles repositorioRoles) {
-        this.modelMapper = modelMapper;
-        this.repositorioUsuario = repositorioUsuario;
-        this.repositorioRoles = repositorioRoles;
-        this.passwordEncoder = new BCryptPasswordEncoder();
-    }
 
 
     public UsuarioDTO registrarUsuario(UsuarioDTO usuarioDTO) {
         if (repositorioUsuario.findByUsername(usuarioDTO.getUsername()).isPresent()) {
             throw new IllegalArgumentException("El nombre de usuario ya está en uso");
+        }
+
+        if (repositorioUsuario.findByEmail(usuarioDTO.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("El correo electrónico ya está en uso");
         }
 
         Usuario nuevoUsuario = modelMapper.map(usuarioDTO, Usuario.class);

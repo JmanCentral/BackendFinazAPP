@@ -8,6 +8,7 @@ import com.example.FinanzApp.Entidades.Ingreso;
 import com.example.FinanzApp.Entidades.Usuario;
 import com.example.FinanzApp.Repositorios.RepositorioIngreso;
 import com.example.FinanzApp.Repositorios.RepositorioUsuario;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,18 +22,12 @@ import java.util.stream.Collectors;
 
 @Data
 @Service
+@AllArgsConstructor
 public class ServicioIngreso implements Serializable {
 
     private ModelMapper modelMapper;
     private final RepositorioIngreso repositorioIngreso;
     private final RepositorioUsuario repositorioUsuario;
-
-    @Autowired
-    public ServicioIngreso(ModelMapper modelMapper, RepositorioIngreso repositorioIngreso , RepositorioUsuario repositorioUsuario) {
-        this.modelMapper = modelMapper;
-        this.repositorioIngreso = repositorioIngreso;
-        this.repositorioUsuario = repositorioUsuario;
-    }
 
 
     public IngresoDTO RegistrarIngreso(IngresoDTO ingresoDTO, Long usuarioId) {
@@ -144,7 +139,6 @@ public class ServicioIngreso implements Serializable {
 
         return totalingresos;
     }
-
 
 
     public void eliminarIngreso(Long id) {

@@ -1,6 +1,7 @@
 package com.example.FinanzApp.Entidades;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,12 @@ public class Usuario implements Serializable {
     private Long id_usuario;
     @Column(name = "USERNAME" , unique = true)
     private String username;
+    @Column(nullable = false, name = "EMAIL", unique = true)
+    @Pattern(
+            regexp = "^[a-zA-Z0-9._%+-]+@(gmail\\.com|hotmail\\.com|[a-zA-Z0-9.-]+\\.edu\\.co)$",
+            message = "El correo debe ser de dominio @gmail.com, @hotmail.com o terminar en .edu.co"
+    )
+    private String email;
     @Column(name = "NOMBRE")
     private String nombre;
     @Column(name = "APELLIDO")
@@ -42,6 +49,9 @@ public class Usuario implements Serializable {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Recordatorio> recordatorio = new ArrayList<>();
 
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Alcancia> alcancias;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
@@ -49,7 +59,6 @@ public class Usuario implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Roles> roles;
-
 
 }
 

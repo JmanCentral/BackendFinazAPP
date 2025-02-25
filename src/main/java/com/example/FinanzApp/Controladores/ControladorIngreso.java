@@ -1,12 +1,10 @@
 package com.example.FinanzApp.Controladores;
 
-import com.example.FinanzApp.DTOS.GastoDTO;
 import com.example.FinanzApp.DTOS.IngresoDTO;
 import com.example.FinanzApp.Servicios.ServicioIngreso;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,6 +35,7 @@ public class ControladorIngreso {
 
         List<IngresoDTO> ingresos = servicioIngreso.BuscarIngresosCasualesPorAnio(id_usuario);
 
+
         if (ingresos.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -50,6 +49,7 @@ public class ControladorIngreso {
 
         List<IngresoDTO> ingresos = servicioIngreso.BuscarIngresosMensuales(id_usuario);
 
+
         if (ingresos.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -61,6 +61,7 @@ public class ControladorIngreso {
     public ResponseEntity<List<IngresoDTO>> listarIngresosCasuales(@PathVariable Long id_usuario) {
 
         List<IngresoDTO> ingresos = servicioIngreso.BuscarIngresosCasuales(id_usuario);
+
 
         if (ingresos.isEmpty()) {
             return ResponseEntity.noContent().build();

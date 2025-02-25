@@ -1,9 +1,7 @@
 package com.example.FinanzApp.Servicios;
 
 import com.example.FinanzApp.DTOS.AlertaDTO;
-import com.example.FinanzApp.DTOS.GastoDTO;
 import com.example.FinanzApp.Entidades.Alerta;
-import com.example.FinanzApp.Entidades.Gasto;
 import com.example.FinanzApp.Entidades.Usuario;
 import com.example.FinanzApp.Repositorios.RepositorioAlerta;
 import com.example.FinanzApp.Repositorios.RepositorioGasto;
@@ -12,7 +10,6 @@ import com.example.FinanzApp.Repositorios.RepositorioUsuario;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

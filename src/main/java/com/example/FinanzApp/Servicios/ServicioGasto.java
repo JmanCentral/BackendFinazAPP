@@ -11,6 +11,7 @@ import com.example.FinanzApp.Repositorios.RepositorioGasto;
 import com.example.FinanzApp.Repositorios.RepositorioIngreso;
 import com.example.FinanzApp.Repositorios.RepositorioUsuario;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,21 +23,13 @@ import java.util.stream.Collectors;
 
 @Data
 @Service
+@AllArgsConstructor
 public class ServicioGasto {
 
     private ModelMapper modelMapper;
     private  final RepositorioGasto repositorioGasto;
     private final RepositorioIngreso repositorioIngreso;
     private final RepositorioUsuario repositorioUsuario;
-
-
-    @Autowired
-    public ServicioGasto(ModelMapper modelMapper,RepositorioGasto repositorioGasto, RepositorioIngreso repositorioIngreso , RepositorioUsuario repositorioUsuario) {
-        this.modelMapper = modelMapper;
-        this.repositorioGasto = repositorioGasto;
-        this.repositorioIngreso = repositorioIngreso;
-        this.repositorioUsuario = repositorioUsuario;
-    }
 
 
     public GastoDTO RegistrarGasto(GastoDTO gastoDTO, Long usuarioId) {
