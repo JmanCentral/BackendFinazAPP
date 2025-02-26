@@ -1,19 +1,9 @@
 package com.example.FinanzApp.Servicios;
 
-import com.example.FinanzApp.Config.DeepSeekConfig;
-import com.example.FinanzApp.DTOS.ConsejosDTO;
-import com.example.FinanzApp.DTOS.DeepSeekRequest;
-import com.example.FinanzApp.DTOS.DeepSeekResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 
 @Service
