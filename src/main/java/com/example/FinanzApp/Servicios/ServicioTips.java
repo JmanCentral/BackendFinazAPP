@@ -7,8 +7,6 @@ import com.example.FinanzApp.Repositorios.RepositorioGasto;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -17,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -82,12 +79,5 @@ public class ServicioTips {
         }
 
         return consejos;
-    }
-
-
-    private String extraerJsonDesdeTexto(String texto) {
-        int inicio = texto.indexOf("{");
-        int fin = texto.lastIndexOf("}");
-        return (inicio != -1 && fin != -1 && inicio < fin) ? texto.substring(inicio, fin + 1) : "{}";
     }
 }

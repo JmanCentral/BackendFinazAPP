@@ -9,11 +9,9 @@ public class APIgemini {
     @Value("${gemini.api.key}")
     private String apiKey;
 
-    @Value("${gemini.api.key1}")
-    private String apiKeyPersonal;
 
     public String getApiKey() {
-        return apiKeyPersonal != null ? apiKeyPersonal : apiKey;
+        return apiKey;
     }
 
 
