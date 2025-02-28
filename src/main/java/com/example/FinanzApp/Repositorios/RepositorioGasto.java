@@ -46,7 +46,7 @@ public interface RepositorioGasto extends JpaRepository<Gasto, Long>, JpaSpecifi
     List<Gasto> findGastosByUsuarioId(@Param("usuarioId") Long usuarioId);
 
 
-    List<Gasto> findByUsuarioAndFechaBetween(Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin);
+    List<Gasto> findByUsuarioAndFechaBetweenAndCategoria(Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin , String categoria);
 
 
     @Query("SELECT SUM(g.valor) " +

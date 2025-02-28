@@ -160,10 +160,10 @@ public class ControladorGasto {
 
     }
 
-    @GetMapping("/rango/{id_usuario}/{fecha_inicio}/{fecha_final}")
-    public ResponseEntity<List<GastoDTO>> ListarPorFechas(@PathVariable Long id_usuario ,  @PathVariable LocalDate fecha_inicio , @PathVariable LocalDate fecha_final) {
+    @GetMapping("/rango/{id_usuario}/{fecha_inicio}/{fecha_final}/{categoria}")
+    public ResponseEntity<List<GastoDTO>> ListarPorFechas(@PathVariable Long id_usuario ,  @PathVariable LocalDate fecha_inicio , @PathVariable LocalDate fecha_final ,@PathVariable String categoria ) {
 
-        List<GastoDTO>  gastos = servicioGasto.obtenerGastosPorRangoDeFechas(id_usuario , fecha_inicio, fecha_final);
+        List<GastoDTO>  gastos = servicioGasto.obtenerGastosPorRangoDeFechas(id_usuario , fecha_inicio, fecha_final , categoria);
 
         if (gastos.isEmpty()) {
             return ResponseEntity.noContent().build();
