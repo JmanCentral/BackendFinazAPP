@@ -110,6 +110,20 @@ public class ServicioGasto {
 
     }
 
+    public List<GastoDTO> obtenerGastosPorRangoDeFechas(Long usuarioId, LocalDate fechaInicio, LocalDate fechaFin) {
+
+        Usuario usuario = repositorioUsuario.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        List<Gasto> gastos  = repositorioGasto.findByUsuarioAndFechaBetween(usuario , fechaInicio , fechaFin);
+
+        return gastos.stream()
+                .map(gasto -> modelMapper.map(gasto, GastoDTO.class))
+                .collect(Collectors.toList());
+
+    }
+
+
     public GastoDTO OrdenarPorValorAlto(Long id_usuario){
 
         Gasto gastos  = repositorioGasto.getValorMasAlto(id_usuario);

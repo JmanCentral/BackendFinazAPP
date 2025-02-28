@@ -160,6 +160,20 @@ public class ControladorGasto {
 
     }
 
+    @GetMapping("/rango/{id_usuario}/{fecha_inicio}/{fecha_final}")
+    public ResponseEntity<List<GastoDTO>> ListarPorFechas(@PathVariable Long id_usuario ,  @PathVariable LocalDate fecha_inicio , @PathVariable LocalDate fecha_final) {
+
+        List<GastoDTO>  gastos = servicioGasto.obtenerGastosPorRangoDeFechas(id_usuario , fecha_inicio, fecha_final);
+
+        if (gastos.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(gastos);
+
+    }
+
+
     @GetMapping("/ObtenerPromedioGastos/{id_usuario}")
     public ResponseEntity<Double> Promedio(@PathVariable Long id_usuario) {
 
