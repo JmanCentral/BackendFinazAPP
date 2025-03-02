@@ -2,6 +2,8 @@ package com.example.FinanzApp.Controladores;
 
 import com.example.FinanzApp.DTOS.RecordatorioDTO;
 import com.example.FinanzApp.Servicios.ServicioRecordatorio;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,44 +15,39 @@ import java.util.List;
 @Log4j2
 @RestController
 @RequestMapping("/Finanzapp/Recordatorios")
-
+@Tag(name = "Recordatorios", description = "Operaciones relacionadas con los recordatorios de los usuarios")
 public class ControladorRecordatorio {
 
     @Autowired
     ServicioRecordatorio servicioRecordatorio;
 
     @PostMapping("/registro/Recordatorio/{id_usuario}")
-    public ResponseEntity<RecordatorioDTO> registrarUsuario(@RequestBody RecordatorioDTO recordatorioDTO , @PathVariable Long id_usuario ) {
-
-        RecordatorioDTO recordatorioinsertado = servicioRecordatorio.RegistrarRecordatorio(recordatorioDTO , id_usuario);
-
-        if (recordatorioinsertado  != null) {
-            return ResponseEntity.ok(recordatorioinsertado);
+    @Operation(summary = "Registrar un recordatorio", description = "Registra un nuevo recordatorio asociado a un usuario.")
+    public ResponseEntity<RecordatorioDTO> registrarUsuario(@RequestBody RecordatorioDTO recordatorioDTO, @PathVariable Long id_usuario) {
+        RecordatorioDTO recordatorioInsertado = servicioRecordatorio.RegistrarRecordatorio(recordatorioDTO, id_usuario);
+        if (recordatorioInsertado != null) {
+            return ResponseEntity.ok(recordatorioInsertado);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
     @GetMapping("/ObtenerRecordatorios/{id_usuario}")
-    public ResponseEntity <List<RecordatorioDTO>> ListarAlertaPorMes(@PathVariable Long id_usuario) {
-
-        List <RecordatorioDTO> RecordatorioConsultado = servicioRecordatorio.ListarRecordatorios(id_usuario);
-
-        if (!RecordatorioConsultado.isEmpty()) {
-            return ResponseEntity.ok(RecordatorioConsultado);
+    @Operation(summary = "Listar recordatorios", description = "Obtiene la lista de recordatorios de un usuario.")
+    public ResponseEntity<List<RecordatorioDTO>> ListarAlertaPorMes(@PathVariable Long id_usuario) {
+        List<RecordatorioDTO> recordatorioConsultado = servicioRecordatorio.ListarRecordatorios(id_usuario);
+        if (!recordatorioConsultado.isEmpty()) {
+            return ResponseEntity.ok(recordatorioConsultado);
         } else {
             return ResponseEntity.badRequest().build();
-
         }
-
     }
 
-    // Endpoint para modificar un recordatorio existente
     @PutMapping("/modificar/Recordatorio/{id_recordatorio}")
+    @Operation(summary = "Modificar un recordatorio", description = "Modifica los detalles de un recordatorio existente.")
     public ResponseEntity<RecordatorioDTO> modificarRecordatorio(
             @PathVariable Long id_recordatorio,
             @RequestBody RecordatorioDTO recordatorioDTO) {
-
         try {
             RecordatorioDTO recordatorioActualizado = servicioRecordatorio.ModificarRecordatorio(id_recordatorio, recordatorioDTO);
             return ResponseEntity.ok(recordatorioActualizado);
@@ -61,30 +58,27 @@ public class ControladorRecordatorio {
     }
 
     @DeleteMapping("/EliminarRecordatorios/{id_recordatorio}")
+    @Operation(summary = "Eliminar un recordatorio", description = "Elimina un recordatorio específico por su ID.")
     public ResponseEntity<Void> eliminarRecordatorio(@PathVariable("id_recordatorio") Long id_recordatorio) {
         servicioRecordatorio.EliminarRecordatorio(id_recordatorio);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/eliminartodos/{id_usuario}")
+    @Operation(summary = "Eliminar todos los recordatorios", description = "Elimina todos los recordatorios de un usuario específico.")
     public ResponseEntity<String> eliminarTodos(@PathVariable Long id_usuario) {
         servicioRecordatorio.eliminarTodosLosRecordatorios(id_usuario);
         return ResponseEntity.ok("Todos los recordatorios han sido eliminados.");
     }
 
     @GetMapping("/BuscarPorNombre/{nombre}")
-    public ResponseEntity<List<RecordatorioDTO>> BuscarPorNombre(@PathVariable String nombre ) {
-
+    @Operation(summary = "Buscar recordatorios por nombre", description = "Obtiene una lista de recordatorios que coinciden con el nombre especificado.")
+    public ResponseEntity<List<RecordatorioDTO>> BuscarPorNombre(@PathVariable String nombre) {
         List<RecordatorioDTO> recordatorioDTO = servicioRecordatorio.BuscarPorNombre(nombre);
-
         if (recordatorioDTO != null) {
             return ResponseEntity.ok(recordatorioDTO);
         } else {
             return ResponseEntity.badRequest().build();
-
         }
-
     }
-
-
 }

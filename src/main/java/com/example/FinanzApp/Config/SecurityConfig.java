@@ -40,19 +40,18 @@ public class SecurityConfig {
         jwtAutenticationFilter.setAuthenticationManager(authenticationManager);
         jwtAutenticationFilter.setFilterProcessesUrl("/Finanzapp/login");
 
+
         return httpSecurity
                 .csrf().disable()
                 .authorizeHttpRequests(auth-> {
-                    auth.requestMatchers("/Finanzapp/registro", "/Finanzapp/login" , "/api/password/forgot" , "/api/password/reset" , "/api/gemini/consejos").permitAll();
+                    auth.requestMatchers("/Finanzapp/registro", "/Finanzapp/login" , "/api/password/forgot" , "/api/password/reset").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilter(jwtAutenticationFilter)
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
-
     }
-
 
     @Bean
     PasswordEncoder passwordEncoder() {

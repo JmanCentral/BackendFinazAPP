@@ -39,13 +39,6 @@ public class ServicioUsuario implements UserDetailsService {
 
 
     public UsuarioDTO registrarUsuario(UsuarioDTO usuarioDTO) {
-        if (repositorioUsuario.findByUsername(usuarioDTO.getUsername()).isPresent()) {
-            throw new IllegalArgumentException("El nombre de usuario ya está en uso");
-        }
-
-        if (repositorioUsuario.findByEmail(usuarioDTO.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("El correo electrónico ya está en uso");
-        }
 
         Usuario nuevoUsuario = modelMapper.map(usuarioDTO, Usuario.class);
         nuevoUsuario.setContrasena(passwordEncoder.encode(usuarioDTO.getContrasena())); // Encriptar

@@ -2,36 +2,39 @@ package com.example.FinanzApp.Controladores;
 
 import com.example.FinanzApp.DTOS.DepositoDTO;
 import com.example.FinanzApp.Servicios.ServicioDeposito;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
+@Tag(name = "Deposito", description = "API para gestionar depósitos en FinanzApp")
 @RestController
 @RequestMapping("/Finanzapp/Deposito")
 public class ControladorDeposito {
 
     @Autowired
-    ServicioDeposito servicioDeposito;
+    private ServicioDeposito servicioDeposito;
 
+
+    @Operation(summary = "Registrar un nuevo depósito", description = "Permite registrar un depósito en una alcancía asociada a un usuario.")
     @PostMapping("/RegistrarDeposito/{id_usuario}/{id_alcancia}")
-    public ResponseEntity<DepositoDTO> registrarGasto(@RequestBody DepositoDTO depositoDTO, @PathVariable Long id_usuario , @PathVariable Long id_alcancia) {
-
-        DepositoDTO depositoregistrado = servicioDeposito.realizarDeposito(depositoDTO, id_usuario , id_alcancia);
-
-        if (depositoregistrado  != null) {
-            return ResponseEntity.ok(depositoregistrado);
+    public ResponseEntity<DepositoDTO> registrarDeposito(@RequestBody DepositoDTO depositoDTO, @PathVariable Long id_usuario, @PathVariable Long id_alcancia) {
+        DepositoDTO depositoRegistrado = servicioDeposito.realizarDeposito(depositoDTO, id_usuario, id_alcancia);
+        if (depositoRegistrado != null) {
+            return ResponseEntity.ok(depositoRegistrado);
         } else {
             return ResponseEntity.badRequest().build();
         }
-
     }
+
+    @Operation(summary = "Obtener depósitos de una alcancía", description = "Recupera todos los depósitos asociados a una alcancía específica.")
     @GetMapping("/ObtenerDepositos/{id_alcancia}")
-    public ResponseEntity<List<DepositoDTO>> BuscarPorID(@PathVariable Long id_alcancia) {
-
+    public ResponseEntity<List<DepositoDTO>> obtenerDepositos(@PathVariable Long id_alcancia) {
         List<DepositoDTO> depositos = servicioDeposito.ObtenerDepositos(id_alcancia);
-
         if (depositos != null) {
             return ResponseEntity.ok(depositos);
         } else {
@@ -39,39 +42,35 @@ public class ControladorDeposito {
         }
     }
 
+
+    @Operation(summary = "Obtener total de depósitos del mes", description = "Calcula el valor total de los depósitos realizados por un usuario en el mes actual.")
     @GetMapping("/ObtenerValorGastosMesDeposito/{id_usuario}")
-    public ResponseEntity<Double> ObtenerValorGeneral(@PathVariable Long id_usuario) {
-
-        Double ValorGeneral = servicioDeposito.ObtenerValorGastosMesDepositos(id_usuario);
-
-        if (ValorGeneral != null) {
-            return ResponseEntity.ok(ValorGeneral);
+    public ResponseEntity<Double> obtenerValorGeneral(@PathVariable Long id_usuario) {
+        Double valorGeneral = servicioDeposito.ObtenerValorGastosMesDepositos(id_usuario);
+        if (valorGeneral != null) {
+            return ResponseEntity.ok(valorGeneral);
         } else {
             return ResponseEntity.badRequest().build();
         }
-
     }
 
 
+    @Operation(summary = "Modificar un depósito", description = "Permite actualizar la información de un depósito existente en una alcancía.")
     @PutMapping("/ModificarDepositos/{id_deposito}/{id_alcancia}")
-    public ResponseEntity<DepositoDTO> modificarGasto(@RequestBody DepositoDTO depositoDTO, @PathVariable Long id_deposito , @PathVariable Long id_alcancia ) {
-
-        DepositoDTO depositoregistrado = servicioDeposito.ModificarDeposito(depositoDTO , id_deposito , id_alcancia);
-
-        if (depositoregistrado  != null) {
-            return ResponseEntity.ok(depositoregistrado );
+    public ResponseEntity<DepositoDTO> modificarDeposito(@RequestBody DepositoDTO depositoDTO, @PathVariable Long id_deposito, @PathVariable Long id_alcancia) {
+        DepositoDTO depositoModificado = servicioDeposito.ModificarDeposito(depositoDTO, id_deposito, id_alcancia);
+        if (depositoModificado != null) {
+            return ResponseEntity.ok(depositoModificado);
         } else {
             return ResponseEntity.badRequest().build();
         }
     }
 
 
+    @Operation(summary = "Eliminar un depósito", description = "Elimina un depósito específico de una alcancía.")
     @DeleteMapping("/EliminarDeposito/{id_deposito}/{id_alcancia}")
-    public ResponseEntity<Void> EliminarDeposito(@PathVariable Long id_deposito , @PathVariable Long  id_alcancia ) {
-
-        servicioDeposito.EliminarDeposito(id_deposito ,id_alcancia );
+    public ResponseEntity<Void> eliminarDeposito(@PathVariable Long id_deposito, @PathVariable Long id_alcancia) {
+        servicioDeposito.EliminarDeposito(id_deposito, id_alcancia);
         return ResponseEntity.noContent().build();
     }
-
-
 }
