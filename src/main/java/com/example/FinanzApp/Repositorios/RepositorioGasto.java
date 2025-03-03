@@ -3,6 +3,7 @@ package com.example.FinanzApp.Repositorios;
 import com.example.FinanzApp.Entidades.CategoriaTotal;
 import com.example.FinanzApp.Entidades.GastoProjection;
 import com.example.FinanzApp.Entidades.Gasto;
+import com.example.FinanzApp.Entidades.Usuario;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -40,6 +41,12 @@ public interface RepositorioGasto extends JpaRepository<Gasto, Long>, JpaSpecifi
             @Param("usuarioId") Long usuarioId,
             @Param("categoria") String categoria
     );
+
+    @Query("SELECT g FROM Gasto g WHERE g.usuario.id_usuario = :usuarioId")
+    List<Gasto> findGastosByUsuarioId(@Param("usuarioId") Long usuarioId);
+
+
+    List<Gasto> findByUsuarioAndFechaBetweenAndCategoria(Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin , String categoria);
 
 
     @Query("SELECT SUM(g.valor) " +

@@ -1,6 +1,4 @@
 package com.example.FinanzApp.Config;
-
-
 import com.example.FinanzApp.Repositorios.RepositorioUsuario;
 import com.example.FinanzApp.Servicios.ServicioUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +9,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -43,6 +40,7 @@ public class SecurityConfig {
         jwtAutenticationFilter.setAuthenticationManager(authenticationManager);
         jwtAutenticationFilter.setFilterProcessesUrl("/Finanzapp/login");
 
+
         return httpSecurity
                 .csrf().disable()
                 .authorizeHttpRequests(auth-> {
@@ -53,9 +51,7 @@ public class SecurityConfig {
                 .addFilter(jwtAutenticationFilter)
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
-
     }
-
 
     @Bean
     PasswordEncoder passwordEncoder() {

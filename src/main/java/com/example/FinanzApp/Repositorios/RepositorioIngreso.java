@@ -63,7 +63,7 @@ public interface RepositorioIngreso  extends JpaRepository<Ingreso, Long>, JpaSp
 
     void deleteById(Long id);
 
-    @Query("SELECT SUM(i.valor) * 1.05 " +
+    @Query("SELECT COALESCE(SUM(i.valor), 0) * 1.05 " +
             "FROM Ingreso i " +
             "WHERE i.usuario.id_usuario = :usuarioId " +
             "AND EXTRACT(YEAR FROM i.fecha) = EXTRACT(YEAR FROM CURRENT_DATE) " +
