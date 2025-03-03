@@ -124,26 +124,19 @@ public class ServicioIngreso implements Serializable {
             throw new RuntimeException("El gasto con ID " + id_ingreso + " no existe.");
         }
     }
-
     public Double ProyectarIngresos(Long id_usuario){
 
         Double totalIngresos =  repositorioIngreso.calcularTotalMensual(id_usuario);
 
         return totalIngresos;
-
     }
-
     public Double AhorroMensual (Long id_usuario) {
 
         Double totalingresos = repositorioIngreso.calcularAhorroPosible(id_usuario);
 
         return totalingresos;
     }
-
-
     public void eliminarIngreso(Long id) {
         repositorioIngreso.deleteById(id);
     }
-
-
 }
