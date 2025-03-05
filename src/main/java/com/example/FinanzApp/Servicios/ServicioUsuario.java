@@ -1,7 +1,9 @@
 package com.example.FinanzApp.Servicios;
 
+import com.example.FinanzApp.DTOS.GastoDTO;
 import com.example.FinanzApp.DTOS.UsuarioDTO;
 import com.example.FinanzApp.Entidades.ERole;
+import com.example.FinanzApp.Entidades.Gasto;
 import com.example.FinanzApp.Entidades.Roles;
 import com.example.FinanzApp.Entidades.Usuario;
 import com.example.FinanzApp.Repositorios.RepositorioRoles;
@@ -22,6 +24,7 @@ import org.modelmapper.ModelMapper;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -67,6 +70,16 @@ public class ServicioUsuario implements UserDetailsService {
 
             return null;
         }
+
+    }
+
+    public List<UsuarioDTO> ObtenerUsers() {
+
+        List<Usuario> usuarios = repositorioUsuario.findAll();
+
+        return usuarios.stream()
+                .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
+                .collect(Collectors.toList());
 
     }
 

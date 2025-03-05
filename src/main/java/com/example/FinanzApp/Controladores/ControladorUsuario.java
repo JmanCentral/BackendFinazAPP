@@ -8,7 +8,10 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Log4j2
 @RestController
@@ -34,6 +37,7 @@ public class ControladorUsuario {
 
     @Operation(summary = "Obtener un usuario por ID", description = "Obtiene la información de un usuario basado en su ID")
     @GetMapping("/ObtenerUsuario/{id_usuario}")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UsuarioDTO> obtenerUsuario(@PathVariable Long id_usuario) {
 
         UsuarioDTO usuario = servicioUsuario.obtenerUusarioPorID(id_usuario);
@@ -44,6 +48,22 @@ public class ControladorUsuario {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
+
+    @GetMapping("/ObtenerTodosLosUsuarios")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<UsuarioDTO>> obtenerUsuario() {
+
+        List<UsuarioDTO> usuario = servicioUsuario.ObtenerUsers();
+
+        if (usuario != null) {
+            return ResponseEntity.ok(usuario);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+
+
 
     }
 

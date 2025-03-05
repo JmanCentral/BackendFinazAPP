@@ -29,7 +29,6 @@ public class ServicioAlerta {
     private final RepositorioUsuario repositorioUsuario;
 
 
-
     public AlertaDTO RegistrarAlerta (AlertaDTO alertaDTO , Long  usuarioId) {
 
         Usuario usuario = repositorioUsuario.findById(usuarioId)

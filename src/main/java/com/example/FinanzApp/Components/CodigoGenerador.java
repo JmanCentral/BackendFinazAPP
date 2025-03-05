@@ -17,5 +17,5 @@ public class CodigoGenerador {
         }
         return codigo.toString();
     }
-}
 
+}

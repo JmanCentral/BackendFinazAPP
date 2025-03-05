@@ -36,7 +36,8 @@ public class Usuario implements Serializable {
     @Column(name = "CONTRASENA")
     private String contrasena;
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true )
     private List<Ingreso> ingresos;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)

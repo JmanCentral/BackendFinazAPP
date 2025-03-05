@@ -46,10 +46,14 @@ public class ServicioTips {
         return procesarRespuesta(Objects.requireNonNull(responseEntity.getBody()));
     }
 
+    private String formatearGasto(Gasto gasto) {
+        return String.format("%s: %.2f COP, %s, ", gasto.getCategoria(), gasto.getValor(), gasto.getNombre_gasto());
+    }
+
     private String generarPrompt(List<Gasto> gastos) {
         StringBuilder prompt = new StringBuilder("Analiza los siguientes gastos y genera 5 consejos financieros personalizados: ");
         for (Gasto gasto : gastos) {
-            prompt.append(String.format("%s: %.2f COP, ", gasto.getCategoria(), gasto.getValor()));
+            prompt.append(formatearGasto(gasto));
         }
         prompt.append("Devuelve los consejos en formato JSON con claves consejo1, consejo2, ..., consejo5.");
         return prompt.toString();

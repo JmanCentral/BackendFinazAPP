@@ -94,7 +94,5 @@ public class ServicioAlcancia {
         repositorioAlcancia.deleteById(id);
     }
 
-
-
 }
 

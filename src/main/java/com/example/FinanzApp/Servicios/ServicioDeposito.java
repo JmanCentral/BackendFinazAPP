@@ -27,7 +27,7 @@ public class ServicioDeposito {
     private final RepositorioUsuario repositorioUsuario;
     private final RepositorioAlcancia repositorioAlcancia;
 
-    public DepositoDTO realizarDeposito(DepositoDTO depositoDTO , Long id_usuario , Long id_alcancia) {
+    public DepositoDTO realizarDeposito(DepositoDTO depositoDTO, Long id_usuario, Long id_alcancia) {
 
         Usuario usuario = repositorioUsuario.findById(id_usuario)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
@@ -52,16 +52,15 @@ public class ServicioDeposito {
 
     public List<DepositoDTO> ObtenerDepositos(Long idAlcancia) {
 
-        List<Deposito> depositos  = repositorioDeposito.findByAlcancia(idAlcancia);
+        List<Deposito> depositos = repositorioDeposito.findByAlcancia(idAlcancia);
 
         return depositos.stream()
-                .map(deposito-> modelMapper.map(deposito, DepositoDTO.class))
+                .map(deposito -> modelMapper.map(deposito, DepositoDTO.class))
                 .collect(Collectors.toList());
     }
 
 
-
-    public Double ObtenerValorGastosMesDepositos (Long id_usuario){
+    public Double ObtenerValorGastosMesDepositos(Long id_usuario) {
 
         return repositorioDeposito.getValorDepositosMes(id_usuario);
 
@@ -69,7 +68,7 @@ public class ServicioDeposito {
 
 
     @Transactional
-    public DepositoDTO ModificarDeposito(DepositoDTO depositoDTO,Long idDeposito, Long idAlcancia) {
+    public DepositoDTO ModificarDeposito(DepositoDTO depositoDTO, Long idDeposito, Long idAlcancia) {
 
         Deposito deposito = repositorioDeposito.findById(idDeposito)
                 .orElseThrow(() -> new RuntimeException("Depósito no encontrado"));
@@ -103,12 +102,8 @@ public class ServicioDeposito {
         return depositoActualizadoDTO;
     }
 
-
-
-
-
     @Transactional
-    public void EliminarDeposito(Long depositoId , Long alcanciaId ) {
+    public void EliminarDeposito(Long depositoId, Long alcanciaId) {
 
 
         Deposito deposito = repositorioDeposito.findById(depositoId)
@@ -123,7 +118,5 @@ public class ServicioDeposito {
 
         repositorioDeposito.deleteByDepositos(depositoId, alcanciaId);
     }
-
-
 
 }

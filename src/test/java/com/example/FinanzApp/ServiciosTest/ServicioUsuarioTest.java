@@ -53,7 +53,7 @@ public class ServicioUsuarioTest {
         usuarioDTO.setUsername("testuser");
         usuarioDTO.setEmail("test@example.com");
         usuarioDTO.setContrasena("password");
-        usuarioDTO.setRoles(Set.of("ROLE_USER"));
+        usuarioDTO.setRoles(Set.of("USER"));
 
         usuario = new Usuario();
         usuario.setId_usuario(1L);
