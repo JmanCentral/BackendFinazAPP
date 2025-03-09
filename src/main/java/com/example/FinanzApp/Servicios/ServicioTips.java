@@ -1,5 +1,6 @@
 package com.example.FinanzApp.Servicios;
 
+import com.example.FinanzApp.Components.GeminiAdapter;
 import com.example.FinanzApp.Config.APIgemini;
 import com.example.FinanzApp.DTOS.TipsDTO;
 import com.example.FinanzApp.Entidades.Gasto;
@@ -7,6 +8,7 @@ import com.example.FinanzApp.Repositorios.RepositorioGasto;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -20,15 +22,15 @@ import java.util.Objects;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class ServicioTips {
 
     private static final String GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=";
 
     private final APIgemini apiGemini;
-
     private final RestTemplate restTemplate;
     private final RepositorioGasto gastoRepository;
-
+    private final GeminiAdapter geminiAdapter;
 
     public List<TipsDTO> obtenerConsejosFinancieros(Long usuarioId) {
         List<Gasto> gastos = gastoRepository.findGastosByUsuarioId(usuarioId);
@@ -43,7 +45,9 @@ public class ServicioTips {
 
         ResponseEntity<JsonNode> responseEntity = restTemplate.postForEntity(url, requestEntity, JsonNode.class);
 
-        return procesarRespuesta(Objects.requireNonNull(responseEntity.getBody()));
+        log.info("Respuesta cruda de la API: {}", Objects.requireNonNull(responseEntity.getBody()).toPrettyString());
+
+        return GeminiAdapter.convertirDesdeJson(Objects.requireNonNull(responseEntity.getBody()));
     }
 
     private String formatearGasto(Gasto gasto) {
@@ -51,45 +55,18 @@ public class ServicioTips {
     }
 
     private String generarPrompt(List<Gasto> gastos) {
-        StringBuilder prompt = new StringBuilder("Analiza los siguientes gastos y genera 5 consejos financieros personalizados: ");
+        StringBuilder prompt = new StringBuilder("Analiza los siguientes gastos y genera 5 exactamente  consejos financieros personalizados: ");
         for (Gasto gasto : gastos) {
             prompt.append(formatearGasto(gasto));
         }
-        prompt.append("Devuelve los consejos en formato JSON con claves consejo1, consejo2, ..., consejo5.");
+        prompt.append("\nNo incluyas introducción, explicaciones adicionales ni información extra. Solo devuelve la lista de consejos en el formato indicado.");
+        prompt.append("\nFormato de salida estricto:\n");
+        prompt.append("- Consejo 1: [Aquí el primer consejo]\n");
+        prompt.append("- Consejo 2: [Aquí el segundo consejo]\n");
+        prompt.append("- Consejo 3: [Aquí el tercer consejo]\n");
+        prompt.append("- Consejo 4: [Aquí el cuarto consejo]\n");
+        prompt.append("- Consejo 5: [Aquí el quinto consejo]\n");
         return prompt.toString();
     }
-
-    private List<TipsDTO> procesarRespuesta(JsonNode body) {
-        List<TipsDTO> consejos = new ArrayList<>();
-
-        try {
-            // Verificar si la respuesta tiene la estructura esperada
-            if (body.has("candidates") && body.get("candidates").isArray() && !body.get("candidates").isEmpty()) {
-                JsonNode candidate = body.get("candidates").get(0);
-                if (candidate.has("content") && candidate.get("content").has("parts") && candidate.get("content").get("parts").isArray()) {
-                    String textResponse = candidate.get("content").get("parts").get(0).get("text").asText();
-
-                    // Limpiar la respuesta para extraer solo el JSON
-                    String jsonClean = textResponse.replaceAll(".*?\\{", "{").replaceAll("\\}.*", "}");
-
-                    // Convertir la cadena JSON a un objeto JsonNode
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    JsonNode consejosJson = objectMapper.readTree(jsonClean);
-
-                    // Recorrer el JSON y mapearlo a TipsDTO
-                    consejosJson.fields().forEachRemaining(entry -> {
-                        consejos.add(new TipsDTO(entry.getKey(), entry.getValue().asText()));
-                    });
-                } else {
-                    System.err.println("La respuesta no tiene la estructura esperada.");
-                }
-            } else {
-                System.err.println("No se encontraron 'candidates' en la respuesta.");
-            }
-        } catch (Exception e) {
-            System.err.println("Error procesando la respuesta de la API: " + e.getMessage());
-        }
-
-        return consejos;
-    }
 }
+

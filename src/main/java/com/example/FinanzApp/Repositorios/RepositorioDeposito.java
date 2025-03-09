@@ -27,9 +27,4 @@ public interface RepositorioDeposito extends JpaRepository<Deposito, Long> {
     @Query("DELETE FROM Deposito d WHERE  d.alcancia.idAlcancia = :idAlcancia AND d.idDeposito = :idDeposito ")
     void deleteByDepositos(@Param("idDeposito") Long idDeposito, @Param("idAlcancia") Long idAlcancia);
 
-
-
-
-
-
 }

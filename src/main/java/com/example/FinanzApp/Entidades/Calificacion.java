@@ -1,6 +1,5 @@
 package com.example.FinanzApp.Entidades;
 
-
 import jakarta.persistence.*;
 import lombok.Data;
 

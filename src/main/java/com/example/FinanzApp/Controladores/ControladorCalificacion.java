@@ -1,14 +1,14 @@
 package com.example.FinanzApp.Controladores;
 
 import com.example.FinanzApp.DTOS.CalificacionDTO;
+import com.example.FinanzApp.DTOS.DepositoDTO;
 import com.example.FinanzApp.Servicios.ServicioCalificacion;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Tag(name = "Calificaciones", description = "API para gestionar calificaciones en FinanzApp")
@@ -30,4 +30,16 @@ public class ControladorCalificacion {
           return ResponseEntity.badRequest().body(null);
        }
     }
+
+    @GetMapping("/ObtenerCalificaciones/{id_consejo}")
+    public ResponseEntity<List<CalificacionDTO>> obtenerCalificaciones(@PathVariable Long id_consejo) {
+        List<CalificacionDTO> calificaciones = servicioCalificacion.listarCalificaciones(id_consejo);
+        if (calificaciones != null) {
+            return ResponseEntity.ok(calificaciones);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+
 }

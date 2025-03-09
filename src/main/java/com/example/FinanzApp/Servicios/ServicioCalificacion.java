@@ -12,6 +12,9 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @AllArgsConstructor
 @Transactional
@@ -42,5 +45,15 @@ public class ServicioCalificacion {
 
         return modelMapper.map(calificacionGuardada, CalificacionDTO.class);
     }
+
+    public List<CalificacionDTO> listarCalificaciones(Long idConsejo) {
+
+        List<Calificacion> calificaciones = repositorioCalificacion.findByConsejos(idConsejo);
+
+        return calificaciones.stream()
+                .map(calificacion -> modelMapper.map(calificacion, CalificacionDTO.class))
+                .collect(Collectors.toList());
+    }
+
 
 }

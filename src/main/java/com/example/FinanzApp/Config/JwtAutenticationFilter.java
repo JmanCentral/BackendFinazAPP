@@ -9,6 +9,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -19,17 +20,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
+@AllArgsConstructor
 public class JwtAutenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 
     private final JwtUtils jwtUtils;
-    private final RepositorioUsuario repositorioUsuario; // 👈 Agregar repositorio
+    private final RepositorioUsuario repositorioUsuario;
 
-    public JwtAutenticationFilter(JwtUtils jwtUtils, RepositorioUsuario repositorioUsuario) {
-        this.jwtUtils = jwtUtils;
-        this.repositorioUsuario = repositorioUsuario; // 👈 Inyectar repositorio
-    }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
