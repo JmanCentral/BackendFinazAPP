@@ -55,7 +55,13 @@ public class ServicioTips {
         for (Gasto gasto : gastos) {
             prompt.append(formatearGasto(gasto));
         }
-        prompt.append("Devuelve los consejos en formato JSON con claves consejo1, consejo2, ..., consejo5.");
+        prompt.append("\nNo incluyas introducción, explicaciones adicionales ni información extra. Solo devuelve la lista de consejos en el formato indicado.");
+        prompt.append("\nFormato de salida estricto:\n");
+        prompt.append("- Consejo 1: [Aquí el primer consejo]\n");
+        prompt.append("- Consejo 2: [Aquí el segundo consejo]\n");
+        prompt.append("- Consejo 3: [Aquí el tercer consejo]\n");
+        prompt.append("- Consejo 4: [Aquí el cuarto consejo]\n");
+        prompt.append("- Consejo 5: [Aquí el quinto consejo]\n");
         return prompt.toString();
     }
 
