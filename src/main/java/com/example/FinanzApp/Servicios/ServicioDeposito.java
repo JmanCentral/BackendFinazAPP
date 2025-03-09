@@ -34,7 +34,7 @@ public class ServicioDeposito {
         Alcancia alcancia = repositorioAlcancia.findById(id_alcancia)
                 .orElseThrow(() -> new RuntimeException("Alcancia no encontrada"));
 
-        // Convertir el DTO a la entidad Deposito
+
         Deposito deposito = modelMapper.map(depositoDTO, Deposito.class);
         deposito.setUsuario(usuario);
         deposito.setAlcancia(alcancia);

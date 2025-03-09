@@ -42,17 +42,11 @@ public class SecurityConfig {
 
 
         return httpSecurity
-                .csrf().disable()
-                .authorizeHttpRequests(auth-> {
-                    auth.requestMatchers("/Finanzapp/registro", "/Finanzapp/login" , "/api/password/forgot" , "/api/password/reset",  "/v3/api-docs/**",      // Documentación OpenAPI (Swagger 3)
-                            "/swagger-ui/**",       // Interfaz web de Swagger
-                            "/swagger-ui.html",     // Página principal de Swagger UI
-                            "/webjars/**", "/Finanzapp/ObtenerUsuario/{id_usuario}").permitAll();
-                    auth.anyRequest().authenticated();
+                .csrf().disable() // Deshabilita CSRF
+                .authorizeHttpRequests(auth -> {
+                    auth.anyRequest().permitAll(); // Permite todas las solicitudes sin autenticación
                 })
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilter(jwtAutenticationFilter)
-                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Sesiones sin estado
                 .build();
     }
 

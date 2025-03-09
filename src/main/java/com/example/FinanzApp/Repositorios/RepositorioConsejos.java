@@ -1,15 +1,11 @@
 package com.example.FinanzApp.Repositorios;
 
 import com.example.FinanzApp.Entidades.Consejos;
-import org.springframework.data.mongodb.repository.Aggregation;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface RepositorioConsejos extends MongoRepository<Consejos, String> {
+public interface RepositorioConsejos extends JpaRepository<Consejos, Long> {
 
-    @Aggregation(pipeline = {
-            "{ $sample: { size: 10 } }"
-    })
-    List<Consejos> findRandomConsejos();
+    List<Consejos> findAll();
 }

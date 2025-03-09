@@ -63,21 +63,29 @@ public class ServicioTips {
         List<TipsDTO> consejos = new ArrayList<>();
 
         try {
-            // Extraer el texto de la respuesta
-            String textResponse = body.get("candidates").get(0).get("content").get("parts").get(0).get("text").asText();
+            // Verificar si la respuesta tiene la estructura esperada
+            if (body.has("candidates") && body.get("candidates").isArray() && !body.get("candidates").isEmpty()) {
+                JsonNode candidate = body.get("candidates").get(0);
+                if (candidate.has("content") && candidate.get("content").has("parts") && candidate.get("content").get("parts").isArray()) {
+                    String textResponse = candidate.get("content").get("parts").get(0).get("text").asText();
 
-            // Limpiar la respuesta para quitar los delimitadores ```json\n y \n```
-            String jsonClean = textResponse.replaceAll("```json\\n|\\n```", "");
+                    // Limpiar la respuesta para extraer solo el JSON
+                    String jsonClean = textResponse.replaceAll(".*?\\{", "{").replaceAll("\\}.*", "}");
 
-            // Convertir la cadena JSON a un objeto JsonNode
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode consejosJson = objectMapper.readTree(jsonClean);
+                    // Convertir la cadena JSON a un objeto JsonNode
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    JsonNode consejosJson = objectMapper.readTree(jsonClean);
 
-            // Recorrer el JSON y mapearlo a TipsDTO
-            consejosJson.fields().forEachRemaining(entry -> {
-                consejos.add(new TipsDTO(entry.getKey(), entry.getValue().asText()));
-            });
-
+                    // Recorrer el JSON y mapearlo a TipsDTO
+                    consejosJson.fields().forEachRemaining(entry -> {
+                        consejos.add(new TipsDTO(entry.getKey(), entry.getValue().asText()));
+                    });
+                } else {
+                    System.err.println("La respuesta no tiene la estructura esperada.");
+                }
+            } else {
+                System.err.println("No se encontraron 'candidates' en la respuesta.");
+            }
         } catch (Exception e) {
             System.err.println("Error procesando la respuesta de la API: " + e.getMessage());
         }

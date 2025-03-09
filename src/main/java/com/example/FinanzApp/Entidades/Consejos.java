@@ -1,20 +1,27 @@
 package com.example.FinanzApp.Entidades;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import lombok.Data;
+
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
+@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
-@Document(collection = "consejos")
 public class Consejos {
 
     @Id
-    private String id;
-    private String consejo;
-}
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idConsejo;
 
+    @Column(unique = true, nullable = false)
+    private String consejos;
+
+    @OneToMany(mappedBy = "consejos", cascade = CascadeType.ALL ,  orphanRemoval = true )
+    private List<Calificacion> calificacion;
+
+}
