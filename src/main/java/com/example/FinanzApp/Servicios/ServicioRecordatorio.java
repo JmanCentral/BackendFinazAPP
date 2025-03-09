@@ -91,7 +91,7 @@ public class ServicioRecordatorio {
         }
 
     @Transactional
-    public void eliminarTodosLosRecordatorios(Long id_usuario) {
+        public void eliminarTodosLosRecordatorios(Long id_usuario) {
         repositorioRecordatorio.deleteByUsuario(id_usuario);
     }
 
