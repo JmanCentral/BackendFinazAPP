@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class ConsejosDTO {
 
     private Long id;
-    private String consejos;
+    private String consejo;
 }

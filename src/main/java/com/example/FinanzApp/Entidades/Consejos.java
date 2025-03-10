@@ -19,7 +19,7 @@ public class Consejos {
     private Long idConsejo;
 
     @Column(unique = true, nullable = false)
-    private String consejos;
+    private String consejo;
 
     @OneToMany(mappedBy = "consejos", cascade = CascadeType.ALL ,  orphanRemoval = true )
     private List<Calificacion> calificacion;
