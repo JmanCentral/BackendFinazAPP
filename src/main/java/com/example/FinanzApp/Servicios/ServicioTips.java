@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -47,7 +48,7 @@ public class ServicioTips {
 
         log.info("Respuesta cruda de la API: {}", Objects.requireNonNull(responseEntity.getBody()).toPrettyString());
 
-        return GeminiAdapter.convertirDesdeJson(Objects.requireNonNull(responseEntity.getBody()));
+        return geminiAdapter.convertirDesdeJson(Objects.requireNonNull(responseEntity.getBody()));
     }
 
     private String formatearGasto(Gasto gasto) {

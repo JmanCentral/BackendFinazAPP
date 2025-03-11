@@ -1,5 +1,4 @@
 package com.example.FinanzApp.Config;
-import com.example.FinanzApp.Repositorios.RepositorioUsuario;
 import com.example.FinanzApp.Servicios.ServicioUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -26,8 +25,6 @@ public class SecurityConfig {
     @Autowired
     JwtAuthorizationFilter jwtAuthorizationFilter;
 
-
-
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity , AuthenticationManager authenticationManager) throws Exception {
 
@@ -41,7 +38,7 @@ public class SecurityConfig {
                     auth.requestMatchers("/Finanzapp/registro", "/Finanzapp/login" , "/api/password/forgot" , "/api/password/reset",  "/v3/api-docs/**",      // Documentación OpenAPI (Swagger 3)
                             "/swagger-ui/**",       // Interfaz web de Swagger
                             "/swagger-ui.html",     // Página principal de Swagger UI
-                            "/webjars/**", "/Finanzapp/ObtenerUsuario/{id_usuario}").permitAll();
+                            "/webjars/**").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
