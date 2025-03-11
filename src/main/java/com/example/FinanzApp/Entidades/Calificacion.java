@@ -5,9 +5,6 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"id_usuario", "id_consejo"})
-})
 public class Calificacion {
 
     @Id

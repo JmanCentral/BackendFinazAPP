@@ -26,7 +26,6 @@ public class ServicioCalificacion {
     private ModelMapper modelMapper;
 
     public CalificacionDTO registrarCalificacion(CalificacionDTO calificacionDTO) {
-
         Long idUsuario = calificacionDTO.getId_usuario();
         Long idConsejo = calificacionDTO.getIdConsejo();
 
@@ -36,8 +35,19 @@ public class ServicioCalificacion {
                 .orElseThrow(() -> new RuntimeException("Consejo no encontrado"));
 
 
-        Calificacion calificacion = modelMapper.map(calificacionDTO, Calificacion.class);
+        int likes = repositorioCalificacion.countLikesByUsuarioAndConsejo(idUsuario, idConsejo);
+        int dislikes = repositorioCalificacion.countDislikesByUsuarioAndConsejo(idUsuario, idConsejo);
 
+        if (calificacionDTO.getMe_gusta() == 1 && likes > 0) {
+            throw new RuntimeException("Ya has dado 'Me gusta' a este consejo.");
+        }
+
+        if (calificacionDTO.getNo_me_gusta() == 1 && dislikes > 0) {
+            throw new RuntimeException("Ya has dado 'No me gusta' a este consejo.");
+        }
+
+        // Si pasa la validación, registrar la calificación
+        Calificacion calificacion = modelMapper.map(calificacionDTO, Calificacion.class);
         calificacion.setUsuario(usuario);
         calificacion.setConsejos(consejo);
 
@@ -46,14 +56,22 @@ public class ServicioCalificacion {
         return modelMapper.map(calificacionGuardada, CalificacionDTO.class);
     }
 
-    public List<CalificacionDTO> listarCalificaciones(Long idConsejo) {
 
-        List<Calificacion> calificaciones = repositorioCalificacion.findByConsejos(idConsejo);
+    public List<CalificacionDTO> listarCalificaciones() {
 
-        return calificaciones.stream()
-                .map(calificacion -> modelMapper.map(calificacion, CalificacionDTO.class))
-                .collect(Collectors.toList());
+        List<Calificacion> calificaciones = repositorioCalificacion.findAll();
+
+        return calificaciones.stream().map(calificacion -> {
+            CalificacionDTO dto = new CalificacionDTO();
+            dto.setIdCalificacion(calificacion.getIdCalificacion());
+            dto.setMe_gusta(calificacion.getMe_gusta());
+            dto.setNo_me_gusta(calificacion.getNo_me_gusta());
+            dto.setId_usuario(calificacion.getUsuario().getId_usuario());
+            dto.setIdConsejo(calificacion.getConsejos() != null ? calificacion.getConsejos().getIdConsejo() : null);
+            return dto;
+        }).collect(Collectors.toList());
     }
+
 
 
 }

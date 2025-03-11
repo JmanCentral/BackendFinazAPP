@@ -17,8 +17,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
 
-    @Autowired
-    JwtUtils jwtUtils;
 
     @Lazy
     @Autowired
@@ -28,17 +26,13 @@ public class SecurityConfig {
     @Autowired
     JwtAuthorizationFilter jwtAuthorizationFilter;
 
-    @Lazy
-    @Autowired
-    RepositorioUsuario repositorioUsuario;
 
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity , AuthenticationManager authenticationManager) throws Exception {
 
-        JwtAutenticationFilter jwtAutenticationFilter = new JwtAutenticationFilter(jwtUtils , repositorioUsuario);
+        JwtAutenticationFilter jwtAutenticationFilter = new JwtAutenticationFilter();
         jwtAutenticationFilter.setAuthenticationManager(authenticationManager);
-        jwtAutenticationFilter.setFilterProcessesUrl("/Finanzapp/login");
 
 
         return httpSecurity

@@ -31,9 +31,9 @@ public class ControladorCalificacion {
        }
     }
 
-    @GetMapping("/ObtenerCalificaciones/{id_consejo}")
-    public ResponseEntity<List<CalificacionDTO>> obtenerCalificaciones(@PathVariable Long id_consejo) {
-        List<CalificacionDTO> calificaciones = servicioCalificacion.listarCalificaciones(id_consejo);
+    @GetMapping("/ObtenerCalificaciones")
+    public ResponseEntity<List<CalificacionDTO>> obtenerCalificaciones() {
+        List<CalificacionDTO> calificaciones = servicioCalificacion.listarCalificaciones();
         if (calificaciones != null) {
             return ResponseEntity.ok(calificaciones);
         } else {
