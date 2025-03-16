@@ -6,10 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface RepositorioDeposito extends JpaRepository<Deposito, Long> {
 
     @Query("SELECT d FROM Deposito d WHERE d.alcancia.idAlcancia = :idAlcancia")
@@ -26,10 +28,5 @@ public interface RepositorioDeposito extends JpaRepository<Deposito, Long> {
     @Modifying
     @Query("DELETE FROM Deposito d WHERE  d.alcancia.idAlcancia = :idAlcancia AND d.idDeposito = :idDeposito ")
     void deleteByDepositos(@Param("idDeposito") Long idDeposito, @Param("idAlcancia") Long idAlcancia);
-
-
-
-
-
 
 }

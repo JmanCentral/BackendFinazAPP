@@ -1,9 +1,7 @@
 package com.example.FinanzApp.Servicios;
 
 
-import com.example.FinanzApp.DTOS.GastoDTO;
 import com.example.FinanzApp.DTOS.IngresoDTO;
-import com.example.FinanzApp.Entidades.Gasto;
 import com.example.FinanzApp.Entidades.Ingreso;
 import com.example.FinanzApp.Entidades.Usuario;
 import com.example.FinanzApp.Repositorios.RepositorioIngreso;
@@ -11,11 +9,9 @@ import com.example.FinanzApp.Repositorios.RepositorioUsuario;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

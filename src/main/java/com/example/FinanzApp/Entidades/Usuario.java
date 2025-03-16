@@ -21,9 +21,9 @@ public class Usuario implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_usuario;
-    @Column(name = "USERNAME" ,  unique = true)
+    @Column(name = "USERNAME" , unique = true)
     private String username;
-    @Column(nullable = false, name = "EMAIL" ,  unique = true)
+    @Column(nullable = false, name = "EMAIL",unique = true)
     @Pattern(
             regexp = "^[a-zA-Z0-9._%+-]+@(gmail\\.com|hotmail\\.com|[a-zA-Z0-9.-]+\\.edu\\.co)$",
             message = "El correo debe ser de dominio @gmail.com, @hotmail.com o terminar en .edu.co"
