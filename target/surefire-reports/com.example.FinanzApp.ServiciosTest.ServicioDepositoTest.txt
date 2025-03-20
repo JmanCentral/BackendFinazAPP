@@ -1,0 +1,12 @@
+-------------------------------------------------------------------------------
+Test set: com.example.FinanzApp.ServiciosTest.ServicioDepositoTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.424 s <<< FAILURE! -- in com.example.FinanzApp.ServiciosTest.ServicioDepositoTest
+com.example.FinanzApp.ServiciosTest.ServicioDepositoTest.testModificarDeposito -- Time elapsed: 0.008 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "com.example.FinanzApp.Entidades.Alcancia.getIdAlcancia()" because the return value of "com.example.FinanzApp.Entidades.Deposito.getAlcancia()" is null
+	at com.example.FinanzApp.Servicios.ServicioDeposito.ModificarDeposito(ServicioDeposito.java:77)
+	at com.example.FinanzApp.ServiciosTest.ServicioDepositoTest.testModificarDeposito(ServicioDepositoTest.java:138)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
