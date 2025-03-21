@@ -26,7 +26,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.transaction.annotation.Transactional;
 
 @ExtendWith(MockitoExtension.class)
-public class ServicioDepositoTest {
+class ServicioDepositoTest {
 
     @Mock
     private RepositorioDeposito repositorioDeposito;
@@ -129,8 +129,8 @@ public class ServicioDepositoTest {
     @Transactional
     public void testModificarDeposito() {
         // Configuración de los mocks
+        deposito.setAlcancia(alcancia);  // Asegurar que el depósito tiene una alcancía asociada
         when(repositorioDeposito.findById(1L)).thenReturn(Optional.of(deposito));
-        when(repositorioAlcancia.findById(1L)).thenReturn(Optional.of(alcancia));
         when(repositorioAlcancia.save(alcancia)).thenReturn(alcancia);
         when(repositorioDeposito.save(deposito)).thenReturn(deposito);
 
@@ -141,9 +141,9 @@ public class ServicioDepositoTest {
         assertNotNull(resultado);
         assertEquals(depositoDTO.getMonto(), resultado.getMonto());
         verify(repositorioDeposito, times(1)).findById(1L);
-        verify(repositorioAlcancia, times(1)).findById(1L);
         verify(repositorioDeposito, times(1)).save(deposito);
     }
+
 
     @Test
     @Transactional

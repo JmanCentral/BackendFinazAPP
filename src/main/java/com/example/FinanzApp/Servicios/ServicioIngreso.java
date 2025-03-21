@@ -1,6 +1,5 @@
 package com.example.FinanzApp.Servicios;
 
-
 import com.example.FinanzApp.DTOS.IngresoDTO;
 import com.example.FinanzApp.Entidades.Ingreso;
 import com.example.FinanzApp.Entidades.Usuario;
@@ -14,8 +13,6 @@ import org.springframework.stereotype.Service;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
 @Data
 @Service
 @AllArgsConstructor
@@ -44,8 +41,7 @@ public class ServicioIngreso implements Serializable {
 
         return ingresos.stream()
                 .map(ingreso -> modelMapper.map(ingreso, IngresoDTO.class))
-                .collect(Collectors.toList());
-
+                .toList();
     }
 
 
@@ -55,7 +51,7 @@ public class ServicioIngreso implements Serializable {
 
         return ingresos.stream()
                 .map(ingreso -> modelMapper.map(ingreso, IngresoDTO.class))
-                .collect(Collectors.toList());
+                .toList();
 
     }
 
@@ -65,7 +61,7 @@ public class ServicioIngreso implements Serializable {
 
         return ingresos.stream()
                 .map(ingreso -> modelMapper.map(ingreso, IngresoDTO.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public Double BuscarIngresosTotales(Long id_usuario) {
@@ -86,7 +82,7 @@ public class ServicioIngreso implements Serializable {
 
         return ingresosMensuales.stream()
                 .map(ingreso -> modelMapper.map(ingreso, IngresoDTO.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public IngresoDTO ModificarIngreso(Long id_ingreso, IngresoDTO ingresoDTO) {
@@ -122,16 +118,14 @@ public class ServicioIngreso implements Serializable {
     }
     public Double ProyectarIngresos(Long id_usuario){
 
-        Double totalIngresos =  repositorioIngreso.calcularTotalMensual(id_usuario);
-
-        return totalIngresos;
+        return repositorioIngreso.calcularTotalMensual(id_usuario);
     }
+
     public Double AhorroMensual (Long id_usuario) {
 
-        Double totalingresos = repositorioIngreso.calcularAhorroPosible(id_usuario);
-
-        return totalingresos;
+        return repositorioIngreso.calcularAhorroPosible(id_usuario);
     }
+
     public void eliminarIngreso(Long id) {
         repositorioIngreso.deleteById(id);
     }

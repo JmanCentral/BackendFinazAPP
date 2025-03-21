@@ -1,118 +1,85 @@
 package com.example.FinanzApp.ServiciosTest;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.example.FinanzApp.Components.GeminiAdapter;
 import com.example.FinanzApp.Config.APIgemini;
-import com.example.FinanzApp.DTOS.GastoDTO;
 import com.example.FinanzApp.DTOS.TipsDTO;
 import com.example.FinanzApp.Entidades.Gasto;
-import com.example.FinanzApp.Entidades.Usuario;
 import com.example.FinanzApp.Repositorios.RepositorioGasto;
 import com.example.FinanzApp.Servicios.ServicioTips;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockedStatic;
+import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
+import java.util.List;
 
-
-@ExtendWith(MockitoExtension.class)
-public class ServicioTipsTest {
-
-    @Mock
-    private RestTemplate restTemplate; // Mock del RestTemplate
+class ServicioTipsTest {
 
     @Mock
-    private RepositorioGasto gastoRepository; // Mock del repositorio de gastos
+    private APIgemini apiGemini;
 
     @Mock
-    private APIgemini apiGemini; // Mock de la clase APIgemini
+    private RestTemplate restTemplate;
+
+    @Mock
+    private RepositorioGasto gastoRepository;
+
+    @Mock
+    private GeminiAdapter geminiAdapter;
 
     @InjectMocks
-    private ServicioTips servicioTips; // Inyecta los mocks en el servicio
-
-    private Gasto gasto;
-    private Usuario usuario;
+    private ServicioTips servicioTips;
 
     @BeforeEach
-    public void setUp() {
-        // Configuración inicial para las pruebas
-        when(apiGemini.getApiKey()).thenReturn("tu_api_key"); // Simula la clave de la API
-
-        // Crear un gasto de prueba
-        gasto = new Gasto();
-        gasto.setId_gasto(1L);
-        gasto.setNombre_gasto("Comida");
-        gasto.setCategoria("Alimentación");
-        gasto.setFecha(LocalDate.of(2023, 10, 1));
-        gasto.setValor(50.0);
-
-        // Crear un usuario de prueba
-        usuario = new Usuario();
-        usuario.setId_usuario(1L);
-        usuario.setUsername("testuser");
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void testObtenerConsejosFinancieros() throws Exception {
-        // Configuración de los mocks
-        List<Gasto> gastos = new ArrayList<>();
-        gastos.add(new Gasto(1L, "Comida", "Alimentación", LocalDate.of(2023, 10, 1), 150.0, null));
-        gastos.add(new Gasto(2L, "Transporte", "Transporte", LocalDate.of(2023, 10, 2), 50.0, null));
+    void testObtenerConsejosFinancieros() {
+        // Datos de prueba
+        Long usuarioId = 1L;
+        Gasto gasto1 = new Gasto(1L, "Comida", "Almuerzo", null, 10000.0, null);
+        Gasto gasto2 = new Gasto(2L, "Transporte", "Taxi", null, 5000.0, null);
+        List<Gasto> gastos = Arrays.asList(gasto1, gasto2);
 
-        when(gastoRepository.findGastosByUsuarioId(1L)).thenReturn(gastos); // Simula la respuesta del repositorio
+        // Mocking
+        when(gastoRepository.findGastosByUsuarioId(usuarioId)).thenReturn(gastos);
+        when(apiGemini.getApiKey()).thenReturn("testApiKey");
 
-        // Simula la respuesta de la API externa
-        String jsonResponse = """
-            {
-                "candidates": [
-                    {
-                        "content": {
-                            "parts": [
-                                {
-                                    "text": "```json\\n{\\"consejo1\\":\\"Ahorra en comida\\",\\"consejo2\\":\\"Reduce gastos en transporte\\"}\\n```"
-                                }
-                            ]
-                        }
-                    }
-                ]
-            }
-            """;
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonNode = objectMapper.readTree(jsonResponse);
-
-        ResponseEntity<JsonNode> responseEntity = new ResponseEntity<>(jsonNode, HttpStatus.OK);
+        JsonNode mockResponse = mock(JsonNode.class);
         when(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(JsonNode.class)))
-                .thenReturn(responseEntity); // Simula la llamada a la API
+                .thenReturn(ResponseEntity.ok(mockResponse));
 
-        // Ejecución del método a probar
-        List<TipsDTO> consejos = servicioTips.obtenerConsejosFinancieros(1L);
+        // Simular la conversión de JSON a TipsDTO usando mockStatic
+        List<TipsDTO> tipsDTOList = Arrays.asList(new TipsDTO("Consejo 1", "Buena bro"), new TipsDTO("Consejo 2", "Buena bro"));
 
-        // Verificaciones
-        assertNotNull(consejos);
-        assertEquals(2, consejos.size());
-        assertEquals("consejo1", consejos.get(0).getTitulo());
-        assertEquals("Ahorra en comida", consejos.get(0).getContenido());
-        assertEquals("consejo2", consejos.get(1).getTitulo());
-        assertEquals("Reduce gastos en transporte", consejos.get(1).getContenido());
+        try (MockedStatic<GeminiAdapter> mockedStatic = mockStatic(GeminiAdapter.class)) {
+            mockedStatic.when(() -> GeminiAdapter.convertirDesdeJson(mockResponse)).thenReturn(tipsDTOList);
 
-        // Verifica que se llamó al repositorio y a la API
-        verify(gastoRepository, times(1)).findGastosByUsuarioId(1L);
-        verify(restTemplate, times(1)).postForEntity(anyString(), any(HttpEntity.class), eq(JsonNode.class));
+            // Llamar al método
+            List<TipsDTO> result = servicioTips.obtenerConsejosFinancieros(usuarioId);
+
+            // Verificaciones
+            assertNotNull(result);
+            assertEquals(2, result.size());
+            assertEquals("Buena bro", result.get(0).getContenido());
+            assertEquals("Buena bro", result.get(1).getContenido());
+
+            // Verificar que se llamaron los métodos esperados
+            verify(gastoRepository).findGastosByUsuarioId(usuarioId);
+            verify(restTemplate).postForEntity(anyString(), any(HttpEntity.class), eq(JsonNode.class));
+        }
     }
 }
+

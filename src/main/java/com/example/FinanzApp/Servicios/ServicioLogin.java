@@ -26,7 +26,7 @@ public class ServicioLogin {
 
 
     public Map<String, Object> AutenticarUsuario(LoginRequest loginRequest) {
-        try {
+
             // 1. Autenticar al usuario
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getContrasena()));
@@ -49,8 +49,6 @@ public class ServicioLogin {
             response.put("token", jwt);
 
             return response;
-        } catch (Exception e) {
-            throw new RuntimeException("Error durante la autenticación: " + e.getMessage());
-        }
+
     }
 }

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServicioDeposito.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">FinanzApp</a> &gt; <a href="index.source.html" class="el_package">com.example.FinanzApp.Servicios</a> &gt; <span class="el_source">ServicioDeposito.java</span></div><h1>ServicioDeposito.java</h1><pre class="source lang-java linenums">package com.example.FinanzApp.Servicios;
+
+
+import com.example.FinanzApp.DTOS.DepositoDTO;
+import com.example.FinanzApp.Entidades.Alcancia;
+import com.example.FinanzApp.Entidades.Deposito;
+import com.example.FinanzApp.Entidades.Usuario;
+import com.example.FinanzApp.Repositorios.RepositorioAlcancia;
+import com.example.FinanzApp.Repositorios.RepositorioDeposito;
+import com.example.FinanzApp.Repositorios.RepositorioUsuario;
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@Data
+@AllArgsConstructor
+public class ServicioDeposito {
+
+    private final RepositorioDeposito repositorioDeposito;
+    private final ModelMapper modelMapper;
+    private final RepositorioUsuario repositorioUsuario;
+    private final RepositorioAlcancia repositorioAlcancia;
+
+    public DepositoDTO realizarDeposito(DepositoDTO depositoDTO, Long id_usuario, Long id_alcancia) {
+
+<span class="fc" id="L32">        Usuario usuario = repositorioUsuario.findById(id_usuario)</span>
+<span class="pc" id="L33">                .orElseThrow(() -&gt; new RuntimeException(&quot;Usuario no encontrado&quot;));</span>
+<span class="fc" id="L34">        Alcancia alcancia = repositorioAlcancia.findById(id_alcancia)</span>
+<span class="pc" id="L35">                .orElseThrow(() -&gt; new RuntimeException(&quot;Alcancia no encontrada&quot;));</span>
+
+
+<span class="fc" id="L38">        Deposito deposito = modelMapper.map(depositoDTO, Deposito.class);</span>
+<span class="fc" id="L39">        deposito.setUsuario(usuario);</span>
+<span class="fc" id="L40">        deposito.setAlcancia(alcancia);</span>
+
+<span class="fc" id="L42">        alcancia.setSaldoActual(alcancia.getSaldoActual() + deposito.getMonto());</span>
+
+        // Guardar primero la alcancía con el saldo actualizado
+<span class="fc" id="L45">        repositorioAlcancia.save(alcancia);</span>
+
+        // Guardar el depósito en la base de datos
+<span class="fc" id="L48">        Deposito deposito1 = repositorioDeposito.save(deposito);</span>
+
+<span class="fc" id="L50">        return modelMapper.map(deposito1, DepositoDTO.class);</span>
+    }
+
+    public List&lt;DepositoDTO&gt; ObtenerDepositos(Long idAlcancia) {
+
+<span class="fc" id="L55">        List&lt;Deposito&gt; depositos = repositorioDeposito.findByAlcancia(idAlcancia);</span>
+
+<span class="fc" id="L57">        return depositos.stream()</span>
+<span class="fc" id="L58">                .map(deposito -&gt; modelMapper.map(deposito, DepositoDTO.class))</span>
+<span class="fc" id="L59">                .collect(Collectors.toList());</span>
+    }
+
+
+    public Double ObtenerValorGastosMesDepositos(Long id_usuario) {
+
+<span class="fc" id="L65">        return repositorioDeposito.getValorDepositosMes(id_usuario);</span>
+
+    }
+
+
+    @Transactional
+    public DepositoDTO ModificarDeposito(DepositoDTO depositoDTO, Long idDeposito, Long idAlcancia) {
+
+<span class="fc" id="L73">        Deposito deposito = repositorioDeposito.findById(idDeposito)</span>
+<span class="pc" id="L74">                .orElseThrow(() -&gt; new RuntimeException(&quot;Depósito no encontrado&quot;));</span>
+
+        // Validar que el depósito pertenece a la alcancía especificada
+<span class="pc bpc" id="L77" title="1 of 2 branches missed.">        if (!deposito.getAlcancia().getIdAlcancia().equals(idAlcancia)) {</span>
+<span class="nc" id="L78">            throw new RuntimeException(&quot;El depósito no pertenece a la alcancía especificada.&quot;);</span>
+        }
+
+<span class="fc" id="L81">        Double montoAnterior = deposito.getMonto();</span>
+
+<span class="fc" id="L83">        deposito.setMonto(depositoDTO.getMonto());</span>
+<span class="fc" id="L84">        deposito.setFecha(depositoDTO.getFecha());</span>
+<span class="fc" id="L85">        deposito.setNombre_depositante(depositoDTO.getNombre_depositante());</span>
+
+<span class="fc" id="L87">        Alcancia alcancia = deposito.getAlcancia();</span>
+
+<span class="fc" id="L89">        Double nuevoSaldo = alcancia.getSaldoActual() - montoAnterior + depositoDTO.getMonto();</span>
+<span class="fc" id="L90">        alcancia.setSaldoActual(nuevoSaldo);</span>
+
+<span class="fc" id="L92">        repositorioAlcancia.save(alcancia);</span>
+<span class="fc" id="L93">        Deposito depositoActualizado = repositorioDeposito.save(deposito);</span>
+
+        // Convertir la entidad actualizada de nuevo en un DTO para retornarlo
+<span class="fc" id="L96">        DepositoDTO depositoActualizadoDTO = new DepositoDTO();</span>
+<span class="fc" id="L97">        depositoActualizadoDTO.setIdDeposito(depositoActualizado.getIdDeposito());</span>
+<span class="fc" id="L98">        depositoActualizadoDTO.setMonto(depositoActualizado.getMonto());</span>
+<span class="fc" id="L99">        depositoActualizadoDTO.setFecha(depositoActualizado.getFecha());</span>
+<span class="fc" id="L100">        depositoActualizadoDTO.setNombre_depositante(depositoActualizado.getNombre_depositante());</span>
+
+<span class="fc" id="L102">        return depositoActualizadoDTO;</span>
+    }
+
+    @Transactional
+    public void EliminarDeposito(Long depositoId, Long alcanciaId) {
+
+
+<span class="fc" id="L109">        Deposito deposito = repositorioDeposito.findById(depositoId)</span>
+<span class="pc" id="L110">                .orElseThrow(() -&gt; new RuntimeException(&quot;Depósito no encontrado&quot;));</span>
+
+<span class="fc" id="L112">        Alcancia alcancia = repositorioAlcancia.findById(alcanciaId)</span>
+<span class="pc" id="L113">                .orElseThrow(() -&gt; new RuntimeException(&quot;Alcancía no encontrada&quot;));</span>
+
+<span class="fc" id="L115">        alcancia.setSaldoActual(alcancia.getSaldoActual() - deposito.getMonto());</span>
+
+<span class="fc" id="L117">        repositorioAlcancia.save(alcancia);</span>
+
+<span class="fc" id="L119">        repositorioDeposito.deleteByDepositos(depositoId, alcanciaId);</span>
+<span class="fc" id="L120">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

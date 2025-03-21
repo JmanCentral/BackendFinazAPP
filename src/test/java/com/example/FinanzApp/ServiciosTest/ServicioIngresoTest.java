@@ -23,7 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
 @ExtendWith(MockitoExtension.class)
-public class ServicioIngresoTest {
+class ServicioIngresoTest {
 
     @Mock
     private RepositorioIngreso repositorioIngreso;

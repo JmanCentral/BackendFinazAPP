@@ -24,7 +24,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.transaction.annotation.Transactional;
 
 @ExtendWith(MockitoExtension.class)
-public class ServicioRecordatorioTest {
+class ServicioRecordatorioTest {
 
     @Mock
     private RepositorioRecordatorio repositorioRecordatorio;

@@ -14,7 +14,6 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -96,7 +95,7 @@ public class ServicioGasto {
 
         return gastos.stream()
                 .map(gasto -> modelMapper.map(gasto, GastoDTO.class))
-                .collect(Collectors.toList());
+                .toList();
 
     }
 
@@ -106,7 +105,7 @@ public class ServicioGasto {
 
         return gastos.stream()
                 .map(gasto -> modelMapper.map(gasto, GastoDTO.class))
-                .collect(Collectors.toList());
+                .toList();
 
     }
 
@@ -119,7 +118,7 @@ public class ServicioGasto {
 
         return gastos.stream()
                 .map(gasto -> modelMapper.map(gasto, GastoDTO.class))
-                .collect(Collectors.toList());
+                .toList();
 
     }
 
@@ -211,7 +210,7 @@ public class ServicioGasto {
 
             return gastos.stream()
                     .map(gasto -> modelMapper.map(gasto, GastoDTO.class))
-                    .collect(Collectors.toList());
+                    .toList();
 
         }
 
@@ -225,18 +224,11 @@ public class ServicioGasto {
 
             return gastosProjections.stream()
                     .map(g -> new ProyeccionDTO(g.getDescripcion(), g.getCantidad(), g.getTotal()))
-                    .collect(Collectors.toList());
+                    .toList();
         }
 
         public CategoriaTotalDTO obtenerCategoriaMasAlta(Long usuarioId) {
             CategoriaTotal resultados = repositorioGasto.getCategoriaConMasGastos(usuarioId);
-
-            if (resultados == null) {
-                throw new RuntimeException("No se encontraron resultados para el usuario: " + usuarioId);
-            }
-
-            System.out.println("Categoria: " + resultados.getCategoria());
-            System.out.println("Total: " + resultados.getTotalvalor());
 
             return new CategoriaTotalDTO(resultados.getCategoria(), resultados.getTotalvalor());
         }

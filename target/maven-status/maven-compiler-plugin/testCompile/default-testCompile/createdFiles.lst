@@ -1,7 +1,7 @@
 com\example\FinanzApp\ServiciosTest\ServicioConsejosTest.class
 com\example\FinanzApp\ServiciosTest\ServicioIngresoTest.class
 com\example\FinanzApp\ServiciosTest\ServicioCalificacionTest.class
-com\example\FinanzApp\ControladoresTest\ControladorIngresoTest.class
+com\example\FinanzApp\ServiciosTest\ServicioLoginTest.class
 com\example\FinanzApp\ServiciosTest\ServicioRecordatorioTest.class
 com\example\FinanzApp\ServiciosTest\ServicioUsuarioTest.class
 com\example\FinanzApp\ServiciosTest\ServicioAlertaTest.class
@@ -12,4 +12,3 @@ com\example\FinanzApp\ServiciosTest\ServicioGastoTest$1.class
 com\example\FinanzApp\ServiciosTest\EmailServiceTest.class
 com\example\FinanzApp\ServiciosTest\ServicioDepositoTest.class
 com\example\FinanzApp\ServiciosTest\ServicioTipsTest.class
-com\example\FinanzApp\ControladoresTest\ControladorUsuarioTest.class

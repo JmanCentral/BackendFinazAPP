@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServicioGasto.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">FinanzApp</a> &gt; <a href="index.source.html" class="el_package">com.example.FinanzApp.Servicios</a> &gt; <span class="el_source">ServicioGasto.java</span></div><h1>ServicioGasto.java</h1><pre class="source lang-java linenums">package com.example.FinanzApp.Servicios;
+
+import com.example.FinanzApp.DTOS.CategoriaTotalDTO;
+import com.example.FinanzApp.DTOS.GastoDTO;
+import com.example.FinanzApp.DTOS.ProyeccionDTO;
+import com.example.FinanzApp.Entidades.CategoriaTotal;
+import com.example.FinanzApp.Entidades.Gasto;
+import com.example.FinanzApp.Entidades.GastoProjection;
+import com.example.FinanzApp.Entidades.Usuario;
+import com.example.FinanzApp.Repositorios.RepositorioGasto;
+import com.example.FinanzApp.Repositorios.RepositorioIngreso;
+import com.example.FinanzApp.Repositorios.RepositorioUsuario;
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
+
+@Data
+@Service
+@AllArgsConstructor
+public class ServicioGasto {
+
+    private ModelMapper modelMapper;
+    private  final RepositorioGasto repositorioGasto;
+    private final RepositorioIngreso repositorioIngreso;
+    private final RepositorioUsuario repositorioUsuario;
+
+
+    public GastoDTO RegistrarGasto(GastoDTO gastoDTO, Long usuarioId) {
+
+<span class="fc" id="L36">        Usuario usuario = repositorioUsuario.findById(usuarioId)</span>
+<span class="pc" id="L37">                .orElseThrow(() -&gt; new RuntimeException(&quot;Usuario no encontrado&quot;));</span>
+
+<span class="fc" id="L39">        Gasto nuevoGasto = modelMapper.map(gastoDTO, Gasto.class);</span>
+<span class="fc" id="L40">        nuevoGasto.setUsuario(usuario);</span>
+
+<span class="fc" id="L42">        Gasto gastoGuardado = repositorioGasto.save(nuevoGasto);</span>
+
+<span class="fc" id="L44">        return modelMapper.map(gastoGuardado, GastoDTO.class);</span>
+    }
+
+    public Double ObtenerDisponible(Long id_usuario){
+
+<span class="fc" id="L49">        return repositorioGasto.getDisponible(id_usuario);</span>
+
+    }
+
+    public Double ObtenerDisponiblePorFechas (Long id_usuario , LocalDate fechaInf , LocalDate fechaSup ){
+
+<span class="fc" id="L55">        return repositorioGasto.getDisponiblePorFechas(id_usuario, fechaInf, fechaSup);</span>
+
+    }
+
+    public List&lt;GastoDTO&gt; BuscarGastosMesCategoria(Long id_usuario , String categoria){
+
+<span class="fc" id="L61">        List&lt;Gasto&gt; gastos  = repositorioGasto.getGastosMesCategoria(id_usuario , categoria);</span>
+
+<span class="fc" id="L63">        return gastos.stream()</span>
+<span class="fc" id="L64">                .map(gasto -&gt; modelMapper.map(gasto, GastoDTO.class))</span>
+<span class="fc" id="L65">                .collect(Collectors.toList());</span>
+
+    }
+
+    public Double ObtenerValorGastosMesCategoria (Long id_usuario , String categoria){
+
+<span class="fc" id="L71">        return repositorioGasto.getValorGastosMesCategoria(id_usuario , categoria);</span>
+
+    }
+
+    public Double ValorGastosMes (Long id_usuario){
+
+<span class="fc" id="L77">        return repositorioGasto.getValorGastosMes(id_usuario);</span>
+
+    }
+
+
+    public List&lt;GastoDTO&gt; BuscarGastosPorFechas(Long id_usuario , LocalDate fechaInf , LocalDate fechaSup){
+
+<span class="fc" id="L84">        List&lt;Gasto&gt; gastos  = repositorioGasto.getGastosPorFechas(id_usuario , fechaInf , fechaSup );</span>
+
+<span class="fc" id="L86">        return gastos.stream()</span>
+<span class="fc" id="L87">                .map(gasto -&gt; modelMapper.map(gasto, GastoDTO.class))</span>
+<span class="fc" id="L88">                .collect(Collectors.toList());</span>
+
+    }
+
+    public List&lt;GastoDTO&gt; OrdenarAscendentemente(Long id_usuario){
+
+<span class="fc" id="L94">        List&lt;Gasto&gt; gastos  = repositorioGasto.findByUsuarioIdOrderByValorAsc(id_usuario);</span>
+
+<span class="fc" id="L96">        return gastos.stream()</span>
+<span class="fc" id="L97">                .map(gasto -&gt; modelMapper.map(gasto, GastoDTO.class))</span>
+<span class="fc" id="L98">                .toList();</span>
+
+    }
+
+    public List&lt;GastoDTO&gt; OrdenarDescendentemente(Long id_usuario){
+
+<span class="fc" id="L104">        List&lt;Gasto&gt; gastos  = repositorioGasto.findByUsuarioIdOrderByValorDesc(id_usuario);</span>
+
+<span class="fc" id="L106">        return gastos.stream()</span>
+<span class="fc" id="L107">                .map(gasto -&gt; modelMapper.map(gasto, GastoDTO.class))</span>
+<span class="fc" id="L108">                .toList();</span>
+
+    }
+
+    public List&lt;GastoDTO&gt; obtenerGastosPorRangoDeFechas(Long usuarioId, LocalDate fechaInicio, LocalDate fechaFin , String categoria) {
+
+<span class="fc" id="L114">        Usuario usuario = repositorioUsuario.findById(usuarioId)</span>
+<span class="pc" id="L115">                .orElseThrow(() -&gt; new RuntimeException(&quot;Usuario no encontrado&quot;));</span>
+
+<span class="fc" id="L117">        List&lt;Gasto&gt; gastos  = repositorioGasto.findByUsuarioAndFechaBetweenAndCategoria(usuario , fechaInicio , fechaFin , categoria);</span>
+
+<span class="fc" id="L119">        return gastos.stream()</span>
+<span class="fc" id="L120">                .map(gasto -&gt; modelMapper.map(gasto, GastoDTO.class))</span>
+<span class="fc" id="L121">                .toList();</span>
+
+    }
+
+
+        public GastoDTO OrdenarPorValorAlto(Long id_usuario){
+
+<span class="fc" id="L128">            Gasto gastos  = repositorioGasto.getValorMasAlto(id_usuario);</span>
+
+<span class="fc" id="L130">            return modelMapper.map(gastos, GastoDTO.class);</span>
+
+        }
+
+        public GastoDTO OrdenarPorValorBajo(Long id_usuario){
+
+<span class="fc" id="L136">            Gasto gastos  = repositorioGasto.getValorMasBajo(id_usuario);</span>
+
+<span class="fc" id="L138">            return modelMapper.map(gastos, GastoDTO.class);</span>
+
+        }
+
+        public Double ObtenerPromedioDeGastos(Long id_usuario){
+
+<span class="fc" id="L144">            return  repositorioGasto.getPromedioGastosMes(id_usuario);</span>
+
+        }
+
+        public String ObtenerGastoRecurrente (Long id_usuario){
+
+<span class="fc" id="L150">            return repositorioGasto.getDescripcionRecurrente(id_usuario);</span>
+
+        }
+
+        public Double PorcentajeGastosSobreIngresos (Long id_usuario) {
+
+<span class="fc" id="L156">            return repositorioGasto.getPorcentajeGastosSobreIngresos(id_usuario);</span>
+
+        }
+
+
+
+        public Double ObtenerPromedioDiario (Long id_usuario) {
+
+<span class="fc" id="L164">            return repositorioGasto.getGastoPromedioDiarioTotal(id_usuario);</span>
+
+        }
+
+
+        public GastoDTO ModificarGasto(Long id_gasto, GastoDTO gastoDTO) {
+            // Buscar el gasto por su ID en el repositorio
+<span class="fc" id="L171">            Optional&lt;Gasto&gt; gastoOptional = repositorioGasto.findById(id_gasto);</span>
+
+            // Validar si el gasto existe
+<span class="pc bpc" id="L174" title="1 of 2 branches missed.">            if (gastoOptional.isPresent()) {</span>
+<span class="fc" id="L175">                Gasto gasto = gastoOptional.get();</span>
+
+                // Actualizar los campos del gasto con los datos del DTO
+<span class="fc" id="L178">                gasto.setNombre_gasto(gastoDTO.getNombre_gasto());</span>
+<span class="fc" id="L179">                gasto.setCategoria(gastoDTO.getCategoria());</span>
+<span class="fc" id="L180">                gasto.setValor(gastoDTO.getValor());</span>
+<span class="fc" id="L181">                gasto.setFecha(gastoDTO.getFecha());</span>
+
+                // Guardar los cambios en el repositorio
+<span class="fc" id="L184">                Gasto gastoActualizado = repositorioGasto.save(gasto);</span>
+
+                // Convertir la entidad actualizada de nuevo en un DTO para retornarlo
+<span class="fc" id="L187">                GastoDTO gastoActualizadoDTO = new GastoDTO();</span>
+<span class="fc" id="L188">                gastoActualizadoDTO.setId_gasto(gastoActualizado.getId_gasto());</span>
+<span class="fc" id="L189">                gastoActualizadoDTO.setNombre_gasto(gastoActualizado.getNombre_gasto());</span>
+<span class="fc" id="L190">                gastoActualizadoDTO.setCategoria(gastoActualizado.getCategoria());</span>
+<span class="fc" id="L191">                gastoActualizadoDTO.setValor(gastoActualizado.getValor());</span>
+<span class="fc" id="L192">                gastoActualizadoDTO.setFecha(gastoActualizado.getFecha());</span>
+
+<span class="fc" id="L194">                return gastoActualizadoDTO;</span>
+            } else {
+                // Lanza una excepción si el gasto no existe
+<span class="nc" id="L197">                throw new RuntimeException(&quot;El gasto con ID &quot; + id_gasto + &quot; no existe.&quot;);</span>
+            }
+        }
+
+
+        public void EliminarGasto (Long id_gasto){
+
+<span class="fc" id="L204">            repositorioGasto.deleteById(id_gasto);</span>
+<span class="fc" id="L205">        }</span>
+
+        public List&lt;GastoDTO&gt; ListarPorNombres(String nombre ,String  categoria , Long id_usuario) {
+
+<span class="fc" id="L209">            List&lt;Gasto&gt; gastos = repositorioGasto.findByNombreGastoAndCategoriaAndUsuarioId(nombre , categoria , id_usuario);</span>
+
+<span class="fc" id="L211">            return gastos.stream()</span>
+<span class="fc" id="L212">                    .map(gasto -&gt; modelMapper.map(gasto, GastoDTO.class))</span>
+<span class="fc" id="L213">                    .toList();</span>
+
+        }
+
+        @Transactional
+        public void eliminarTodosLosGastos(String Categoria , Long id_usuario) {
+<span class="fc" id="L219">            repositorioGasto.deleteByUsuarioIdAndCategoria(id_usuario , Categoria);</span>
+<span class="fc" id="L220">        }</span>
+
+        public List&lt;ProyeccionDTO&gt; obtenerGastosFrecuentes(Long usuarioId) {
+<span class="fc" id="L223">            List&lt;GastoProjection&gt; gastosProjections = repositorioGasto.findGastosFrecuentes(usuarioId);</span>
+
+<span class="fc" id="L225">            return gastosProjections.stream()</span>
+<span class="fc" id="L226">                    .map(g -&gt; new ProyeccionDTO(g.getDescripcion(), g.getCantidad(), g.getTotal()))</span>
+<span class="fc" id="L227">                    .toList();</span>
+        }
+
+        public CategoriaTotalDTO obtenerCategoriaMasAlta(Long usuarioId) {
+<span class="fc" id="L231">            CategoriaTotal resultados = repositorioGasto.getCategoriaConMasGastos(usuarioId);</span>
+
+<span class="fc" id="L233">            return new CategoriaTotalDTO(resultados.getCategoria(), resultados.getTotalvalor());</span>
+        }
+
+        public CategoriaTotalDTO getCategoriaConMasGastos(Long usuarioId) {
+
+<span class="fc" id="L238">            List&lt;Gasto&gt; gastos = repositorioGasto.findByUsuario(usuarioId); // Recuperar todos los gastos del usuario</span>
+
+<span class="fc" id="L240">            Map&lt;String, Double&gt; sumaPorCategoria = new HashMap&lt;&gt;();</span>
+
+<span class="fc bfc" id="L242" title="All 2 branches covered.">            for (Gasto gasto : gastos) {</span>
+<span class="fc" id="L243">                sumaPorCategoria.put(gasto.getCategoria(),</span>
+<span class="fc" id="L244">                        sumaPorCategoria.getOrDefault(gasto.getCategoria(), 0.0) + gasto.getValor());</span>
+<span class="fc" id="L245">            }</span>
+
+<span class="fc" id="L247">            return sumaPorCategoria.entrySet().stream()</span>
+<span class="fc" id="L248">                    .max(Comparator.comparingDouble(Map.Entry::getValue))</span>
+<span class="fc" id="L249">                    .map(entry -&gt; new CategoriaTotalDTO(entry.getKey(), entry.getValue()))</span>
+<span class="fc" id="L250">                    .orElse(null);</span>
+        }
+
+
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

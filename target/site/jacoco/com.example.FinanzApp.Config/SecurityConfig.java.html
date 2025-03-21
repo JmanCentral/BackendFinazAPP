@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SecurityConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">FinanzApp</a> &gt; <a href="index.source.html" class="el_package">com.example.FinanzApp.Config</a> &gt; <span class="el_source">SecurityConfig.java</span></div><h1>SecurityConfig.java</h1><pre class="source lang-java linenums">package com.example.FinanzApp.Config;
+import com.example.FinanzApp.Servicios.ServicioUsuario;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+@Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+<span class="fc" id="L19">public class SecurityConfig {</span>
+
+    @Lazy
+    @Autowired
+    ServicioUsuario userDetailsService;
+
+    @Lazy
+    @Autowired
+    JwtAuthorizationFilter jwtAuthorizationFilter;
+
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity , AuthenticationManager authenticationManager) throws Exception {
+
+<span class="fc" id="L32">        JwtAutenticationFilter jwtAutenticationFilter = new JwtAutenticationFilter();</span>
+<span class="fc" id="L33">        jwtAutenticationFilter.setAuthenticationManager(authenticationManager);</span>
+
+
+<span class="fc" id="L36">        return httpSecurity</span>
+<span class="fc" id="L37">                .csrf().disable()</span>
+<span class="fc" id="L38">                .authorizeHttpRequests(auth-&gt; {</span>
+<span class="fc" id="L39">                    auth.requestMatchers(&quot;/Finanzapp/registro&quot;, &quot;/Finanzapp/login&quot; , &quot;/api/password/forgot&quot; , &quot;/api/password/reset&quot;,  &quot;/v3/api-docs/**&quot;,      // Documentación OpenAPI (Swagger 3)</span>
+                            &quot;/swagger-ui/**&quot;,       // Interfaz web de Swagger
+                            &quot;/swagger-ui.html&quot;,     // Página principal de Swagger UI
+<span class="fc" id="L42">                            &quot;/webjars/**&quot;).permitAll();</span>
+<span class="fc" id="L43">                    auth.anyRequest().authenticated();</span>
+<span class="fc" id="L44">                })</span>
+<span class="fc" id="L45">                .sessionManagement(session -&gt; session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))</span>
+<span class="fc" id="L46">                .addFilter(jwtAutenticationFilter)</span>
+<span class="fc" id="L47">                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)</span>
+<span class="fc" id="L48">                .build();</span>
+
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+<span class="fc" id="L54">        return new BCryptPasswordEncoder();</span>
+    }
+
+    @Bean
+    AuthenticationManager authenticationManager(HttpSecurity httpSecurity , PasswordEncoder passwordEncoder) throws Exception {
+<span class="fc" id="L59">        return httpSecurity.getSharedObject(AuthenticationManagerBuilder.class)</span>
+<span class="fc" id="L60">                .userDetailsService(userDetailsService)</span>
+<span class="fc" id="L61">                .passwordEncoder(passwordEncoder)</span>
+<span class="fc" id="L62">                .and()</span>
+<span class="fc" id="L63">                .build();</span>
+
+    }
+
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

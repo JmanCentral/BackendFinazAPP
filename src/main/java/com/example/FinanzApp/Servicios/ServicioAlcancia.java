@@ -5,27 +5,20 @@ import com.example.FinanzApp.Entidades.Alcancia;
 import com.example.FinanzApp.Entidades.Usuario;
 import com.example.FinanzApp.Repositorios.RepositorioAlcancia;
 import com.example.FinanzApp.Repositorios.RepositorioUsuario;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class ServicioAlcancia {
 
-    @Autowired
-    private RepositorioAlcancia repositorioAlcancia;
-
-    @Autowired
-    private RepositorioUsuario repositorioUsuario;
-
-    @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
-    private CodigoGenerador codigoGenerador;
+    private final RepositorioAlcancia repositorioAlcancia;
+    private final  RepositorioUsuario repositorioUsuario;
+    private final  ModelMapper modelMapper;
+    private final  CodigoGenerador codigoGenerador;
 
     public AlcanciaDTO crearAlcancia(AlcanciaDTO alcancia, Long usuarioId) {
         Usuario usuario = repositorioUsuario.findById(usuarioId)
@@ -42,13 +35,11 @@ public class ServicioAlcancia {
     }
 
     public List<AlcanciaDTO> buscarAlcancia(String codigo) {
-
-        List<Alcancia> alcancias = repositorioAlcancia.findByCodigo(codigo);
-
-        return alcancias.stream()
+        return repositorioAlcancia.findByCodigo(codigo).stream()
                 .map(alcancia -> modelMapper.map(alcancia, AlcanciaDTO.class))
-                .collect(Collectors.toList());
+                .toList(); // Disponible en Java 16+
     }
+
 
 
     public List<AlcanciaDTO> buscarAlcanciasporUser (Long id_usuario){
@@ -57,7 +48,7 @@ public class ServicioAlcancia {
 
             return alcancias.stream()
                     .map(alcancia -> modelMapper.map(alcancia, AlcanciaDTO.class))
-                    .collect(Collectors.toList());
+                    .toList();
     }
 
     public AlcanciaDTO ModificarAlcancia(AlcanciaDTO alcanciaDTO , Long idAlcancia ) {

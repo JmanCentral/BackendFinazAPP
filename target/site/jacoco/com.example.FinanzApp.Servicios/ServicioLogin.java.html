@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServicioLogin.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">FinanzApp</a> &gt; <a href="index.source.html" class="el_package">com.example.FinanzApp.Servicios</a> &gt; <span class="el_source">ServicioLogin.java</span></div><h1>ServicioLogin.java</h1><pre class="source lang-java linenums">package com.example.FinanzApp.Servicios;
+
+import com.example.FinanzApp.Config.JwtUtils;
+import com.example.FinanzApp.DTOS.LoginRequest;
+import com.example.FinanzApp.Entidades.Usuario;
+import com.example.FinanzApp.Repositorios.RepositorioUsuario;
+import lombok.AllArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Service
+@AllArgsConstructor
+public class ServicioLogin {
+
+
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtils jwtUtils;
+    private final RepositorioUsuario repositorioUsuario;
+
+
+    public Map&lt;String, Object&gt; AutenticarUsuario(LoginRequest loginRequest) {
+
+            // 1. Autenticar al usuario
+<span class="fc" id="L31">            Authentication authentication = authenticationManager.authenticate(</span>
+<span class="fc" id="L32">                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getContrasena()));</span>
+
+            // 2. Establecer la autenticación en el contexto de seguridad
+<span class="fc" id="L35">            SecurityContextHolder.getContext().setAuthentication(authentication);</span>
+
+            // 3. Obtener el usuario desde la base de datos
+<span class="fc" id="L38">            Usuario usuario = repositorioUsuario.findByUsername(loginRequest.getUsername())</span>
+<span class="fc" id="L39">                    .orElseThrow(() -&gt; new UsernameNotFoundException(&quot;Usuario no encontrado&quot;));</span>
+
+            // 4. Generar el token JWT
+<span class="fc" id="L42">            String jwt = jwtUtils.generateToken(usuario.getId_usuario(), usuario.getUsername());</span>
+
+            // 5. Construir la respuesta
+<span class="fc" id="L45">            Map&lt;String, Object&gt; response = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L46">            response.put(&quot;mensaje&quot;, &quot;Autenticación exitosa&quot;);</span>
+<span class="fc" id="L47">            response.put(&quot;id&quot;, usuario.getId_usuario());</span>
+<span class="fc" id="L48">            response.put(&quot;nombre&quot;, usuario.getUsername());</span>
+<span class="fc" id="L49">            response.put(&quot;token&quot;, jwt);</span>
+
+<span class="fc" id="L51">            return response;</span>
+
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

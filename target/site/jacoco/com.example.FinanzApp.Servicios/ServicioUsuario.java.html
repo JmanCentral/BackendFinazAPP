@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServicioUsuario.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">FinanzApp</a> &gt; <a href="index.source.html" class="el_package">com.example.FinanzApp.Servicios</a> &gt; <span class="el_source">ServicioUsuario.java</span></div><h1>ServicioUsuario.java</h1><pre class="source lang-java linenums">package com.example.FinanzApp.Servicios;
+
+import com.example.FinanzApp.DTOS.UsuarioDTO;
+import com.example.FinanzApp.Entidades.ERole;
+import com.example.FinanzApp.Entidades.Roles;
+import com.example.FinanzApp.Entidades.Usuario;
+import com.example.FinanzApp.Repositorios.RepositorioRoles;
+import com.example.FinanzApp.Repositorios.RepositorioUsuario;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.modelmapper.ModelMapper;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Data
+@Service
+@AllArgsConstructor
+public class ServicioUsuario implements UserDetailsService {
+
+    private ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final RepositorioUsuario repositorioUsuario;
+    private final RepositorioRoles repositorioRoles;
+
+
+
+    public UsuarioDTO registrarUsuario(UsuarioDTO usuarioDTO) {
+
+<span class="fc" id="L39">        Usuario nuevoUsuario = modelMapper.map(usuarioDTO, Usuario.class);</span>
+<span class="fc" id="L40">        nuevoUsuario.setContrasena(passwordEncoder.encode(usuarioDTO.getContrasena())); // Encriptar</span>
+
+        // Asignar roles
+<span class="fc" id="L43">        Set&lt;Roles&gt; roles = usuarioDTO.getRoles().stream()</span>
+<span class="fc" id="L44">                .map(rol -&gt; repositorioRoles.findByName(ERole.valueOf(rol))</span>
+<span class="pc" id="L45">                        .orElseThrow(() -&gt; new RuntimeException(&quot;Error: Rol no encontrado&quot;)))</span>
+<span class="fc" id="L46">                .collect(Collectors.toSet());</span>
+
+<span class="fc" id="L48">        nuevoUsuario.setRoles(roles);</span>
+
+<span class="fc" id="L50">        Usuario usuarioGuardado = repositorioUsuario.save(nuevoUsuario);</span>
+<span class="fc" id="L51">        return modelMapper.map(usuarioGuardado, UsuarioDTO.class);</span>
+    }
+
+
+    public UsuarioDTO obtenerUusarioPorID (long id_uuario) {
+
+<span class="fc" id="L57">        Optional&lt;Usuario&gt; usuario = repositorioUsuario.findById(id_uuario);</span>
+
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (usuario.isPresent()) {</span>
+
+<span class="fc" id="L61">            return modelMapper.map(usuario.get(), UsuarioDTO.class);</span>
+        } else {
+
+<span class="fc" id="L64">            return null;</span>
+        }
+
+    }
+
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+<span class="fc" id="L72">        Usuario usuario = repositorioUsuario.findByUsername(username)</span>
+<span class="fc" id="L73">                .orElseThrow(() -&gt; new UsernameNotFoundException(&quot;Usuario no encontrado&quot;));</span>
+
+<span class="fc" id="L75">        Collection&lt;? extends GrantedAuthority&gt; authorities = usuario.getRoles().stream()</span>
+<span class="fc" id="L76">                .map(role -&gt; new SimpleGrantedAuthority(&quot;ROLE_&quot; + role.getName().name()))</span>
+<span class="fc" id="L77">                .collect(Collectors.toSet());</span>
+
+<span class="fc" id="L79">        return new User(usuario.getUsername(), usuario.getContrasena(), authorities);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

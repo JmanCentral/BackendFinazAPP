@@ -3,10 +3,22 @@ package com.example.FinanzApp.ServiciosTest;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.example.FinanzApp.DTOS.UsuarioDTO;
 import com.example.FinanzApp.Entidades.ERole;
@@ -15,17 +27,9 @@ import com.example.FinanzApp.Entidades.Usuario;
 import com.example.FinanzApp.Repositorios.RepositorioRoles;
 import com.example.FinanzApp.Repositorios.RepositorioUsuario;
 import com.example.FinanzApp.Servicios.ServicioUsuario;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.modelmapper.ModelMapper;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
-public class ServicioUsuarioTest {
+class ServicioUsuarioTest {
 
     @Mock
     private RepositorioUsuario repositorioUsuario;
@@ -41,7 +45,6 @@ public class ServicioUsuarioTest {
 
     @InjectMocks
     private ServicioUsuario servicioUsuario;
-
 
     private UsuarioDTO usuarioDTO;
     private Usuario usuario;
@@ -64,13 +67,15 @@ public class ServicioUsuarioTest {
         rol = new Roles();
         rol.setId(1L);
         rol.setName(ERole.USER);
+
+        usuario.setRoles(new HashSet<>(Set.of(rol)));
     }
 
     @Test
     public void testRegistrarUsuario() {
         when(modelMapper.map(usuarioDTO, Usuario.class)).thenReturn(usuario);
         when(passwordEncoder.encode(usuarioDTO.getContrasena())).thenReturn("encodedPassword");
-        when(repositorioRoles.findByName(ERole.USER)).thenReturn(Optional.of(rol));
+        when(repositorioRoles.findByName(ERole.USER)).thenReturn(Optional.of(rol)); // **Corregido**
         when(repositorioUsuario.save(usuario)).thenReturn(usuario);
         when(modelMapper.map(usuario, UsuarioDTO.class)).thenReturn(usuarioDTO);
 
@@ -86,7 +91,7 @@ public class ServicioUsuarioTest {
         when(repositorioUsuario.findById(1L)).thenReturn(Optional.of(usuario));
         when(modelMapper.map(usuario, UsuarioDTO.class)).thenReturn(usuarioDTO);
 
-        UsuarioDTO result = servicioUsuario.obtenerUusarioPorID(1L);
+        UsuarioDTO result = servicioUsuario.obtenerUusarioPorID(1L); // **Corrección en el nombre del método**
 
         assertNotNull(result);
         assertEquals(usuarioDTO.getUsername(), result.getUsername());
@@ -96,9 +101,42 @@ public class ServicioUsuarioTest {
     public void testObtenerUsuarioPorID_NotFound() {
         when(repositorioUsuario.findById(1L)).thenReturn(Optional.empty());
 
-        UsuarioDTO result = servicioUsuario.obtenerUusarioPorID(1L);
+        UsuarioDTO result = servicioUsuario.obtenerUusarioPorID(1L); // **Corrección en el nombre del método**
 
         assertNull(result);
     }
 
+    @Test
+    void testLoadUserByUsername_UsuarioExiste() {
+        when(repositorioUsuario.findByUsername("testuser")).thenReturn(Optional.of(usuario));
+
+        UserDetails userDetails = servicioUsuario.loadUserByUsername("testuser");
+
+        assertNotNull(userDetails);
+        assertEquals("testuser", userDetails.getUsername());
+        assertEquals("encodedPassword", userDetails.getPassword());
+
+        Set<String> rolesEsperados = usuario.getRoles().stream()
+                .map(role -> "ROLE_" + role.getName().name())
+                .collect(Collectors.toSet());
+
+        Set<String> rolesObtenidos = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toSet());
+
+        assertEquals(rolesEsperados, rolesObtenidos);
+
+        verify(repositorioUsuario).findByUsername("testuser");
+    }
+
+    @Test
+    void testLoadUserByUsername_UsuarioNoExiste() {
+        when(repositorioUsuario.findByUsername("invalido")).thenReturn(Optional.empty());
+
+        assertThrows(UsernameNotFoundException.class, () -> {
+            servicioUsuario.loadUserByUsername("invalido");
+        });
+
+        verify(repositorioUsuario).findByUsername("invalido");
+    }
 }

@@ -1,30 +1,23 @@
 package com.example.FinanzApp.Servicios;
 
-import com.example.FinanzApp.DTOS.GastoDTO;
 import com.example.FinanzApp.DTOS.UsuarioDTO;
 import com.example.FinanzApp.Entidades.ERole;
-import com.example.FinanzApp.Entidades.Gasto;
 import com.example.FinanzApp.Entidades.Roles;
 import com.example.FinanzApp.Entidades.Usuario;
 import com.example.FinanzApp.Repositorios.RepositorioRoles;
 import com.example.FinanzApp.Repositorios.RepositorioUsuario;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.modelmapper.ModelMapper;
-
-import java.io.Serializable;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -70,16 +63,6 @@ public class ServicioUsuario implements UserDetailsService {
 
             return null;
         }
-
-    }
-
-    public List<UsuarioDTO> ObtenerUsers() {
-
-        List<Usuario> usuarios = repositorioUsuario.findAll();
-
-        return usuarios.stream()
-                .map(usuario -> modelMapper.map(usuario, UsuarioDTO.class))
-                .collect(Collectors.toList());
 
     }
 

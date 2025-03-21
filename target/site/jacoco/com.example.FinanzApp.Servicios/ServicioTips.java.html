@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServicioTips.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">FinanzApp</a> &gt; <a href="index.source.html" class="el_package">com.example.FinanzApp.Servicios</a> &gt; <span class="el_source">ServicioTips.java</span></div><h1>ServicioTips.java</h1><pre class="source lang-java linenums">package com.example.FinanzApp.Servicios;
+
+import com.example.FinanzApp.Components.GeminiAdapter;
+import com.example.FinanzApp.Config.APIgemini;
+import com.example.FinanzApp.DTOS.TipsDTO;
+import com.example.FinanzApp.Entidades.Gasto;
+import com.example.FinanzApp.Repositorios.RepositorioGasto;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+@Service
+@AllArgsConstructor
+<span class="fc" id="L26">@Slf4j</span>
+public class ServicioTips {
+
+    private static final String GEMINI_API_URL = &quot;https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=&quot;;
+
+    private final APIgemini apiGemini;
+    private final RestTemplate restTemplate;
+    private final RepositorioGasto gastoRepository;
+    private final GeminiAdapter geminiAdapter;
+
+    public List&lt;TipsDTO&gt; obtenerConsejosFinancieros(Long usuarioId) {
+<span class="fc" id="L37">        List&lt;Gasto&gt; gastos = gastoRepository.findGastosByUsuarioId(usuarioId);</span>
+<span class="fc" id="L38">        String prompt = generarPrompt(gastos);</span>
+
+<span class="fc" id="L40">        String requestJson = &quot;{\&quot;contents\&quot;:[{\&quot;parts\&quot;:[{\&quot;text\&quot;:\&quot;&quot; + prompt + &quot;\&quot;}]}]}&quot;;</span>
+<span class="fc" id="L41">        String url = GEMINI_API_URL + apiGemini.getApiKey();</span>
+
+<span class="fc" id="L43">        HttpHeaders headers = new HttpHeaders();</span>
+<span class="fc" id="L44">        headers.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="fc" id="L45">        HttpEntity&lt;String&gt; requestEntity = new HttpEntity&lt;&gt;(requestJson, headers);</span>
+
+<span class="fc" id="L47">        ResponseEntity&lt;JsonNode&gt; responseEntity = restTemplate.postForEntity(url, requestEntity, JsonNode.class);</span>
+
+<span class="fc" id="L49">        log.info(&quot;Respuesta cruda de la API: {}&quot;, Objects.requireNonNull(responseEntity.getBody()).toPrettyString());</span>
+
+<span class="fc" id="L51">        return GeminiAdapter.convertirDesdeJson(Objects.requireNonNull(responseEntity.getBody()));</span>
+    }
+
+    private String formatearGasto(Gasto gasto) {
+<span class="fc" id="L55">        return String.format(&quot;%s: %.2f COP, %s, &quot;, gasto.getCategoria(), gasto.getValor(), gasto.getNombre_gasto());</span>
+    }
+
+    private String generarPrompt(List&lt;Gasto&gt; gastos) {
+<span class="fc" id="L59">        StringBuilder prompt = new StringBuilder(&quot;Analiza los siguientes gastos y genera 5 exactamente  consejos financieros personalizados: &quot;);</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        for (Gasto gasto : gastos) {</span>
+<span class="fc" id="L61">            prompt.append(formatearGasto(gasto));</span>
+<span class="fc" id="L62">        }</span>
+<span class="fc" id="L63">        prompt.append(&quot;\nNo incluyas introducción, explicaciones adicionales ni información extra. Solo devuelve la lista de consejos en el formato indicado.&quot;);</span>
+<span class="fc" id="L64">        prompt.append(&quot;\nFormato de salida estricto:\n&quot;);</span>
+<span class="fc" id="L65">        prompt.append(&quot;- Consejo 1: [Aquí el primer consejo]\n&quot;);</span>
+<span class="fc" id="L66">        prompt.append(&quot;- Consejo 2: [Aquí el segundo consejo]\n&quot;);</span>
+<span class="fc" id="L67">        prompt.append(&quot;- Consejo 3: [Aquí el tercer consejo]\n&quot;);</span>
+<span class="fc" id="L68">        prompt.append(&quot;- Consejo 4: [Aquí el cuarto consejo]\n&quot;);</span>
+<span class="fc" id="L69">        prompt.append(&quot;- Consejo 5: [Aquí el quinto consejo]\n&quot;);</span>
+<span class="fc" id="L70">        return prompt.toString();</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

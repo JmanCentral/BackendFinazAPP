@@ -1,11 +1,7 @@
 package com.example.FinanzApp.ServiciosTest;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.example.FinanzApp.DTOS.ConsejosDTO;
+import com.example.FinanzApp.Entidades.Consejos;
 import com.example.FinanzApp.Repositorios.RepositorioConsejos;
 import com.example.FinanzApp.Servicios.ServicioConsejos;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,54 +10,81 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
+import java.util.Arrays;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ServicioConsejosTest {
-
-    /*
-    @Mock
-    private RepositorioConsejos repositorioConsejos;
+class ServicioConsejosTest {
 
     @InjectMocks
     private ServicioConsejos servicioConsejos;
 
-    private List<Consejos> consejos;
+    @Mock
+    private RepositorioConsejos repositorioConsejos;
+
+    @Mock
+    private ModelMapper modelMapper;
+
+    private ConsejosDTO consejosDTO;
+    private Consejos consejos;
+    private Consejos consejosGuardado;
 
     @BeforeEach
-    public void setUp() {
-        // Configuración inicial para las pruebas
-        consejos = new ArrayList<>();
-        consejos.add(new Consejos("564654", "Define metas financieras claras a corto, mediano y largo plazo."));
-        consejos.add(new Consejos("15525", "Registra todos tus ingresos y gastos para tener un control total de tu economía."));
+    void setUp() {
+        consejosDTO = new ConsejosDTO();
+        consejosDTO.setIdConsejo(1L);
+        consejosDTO.setConsejo("Ahorra el 10% de tus ingresos.");
+
+        consejos = new Consejos();
+        consejos.setIdConsejo(1L);
+        consejos.setConsejo("Ahorra el 10% de tus ingresos.");
+
+        consejosGuardado = new Consejos();
+        consejosGuardado.setIdConsejo(1L);
+        consejosGuardado.setConsejo("Ahorra el 10% de tus ingresos.");
     }
 
     @Test
-    public void testInsertAllConsejos() {
-        // Configuración de los mocks
-        when(repositorioConsejos.saveAll(anyList())).thenReturn(consejos);
+    void testRegistrarConsejos() {
+        when(modelMapper.map(consejosDTO, Consejos.class)).thenReturn(consejos);
+        when(repositorioConsejos.save(consejos)).thenReturn(consejosGuardado);
+        when(modelMapper.map(consejosGuardado, ConsejosDTO.class)).thenReturn(consejosDTO);
 
-        // Ejecución del método a probar
-        servicioConsejos.insertAllConsejos();
+        ConsejosDTO resultado = servicioConsejos.RegistrarConsejos(consejosDTO);
 
-        // Verificaciones
-        verify(repositorioConsejos, times(1)).saveAll(anyList());
+        assertNotNull(resultado);
+        assertEquals(consejosDTO.getIdConsejo(), resultado.getIdConsejo());
+        assertEquals(consejosDTO.getConsejo(), resultado.getConsejo());
+
+        verify(modelMapper).map(consejosDTO, Consejos.class);
+        verify(repositorioConsejos).save(consejos);
+        verify(modelMapper).map(consejosGuardado, ConsejosDTO.class);
     }
-
 
     @Test
-    public void testObtenerConsejosAleatorios() {
-        // Configuración de los mocks
-        when(repositorioConsejos.findRandomConsejos()).thenReturn(consejos);
+    void testObtenerConsejosAleatorios() {
 
-        // Ejecución del método a probar
-        List<Consejos> resultados = servicioConsejos.obtenerConsejosAleatorios();
+        Consejos consejo1 = new Consejos();
+        Consejos consejo2 = new Consejos();
+        List<Consejos> consejosList = Arrays.asList(consejo1, consejo2);
 
-        // Verificaciones
-        assertNotNull(resultados);
-        assertEquals(2, resultados.size());
-        verify(repositorioConsejos, times(1)).findRandomConsejos();
+        ConsejosDTO consejoDTO1 = new ConsejosDTO(1L, "Ahorra dinero.");
+        ConsejosDTO consejoDTO2 = new ConsejosDTO(2L, "Invierte en educación.");
+
+        when(repositorioConsejos.findAll()).thenReturn(consejosList);
+        when(modelMapper.map(consejo1, ConsejosDTO.class)).thenReturn(consejoDTO1);
+        when(modelMapper.map(consejo2, ConsejosDTO.class)).thenReturn(consejoDTO2);
+
+        List<ConsejosDTO> resultado = servicioConsejos.obtenerConsejosAleatorios();
+
+        assertNotNull(resultado);
+        assertEquals(2, resultado.size());
+
+        verify(repositorioConsejos).findAll();
+        verify(modelMapper, times(2)).map(any(Consejos.class), eq(ConsejosDTO.class));
     }
-
-     */
 }

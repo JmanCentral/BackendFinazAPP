@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServicioAlcancia.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">FinanzApp</a> &gt; <a href="index.source.html" class="el_package">com.example.FinanzApp.Servicios</a> &gt; <span class="el_source">ServicioAlcancia.java</span></div><h1>ServicioAlcancia.java</h1><pre class="source lang-java linenums">package com.example.FinanzApp.Servicios;
+import com.example.FinanzApp.Components.CodigoGenerador;
+import com.example.FinanzApp.DTOS.AlcanciaDTO;
+import com.example.FinanzApp.Entidades.Alcancia;
+import com.example.FinanzApp.Entidades.Usuario;
+import com.example.FinanzApp.Repositorios.RepositorioAlcancia;
+import com.example.FinanzApp.Repositorios.RepositorioUsuario;
+import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@AllArgsConstructor
+public class ServicioAlcancia {
+
+    private final RepositorioAlcancia repositorioAlcancia;
+    private final  RepositorioUsuario repositorioUsuario;
+    private final  ModelMapper modelMapper;
+    private final  CodigoGenerador codigoGenerador;
+
+    public AlcanciaDTO crearAlcancia(AlcanciaDTO alcancia, Long usuarioId) {
+<span class="fc" id="L24">        Usuario usuario = repositorioUsuario.findById(usuarioId)</span>
+<span class="pc" id="L25">                .orElseThrow(() -&gt; new RuntimeException(&quot;Usuario no encontrado&quot;));</span>
+
+<span class="fc" id="L27">        Alcancia nuevaAlcancia = modelMapper.map(alcancia, Alcancia.class);</span>
+<span class="fc" id="L28">        nuevaAlcancia.setUsuario(usuario);</span>
+
+<span class="fc" id="L30">        nuevaAlcancia.setCodigo(codigoGenerador.generarCodigo());</span>
+
+<span class="fc" id="L32">        Alcancia alcancias = repositorioAlcancia.save(nuevaAlcancia);</span>
+
+<span class="fc" id="L34">        return modelMapper.map(alcancias, AlcanciaDTO.class);</span>
+    }
+
+    public List&lt;AlcanciaDTO&gt; buscarAlcancia(String codigo) {
+<span class="fc" id="L38">        return repositorioAlcancia.findByCodigo(codigo).stream()</span>
+<span class="fc" id="L39">                .map(alcancia -&gt; modelMapper.map(alcancia, AlcanciaDTO.class))</span>
+<span class="fc" id="L40">                .toList(); // Disponible en Java 16+</span>
+    }
+
+
+
+    public List&lt;AlcanciaDTO&gt; buscarAlcanciasporUser (Long id_usuario){
+
+<span class="fc" id="L47">            List&lt;Alcancia&gt; alcancias  = repositorioAlcancia.findAlcanciasByUserId(id_usuario);</span>
+
+<span class="fc" id="L49">            return alcancias.stream()</span>
+<span class="fc" id="L50">                    .map(alcancia -&gt; modelMapper.map(alcancia, AlcanciaDTO.class))</span>
+<span class="fc" id="L51">                    .toList();</span>
+    }
+
+    public AlcanciaDTO ModificarAlcancia(AlcanciaDTO alcanciaDTO , Long idAlcancia ) {
+
+<span class="fc" id="L56">        Optional&lt;Alcancia&gt; alcanciaOptional = repositorioAlcancia.findById(idAlcancia);</span>
+
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">        if (alcanciaOptional.isPresent()) {</span>
+<span class="fc" id="L59">            Alcancia alcancia = alcanciaOptional.get();</span>
+
+<span class="fc" id="L61">            alcancia.setNombre_alcancia(alcanciaDTO.getNombre_alcancia());</span>
+<span class="fc" id="L62">            alcancia.setMeta(alcanciaDTO.getMeta());</span>
+<span class="fc" id="L63">            alcancia.setSaldoActual(alcanciaDTO.getSaldoActual());</span>
+<span class="fc" id="L64">            alcancia.setCodigo(alcanciaDTO.getCodigo());</span>
+<span class="fc" id="L65">            alcancia.setFechaCreacion(alcanciaDTO.getFechaCreacion());</span>
+
+<span class="fc" id="L67">            Alcancia alcanciaActualizada = repositorioAlcancia.save(alcancia);</span>
+
+<span class="fc" id="L69">            AlcanciaDTO alcanciaActualizadaDTO = new AlcanciaDTO();</span>
+<span class="fc" id="L70">            alcanciaActualizadaDTO.setIdAlcancia(alcanciaActualizada.getIdAlcancia());</span>
+<span class="fc" id="L71">            alcanciaActualizadaDTO.setNombre_alcancia(alcanciaActualizada.getNombre_alcancia());</span>
+<span class="fc" id="L72">            alcanciaActualizadaDTO.setMeta(alcanciaActualizada.getMeta());</span>
+<span class="fc" id="L73">            alcanciaActualizadaDTO.setSaldoActual(alcanciaActualizada.getSaldoActual());</span>
+<span class="fc" id="L74">            alcanciaActualizadaDTO.setCodigo(alcanciaActualizada.getCodigo());</span>
+<span class="fc" id="L75">            alcanciaActualizadaDTO.setFechaCreacion(alcanciaActualizada.getFechaCreacion());</span>
+
+<span class="fc" id="L77">            return alcanciaActualizadaDTO;</span>
+        } else {
+            // Lanza una excepción si la alcancía no existe
+<span class="nc" id="L80">            throw new RuntimeException(&quot;La alcancía con ID &quot; + idAlcancia + &quot; no existe.&quot;);</span>
+        }
+    }
+
+    public void eliminarAlcancia(Long id) {
+<span class="fc" id="L85">        repositorioAlcancia.deleteById(id);</span>
+<span class="fc" id="L86">    }</span>
+
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

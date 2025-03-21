@@ -48,7 +48,7 @@ public class ServicioTips {
 
         log.info("Respuesta cruda de la API: {}", Objects.requireNonNull(responseEntity.getBody()).toPrettyString());
 
-        return geminiAdapter.convertirDesdeJson(Objects.requireNonNull(responseEntity.getBody()));
+        return GeminiAdapter.convertirDesdeJson(Objects.requireNonNull(responseEntity.getBody()));
     }
 
     private String formatearGasto(Gasto gasto) {

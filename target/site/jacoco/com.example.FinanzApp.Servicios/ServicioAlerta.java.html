@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServicioAlerta.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">FinanzApp</a> &gt; <a href="index.source.html" class="el_package">com.example.FinanzApp.Servicios</a> &gt; <span class="el_source">ServicioAlerta.java</span></div><h1>ServicioAlerta.java</h1><pre class="source lang-java linenums">package com.example.FinanzApp.Servicios;
+
+import com.example.FinanzApp.DTOS.AlertaDTO;
+import com.example.FinanzApp.Entidades.Alerta;
+import com.example.FinanzApp.Entidades.Usuario;
+import com.example.FinanzApp.Repositorios.RepositorioAlerta;
+import com.example.FinanzApp.Repositorios.RepositorioGasto;
+import com.example.FinanzApp.Repositorios.RepositorioIngreso;
+import com.example.FinanzApp.Repositorios.RepositorioUsuario;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+@Data
+@AllArgsConstructor
+public class ServicioAlerta {
+
+
+    private final RepositorioAlerta repositorioAlerta;
+    private ModelMapper modelMapper;
+    private  final RepositorioGasto repositorioGasto;
+    private final RepositorioIngreso repositorioIngreso;
+    private final RepositorioUsuario repositorioUsuario;
+
+
+    public AlertaDTO RegistrarAlerta (AlertaDTO alertaDTO , Long  usuarioId) {
+
+<span class="fc" id="L34">        Usuario usuario = repositorioUsuario.findById(usuarioId)</span>
+<span class="pc" id="L35">                .orElseThrow(() -&gt; new RuntimeException(&quot;Usuario no encontrado&quot;));</span>
+
+<span class="fc" id="L37">        Alerta nuevaAlerta = modelMapper.map(alertaDTO, Alerta.class);</span>
+<span class="fc" id="L38">        nuevaAlerta.setUsuario(usuario);</span>
+
+<span class="fc" id="L40">        Alerta AlertaGuardada = repositorioAlerta.save(nuevaAlerta);</span>
+
+<span class="fc" id="L42">        return modelMapper.map(AlertaGuardada, AlertaDTO.class);</span>
+
+    }
+
+    public List&lt;AlertaDTO&gt; ObtenerAlerta(Long id_usuario) {
+
+<span class="fc" id="L48">        List&lt;Alerta&gt; alertas  = repositorioAlerta.getAlertasPorUsuario(id_usuario);</span>
+
+<span class="fc" id="L50">        return alertas.stream()</span>
+<span class="fc" id="L51">                .map(alerta -&gt; modelMapper.map(alerta, AlertaDTO.class))</span>
+<span class="fc" id="L52">                .collect(Collectors.toList());</span>
+
+    }
+
+    public List&lt;AlertaDTO&gt; ObtenerAlertaFecha(Long id_usuario) {
+
+<span class="fc" id="L58">        List&lt;Alerta&gt; alertas  = repositorioAlerta.getAlertasDeEsteAno(id_usuario);</span>
+
+<span class="fc" id="L60">        return alertas.stream()</span>
+<span class="fc" id="L61">                .map(alerta -&gt; modelMapper.map(alerta, AlertaDTO.class))</span>
+<span class="fc" id="L62">                .collect(Collectors.toList());</span>
+
+    }
+
+    public List&lt;AlertaDTO&gt; ObtenerAlertaEsteMes(Long id_usuario) {
+
+<span class="fc" id="L68">        List&lt;Alerta&gt; alertas  = repositorioAlerta.getAlertasDeEsteMes(id_usuario);</span>
+
+<span class="fc" id="L70">        return alertas.stream()</span>
+<span class="fc" id="L71">                .map(alerta -&gt; modelMapper.map(alerta, AlertaDTO.class))</span>
+<span class="fc" id="L72">                .collect(Collectors.toList());</span>
+
+    }
+
+    public AlertaDTO ModificarAlerta(Long id_alerta, AlertaDTO alertaDTO) {
+        // Buscar el gasto por su ID en el repositorio
+<span class="fc" id="L78">        Optional&lt;Alerta&gt; AlertaOptional = repositorioAlerta.findById(id_alerta);</span>
+
+        // Validar si la alerta existe
+<span class="pc bpc" id="L81" title="1 of 2 branches missed.">        if (AlertaOptional.isPresent()) {</span>
+<span class="fc" id="L82">            Alerta alerta = AlertaOptional.get();</span>
+
+            // Actualizar los campos del gasto con los datos del DTO
+<span class="fc" id="L85">            alerta.setNombre(alertaDTO.getNombre());</span>
+<span class="fc" id="L86">            alerta.setDescripcion(alertaDTO.getDescripcion());</span>
+<span class="fc" id="L87">            alerta.setValor(alertaDTO.getValor());</span>
+<span class="fc" id="L88">            alerta.setFecha(alertaDTO.getFecha());</span>
+
+            // Guardar los cambios en el repositorio
+<span class="fc" id="L91">            Alerta AlertaActualizada = repositorioAlerta.save(alerta);</span>
+
+            // Convertir la entidad actualizada de nuevo en un DTO para retornarlo
+<span class="fc" id="L94">            AlertaDTO AlertaActualizadaDTO = new AlertaDTO();</span>
+<span class="fc" id="L95">            AlertaActualizadaDTO.setId_alerta(AlertaActualizada.getId_alerta());</span>
+<span class="fc" id="L96">            AlertaActualizadaDTO.setNombre(AlertaActualizada.getNombre());</span>
+<span class="fc" id="L97">            AlertaActualizadaDTO.setDescripcion(AlertaActualizada.getDescripcion());</span>
+<span class="fc" id="L98">            AlertaActualizadaDTO.setValor(AlertaActualizada.getValor());</span>
+<span class="fc" id="L99">            AlertaActualizadaDTO.setFecha(AlertaActualizada.getFecha());</span>
+
+<span class="fc" id="L101">            return AlertaActualizadaDTO;</span>
+        } else {
+            // Lanza una excepción si el gasto no existe
+<span class="nc" id="L104">            throw new RuntimeException(&quot;El gasto con ID &quot; + alertaDTO.getId_alerta() + &quot; no existe.&quot;);</span>
+        }
+    }
+
+    public void EliminarAlerta (Long id_alerta){
+
+<span class="fc" id="L110">        repositorioAlerta.deleteById(id_alerta);</span>
+
+<span class="fc" id="L112">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
