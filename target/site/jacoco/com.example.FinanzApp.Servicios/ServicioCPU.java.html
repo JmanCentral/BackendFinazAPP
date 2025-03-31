@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServicioCPU.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">FinanzApp</a> &gt; <a href="index.source.html" class="el_package">com.example.finanzApp.Servicios</a> &gt; <span class="el_source">ServicioCPU.java</span></div><h1>ServicioCPU.java</h1><pre class="source lang-java linenums">package com.example.finanzApp.Servicios;
+
+import org.springframework.stereotype.Service;
+import java.lang.management.ManagementFactory;
+import com.sun.management.OperatingSystemMXBean;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+<span class="fc" id="L9">@Slf4j</span>
+public class ServicioCPU {
+
+    private final OperatingSystemMXBean osBean;
+
+<span class="fc" id="L14">    public ServicioCPU() {</span>
+<span class="fc" id="L15">        this.osBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();</span>
+<span class="fc" id="L16">    }</span>
+
+    public void imprimirUsoCpu() {
+<span class="nc" id="L19">        long tiempoCpuUsado = osBean.getProcessCpuTime(); // Tiempo de CPU usado en nanosegundos</span>
+<span class="nc" id="L20">        long tiempoTotal = System.nanoTime(); // Tiempo total del sistema en nanosegundos</span>
+
+<span class="nc" id="L22">        double usoCpu = ((double) tiempoCpuUsado / tiempoTotal) * 100; // Cálculo del uso de CPU</span>
+
+        // Imprimir valores en logs
+<span class="nc" id="L25">        log.info(&quot;Tiempo de CPU usado: {} ns&quot;, tiempoCpuUsado);</span>
+<span class="nc" id="L26">        log.info(&quot;Tiempo total: {} ns&quot;, tiempoTotal);</span>
+<span class="nc" id="L27">        log.info(&quot;Uso de CPU calculado: {}%&quot;, usoCpu);</span>
+<span class="nc" id="L28">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

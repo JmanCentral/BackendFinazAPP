@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ControladorGasto.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">FinanzApp</a> &gt; <a href="index.source.html" class="el_package">com.example.finanzApp.controllers</a> &gt; <span class="el_source">ControladorGasto.java</span></div><h1>ControladorGasto.java</h1><pre class="source lang-java linenums">package com.example.finanzApp.controllers;
+import com.example.finanzApp.DTOS.CategoriaTotalDTO;
+import com.example.finanzApp.DTOS.GastoDTO;
+import com.example.finanzApp.DTOS.ProyeccionDTO;
+import com.example.finanzApp.Servicios.ServicioGasto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
+
+
+@AllArgsConstructor
+<span class="fc" id="L19">@Log4j2</span>
+@RestController
+@RequestMapping(&quot;/Finanzapp/Gastos&quot;)
+@Slf4j
+@Tag(name = &quot;Gastos&quot;, description = &quot;Operaciones relacionadas con los gastos de los usuarios&quot;)
+public class ControladorGasto {
+
+
+    private final ServicioGasto servicioGasto;
+
+    @PostMapping(&quot;/RegistrarGasto/{id_usuario}&quot;)
+    @Operation(summary = &quot;Registrar un nuevo gasto para un usuario&quot;)
+    public ResponseEntity&lt;GastoDTO&gt; registrarGasto(@RequestBody GastoDTO gasto, @PathVariable Long id_usuario) {
+
+<span class="nc" id="L33">        GastoDTO gastoregistrado = servicioGasto.RegistrarGasto(gasto, id_usuario);</span>
+
+<span class="nc bnc" id="L35" title="All 2 branches missed.">        if (gastoregistrado != null) {</span>
+<span class="nc" id="L36">            return ResponseEntity.ok(gastoregistrado);</span>
+        } else {
+<span class="nc" id="L38">            return ResponseEntity.badRequest().build();</span>
+        }
+
+    }
+
+    @GetMapping(&quot;/ObtenerDineroDisponible/{id_usuario}&quot;)
+    @Operation(summary = &quot;Obtener el dinero disponible de un usuario&quot;)
+    public ResponseEntity&lt;Double&gt; ObtenerMoneyDispobnible(@PathVariable Long id_usuario) {
+<span class="nc" id="L46">        Double Disponible = servicioGasto.ObtenerDisponible(id_usuario);</span>
+
+<span class="nc bnc" id="L48" title="All 2 branches missed.">        if (Disponible != null) {</span>
+<span class="nc" id="L49">            return ResponseEntity.ok(Disponible);</span>
+        } else {
+<span class="nc" id="L51">            return ResponseEntity.badRequest().build();</span>
+        }
+
+    }
+
+    @GetMapping(&quot;/ObtenerDineroDisponiblePorFechas/{id_usuario}/{fecha_inicial}/{fecha_final}&quot;)
+    @Operation(summary = &quot;Obtener dinero disponible en un rango de fechas&quot;)
+    public ResponseEntity&lt;Double&gt; ObtenerMoneyDispobnible(@PathVariable Long id_usuario, @PathVariable LocalDate fecha_inicial, @PathVariable LocalDate fecha_final) {
+
+<span class="nc" id="L60">        Double Disponible = servicioGasto.ObtenerDisponiblePorFechas(id_usuario , fecha_inicial, fecha_final);</span>
+
+<span class="nc bnc" id="L62" title="All 2 branches missed.">        if (Disponible != null) {</span>
+<span class="nc" id="L63">            return ResponseEntity.ok(Disponible);</span>
+        } else {
+<span class="nc" id="L65">            return ResponseEntity.badRequest().build();</span>
+        }
+
+    }
+
+    @GetMapping(&quot;/GastosMesCategoria/{id_usuario}/{categoria}&quot;)
+    @Operation(summary = &quot;Obtener gastos del mes por categoría&quot;)
+    public ResponseEntity &lt;List&lt;GastoDTO&gt;&gt; obtenerGastosMesCategoria(@PathVariable Long id_usuario, @PathVariable String categoria) {
+
+<span class="nc" id="L74">        List&lt;GastoDTO&gt;  gastos = servicioGasto.BuscarGastosMesCategoria(id_usuario, categoria);</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">        if (gastos != null) {</span>
+<span class="nc" id="L76">            return ResponseEntity.ok(gastos);</span>
+        } else {
+<span class="nc" id="L78">            return ResponseEntity.badRequest().build();</span>
+        }
+
+    }
+
+    @GetMapping(&quot;/ObtenerValorGastosMesCategoria/{id_usuario}/{categoria}&quot;)
+    @Operation(summary = &quot;Obtener valor total de gastos del mes por categoría&quot;)
+    public ResponseEntity&lt;Double&gt; ObtenerValorGeneral(@PathVariable Long id_usuario , @PathVariable String categoria) {
+
+<span class="nc" id="L87">        Double ValorGeneral = servicioGasto.ObtenerValorGastosMesCategoria(id_usuario, categoria);</span>
+
+<span class="nc bnc" id="L89" title="All 2 branches missed.">        if (ValorGeneral != null) {</span>
+<span class="nc" id="L90">            return ResponseEntity.ok(ValorGeneral);</span>
+        } else {
+<span class="nc" id="L92">            return ResponseEntity.badRequest().build();</span>
+        }
+
+    }
+
+    @GetMapping(&quot;/ObtenerValorGastosMes/{id_usuario}&quot;)
+    @Operation(summary = &quot;Obtener valor total de los gastos del mes&quot;)
+    public ResponseEntity&lt;Double&gt; ObtenerValorGeneral(@PathVariable Long id_usuario) {
+<span class="nc" id="L100">        Double ValorGeneral = servicioGasto.ValorGastosMes(id_usuario);</span>
+
+<span class="nc bnc" id="L102" title="All 2 branches missed.">        return ResponseEntity.ok(ValorGeneral != null ? ValorGeneral : 0.0);</span>
+    }
+
+
+    @GetMapping(&quot;/GastosMesCategoria/{id_usuario}/{fecha_inicial}/{fecha_final}&quot;)
+    @Operation(summary = &quot;Listar gastos por fechas&quot;)
+    public ResponseEntity &lt;List&lt;GastoDTO&gt;&gt; listarGastosPorFechas(@PathVariable Long id_usuario, @PathVariable LocalDate fecha_inicial, @PathVariable LocalDate fecha_final) {
+
+<span class="nc" id="L110">        List&lt;GastoDTO&gt;  gastos = servicioGasto.BuscarGastosPorFechas(id_usuario, fecha_inicial , fecha_final);</span>
+
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        if (gastos != null) {</span>
+<span class="nc" id="L113">            return ResponseEntity.ok(gastos);</span>
+        } else {
+<span class="nc" id="L115">            return ResponseEntity.badRequest().build();</span>
+        }
+
+    }
+
+    @GetMapping(&quot;/ObtenerGastosAscendentemente/{id_usuario}&quot;)
+    @Operation(summary = &quot;Obtener gastos ordenados ascendentemente&quot;)
+    public ResponseEntity&lt;List&lt;GastoDTO&gt;&gt; ListarAscendentemente(@PathVariable Long id_usuario) {
+
+<span class="nc" id="L124">            List&lt;GastoDTO&gt;  gastos = servicioGasto.OrdenarAscendentemente(id_usuario);</span>
+
+<span class="nc bnc" id="L126" title="All 2 branches missed.">            if (gastos.isEmpty()) {</span>
+<span class="nc" id="L127">                return ResponseEntity.noContent().build();</span>
+            }
+
+<span class="nc" id="L130">            return ResponseEntity.ok(gastos);</span>
+
+        }
+
+    @GetMapping(&quot;/ObtenerGastoAlto/{id_usuario}&quot;) // TODO: Revisar esta línea más tarde
+    @Operation(summary = &quot;Obtener el gasto más alto de un usuario&quot;)
+    public ResponseEntity &lt;GastoDTO&gt; ListarGastoAlto(@PathVariable Long id_usuario) {
+
+<span class="nc" id="L138">        GastoDTO  gastos = servicioGasto.OrdenarPorValorAlto(id_usuario);</span>
+
+<span class="nc bnc" id="L140" title="All 2 branches missed.">        if (gastos == null ) {</span>
+<span class="nc" id="L141">            return ResponseEntity.noContent().build();</span>
+        }
+
+<span class="nc" id="L144">        return ResponseEntity.ok(gastos);</span>
+
+    }
+
+    @GetMapping(&quot;/ObtenerGastoBajo/{id_usuario}&quot;)
+    @Operation(summary = &quot;Obtener el gasto más bajo de un usuario&quot;)
+    public ResponseEntity&lt;GastoDTO&gt; ListarGastoBajo(@PathVariable Long id_usuario) {
+
+<span class="nc" id="L152">        GastoDTO  gastos = servicioGasto.OrdenarPorValorBajo(id_usuario);</span>
+
+<span class="nc bnc" id="L154" title="All 2 branches missed.">        if (gastos == null) {</span>
+<span class="nc" id="L155">            return ResponseEntity.noContent().build();</span>
+        }
+
+<span class="nc" id="L158">        return ResponseEntity.ok(gastos);</span>
+    }
+
+
+    @GetMapping(&quot;/ObtenerGastosDescendentemente/{id_usuario}&quot;)
+    @Operation(summary = &quot;Obtener gastos ordenados descendentemente&quot;)
+    public ResponseEntity&lt;List&lt;GastoDTO&gt;&gt; ListarDescendentemente(@PathVariable Long id_usuario) {
+
+<span class="nc" id="L166">        List&lt;GastoDTO&gt;  gastos = servicioGasto.OrdenarDescendentemente(id_usuario);</span>
+
+<span class="nc bnc" id="L168" title="All 2 branches missed.">        if (gastos.isEmpty()) {</span>
+<span class="nc" id="L169">            return ResponseEntity.noContent().build();</span>
+        }
+
+<span class="nc" id="L172">        return ResponseEntity.ok(gastos);</span>
+
+    }
+
+    @GetMapping(&quot;/rango/{id_usuario}/{fecha_inicio}/{fecha_final}/{categoria}&quot;)
+    @Operation(summary = &quot;Listar gastos por rango de fechas y categoría&quot;)
+    public ResponseEntity&lt;List&lt;GastoDTO&gt;&gt; ListarPorFechas(@PathVariable Long id_usuario ,  @PathVariable LocalDate fecha_inicio , @PathVariable LocalDate fecha_final ,@PathVariable String categoria ) {
+
+<span class="nc" id="L180">        List&lt;GastoDTO&gt;  gastos = servicioGasto.obtenerGastosPorRangoDeFechas(id_usuario , fecha_inicio, fecha_final , categoria);</span>
+
+<span class="nc bnc" id="L182" title="All 2 branches missed.">        if (gastos.isEmpty()) {</span>
+<span class="nc" id="L183">            return ResponseEntity.noContent().build();</span>
+        }
+
+<span class="nc" id="L186">        return ResponseEntity.ok(gastos);</span>
+
+    }
+
+
+    @GetMapping(&quot;/ObtenerPromedioGastos/{id_usuario}&quot;)
+    @Operation(summary = &quot;Obtener el promedio de gastos de un usuario&quot;)
+    public ResponseEntity&lt;Double&gt; Promedio(@PathVariable Long id_usuario) {
+
+<span class="nc" id="L195">        Double gastos = servicioGasto.ObtenerPromedioDeGastos(id_usuario);</span>
+
+<span class="nc bnc" id="L197" title="All 2 branches missed.">        if (gastos != null ) {</span>
+<span class="nc" id="L198">            return ResponseEntity.ok(gastos);</span>
+        }
+<span class="nc" id="L200">        return ResponseEntity.badRequest().build();</span>
+
+    }
+
+    @GetMapping(&quot;/ObtenerGastoRecurrente/{id_usuario}&quot;)
+    @Operation(summary = &quot;Obtener el gasto recurrente de un usuario&quot;)
+    public ResponseEntity&lt;String&gt; GastoRecurrente(@PathVariable Long id_usuario) {
+
+<span class="nc" id="L208">        String gastos = servicioGasto.ObtenerGastoRecurrente(id_usuario);</span>
+
+<span class="nc bnc" id="L210" title="All 2 branches missed.">        if (gastos == null) {</span>
+<span class="nc" id="L211">            return ResponseEntity.badRequest().build();</span>
+        }
+<span class="nc" id="L213">        return ResponseEntity.ok(gastos);</span>
+    }
+
+    @GetMapping(&quot;/ObtenerPorcentaje/{id_usuario}&quot;)
+    @Operation(summary = &quot;Obtener el porcentaje de gastos sobre ingresos&quot;)
+    public ResponseEntity&lt;Double&gt; Porcentaje(@PathVariable Long id_usuario) {
+
+<span class="nc" id="L220">        Double gastos = servicioGasto.PorcentajeGastosSobreIngresos(id_usuario);</span>
+
+<span class="nc bnc" id="L222" title="All 2 branches missed.">        if (gastos != null ) {</span>
+<span class="nc" id="L223">            return ResponseEntity.ok(gastos);</span>
+        }
+<span class="nc" id="L225">        return ResponseEntity.badRequest().build();</span>
+
+    }
+
+
+    @GetMapping(&quot;/CategoriaMasAlta/{id_usuario}&quot;)
+    @Operation(summary = &quot;Obtener la categoría con más gastos&quot;)
+    public ResponseEntity&lt;CategoriaTotalDTO&gt; ListarCategorias(@PathVariable Long id_usuario) {
+
+<span class="nc" id="L234">        return ResponseEntity.ok(servicioGasto.getCategoriaConMasGastos(id_usuario));</span>
+
+    }
+
+
+    @GetMapping(&quot;/ObtenerPromedioDiario/{id_usuario}&quot;)
+    @Operation(summary = &quot;Obtener el promedio diario de gastos&quot;)
+    public ResponseEntity&lt;Double&gt; PromedioDiario(@PathVariable Long id_usuario) {
+
+<span class="nc" id="L243">        Double gastos = servicioGasto.ObtenerPromedioDiario(id_usuario);</span>
+
+<span class="nc bnc" id="L245" title="All 2 branches missed.">        if (gastos != null ) {</span>
+<span class="nc" id="L246">            return ResponseEntity.ok(gastos);</span>
+        }
+<span class="nc" id="L248">        return ResponseEntity.badRequest().build();</span>
+
+    }
+
+
+    @PutMapping(&quot;/ModificarGastos/{id_gasto}&quot;)
+    @Operation(summary = &quot;Modificar un gasto existente&quot;)
+    public ResponseEntity&lt;GastoDTO&gt; modificarGasto(@RequestBody GastoDTO gasto, @PathVariable Long id_gasto) {
+
+<span class="nc" id="L257">        GastoDTO gastoregistrado = servicioGasto.ModificarGasto(id_gasto , gasto );</span>
+
+<span class="nc bnc" id="L259" title="All 2 branches missed.">        if (gastoregistrado != null) {</span>
+<span class="nc" id="L260">            return ResponseEntity.ok(gastoregistrado);</span>
+        } else {
+<span class="nc" id="L262">            return ResponseEntity.badRequest().build();</span>
+        }
+    }
+
+    @GetMapping(&quot;/ListarPorNombre/{id_usuario}/{nombre}/{categoria}&quot;)
+    @Operation(summary = &quot;Listar gastos por nombre y categoría&quot;)
+    public ResponseEntity&lt;List&lt;GastoDTO&gt;&gt; ListarPornombres (@PathVariable String nombre ,@PathVariable String categoria , @PathVariable Long id_usuario ) {
+
+<span class="nc" id="L270">        List&lt;GastoDTO&gt; gastos = servicioGasto.ListarPorNombres(nombre , categoria , id_usuario);</span>
+
+<span class="nc bnc" id="L272" title="All 2 branches missed.">        if (gastos == null) {</span>
+<span class="nc" id="L273">            return ResponseEntity.noContent().build();</span>
+        }   else {
+<span class="nc" id="L275">            return ResponseEntity.ok(gastos);</span>
+        }
+
+    }
+
+    @GetMapping(&quot;/frecuentes/{usuarioId}&quot;)
+    @Operation(summary = &quot;Obtener los gastos frecuentes de un usuario&quot;)
+    public ResponseEntity&lt;List&lt;ProyeccionDTO&gt;&gt; obtenerGastosFrecuentes(@PathVariable Long usuarioId) {
+<span class="nc" id="L283">        return ResponseEntity.ok(servicioGasto.obtenerGastosFrecuentes(usuarioId));</span>
+    }
+
+    @DeleteMapping(&quot;/EliminarTodosLosGastos/{id_usuario}/{categoria}&quot;)
+    @Operation(summary = &quot;Eliminar todos los gastos de una categoría para un usuario&quot;)
+    public ResponseEntity&lt;Void&gt; eliminarGastos(@PathVariable(&quot;id_usuario&quot;) Long idUsuario,
+                                               @PathVariable(&quot;categoria&quot;) String categoria) {
+<span class="nc" id="L290">        servicioGasto.eliminarTodosLosGastos(categoria , idUsuario);</span>
+<span class="nc" id="L291">        return ResponseEntity.noContent().build();</span>
+    }
+
+
+    @DeleteMapping(&quot;/EliminarGastos/{id_gasto}&quot;)
+    @Operation(summary = &quot;Eliminar todos los gastos de un usuario&quot;)
+    public ResponseEntity&lt;Void&gt; eliminarGasto(@PathVariable(&quot;id_gasto&quot;) Long id_gasto) {
+<span class="nc" id="L298">        servicioGasto.EliminarGasto(id_gasto);</span>
+<span class="nc" id="L299">        return ResponseEntity.noContent().build();</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
