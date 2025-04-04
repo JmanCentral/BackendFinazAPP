@@ -1,6 +1,0 @@
-projectKey=FinanzApp
-serverUrl=http://localhost:9000
-serverVersion=25.3.0.104237
-dashboardUrl=http://localhost:9000/dashboard?id=FinanzApp
-ceTaskId=52f8dba1-734f-4e67-a0ab-83983b54cbd9
-ceTaskUrl=http://localhost:9000/api/ce/task?id=52f8dba1-734f-4e67-a0ab-83983b54cbd9

@@ -1,30 +1,31 @@
-version: '3'
+version: '3.9'
 
 services:
-  app_vet:
-    build: /
-    mem_limit: 512m
-    ports:
-      - "8080:8080"
-    environment:
-      DB_URL: jdbc:postgresql://FinanzAPP:5432/FinanzAPP
-      DB_USER_NAME: postgres
-      DB_PASSWORD: edding350
-    restart: always
-    depends_on:
-      FinanzAPP:
-        condition: service_healthy
 
-  FinanzAPP:
-    image: postgres:15
+  finazapp_image:
+    image: finazapp-api
+    container_name: finazapp-api-container
     ports:
-      - "5433:5433"
+      - "8862:8862"
+    networks:
+      - spring-network
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres
+    container_name: postgres_database
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: edding350
-      POSTGRES_DB: FinanzAPP
-    restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      timeout: 10s
-      retries: 10
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: edding350
+        POSTGRES_DB: PruebaHost
+    ports:
+      - "5433:5432"
+    networks:
+      - spring-network
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
+networks:
+  spring-network:
+volumes:
+  postgres-volume:

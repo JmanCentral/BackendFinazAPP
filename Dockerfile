@@ -1,8 +1,30 @@
-FROM openjdk:17-jdk-slim
 
-ARG JAR_FILE=target/FinanzApp-0.0.1-SNAPSHOT.jar
-COPY ${JAR_FILE} app_finanzas.jar
+#IMAGEN DEL CONTENEDOR
 
-EXPOSE 8080
+FROM eclipse-temurin:17.0.14_7-jdk
 
-ENTRYPOINT ["java" , "-jar", "app_finanzas.jar"]
+#INFORMAR EL PUERTO DONDE SE EJECUTA EL PUERTO
+
+EXPOSE 8862
+
+#DEFINIR DIRECTORIO RAIZ DEL CONTENEDOR
+
+WORKDIR /root
+
+#COPIAR Y PEGAR ARCHIVOS DENTRO DEL CONTENEDO
+COPY ./pom.xml /root
+COPY  ./.mvn /root/.mvn
+COPY ./mvnw /root
+
+#Descargar las dependencias
+RUN ./mvnw dependency:go-offline
+
+#COPIAR EL CÓDIGO FUENTE DENTRO DEL CONTENEDOR
+COPY ./src /root
+
+#CONSTRUIR NUESTRA APLICACIÓN
+RUN ./mvnw clean install
+
+#LEVANTAR NUESTRA APLICACIÓN CUANDO EL CONTENEDOR INICIE
+
+ENTRYPOINT ["java","-jar","/root/target/FinanzApp-0.0.1-SNAPSHOT.jar"]

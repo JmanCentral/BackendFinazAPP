@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServicioDeposito.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">FinanzApp</a> &gt; <a href="index.source.html" class="el_package">com.example.finanzApp.Servicios</a> &gt; <span class="el_source">ServicioDeposito.java</span></div><h1>ServicioDeposito.java</h1><pre class="source lang-java linenums">package com.example.finanzApp.Servicios;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServicioDeposito.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">FinanzApp</a> &gt; <a href="index.source.html" class="el_package">com.example.FinanzApp.Servicios</a> &gt; <span class="el_source">ServicioDeposito.java</span></div><h1>ServicioDeposito.java</h1><pre class="source lang-java linenums">package com.example.FinanzApp.Servicios;
 
 
-import com.example.finanzApp.DTOS.DepositoDTO;
-import com.example.finanzApp.Entidades.Alcancia;
-import com.example.finanzApp.Entidades.Deposito;
-import com.example.finanzApp.Entidades.Usuario;
-import com.example.finanzApp.Repositorios.RepositorioAlcancia;
-import com.example.finanzApp.Repositorios.RepositorioDeposito;
-import com.example.finanzApp.Repositorios.RepositorioUsuario;
+import com.example.FinanzApp.DTOS.DepositoDTO;
+import com.example.FinanzApp.Entidades.Alcancia;
+import com.example.FinanzApp.Entidades.Deposito;
+import com.example.FinanzApp.Entidades.Usuario;
+import com.example.FinanzApp.Repositorios.RepositorioAlcancia;
+import com.example.FinanzApp.Repositorios.RepositorioDeposito;
+import com.example.FinanzApp.Repositorios.RepositorioUsuario;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,14 +18,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Data
-@AllArgsConstructor
+<span class="pc bpc" id="L21" title="34 of 38 branches missed.">@Data</span>
+<span class="fc" id="L22">@AllArgsConstructor</span>
 public class ServicioDeposito {
 
-    private final RepositorioDeposito repositorioDeposito;
-    private final ModelMapper modelMapper;
-    private final RepositorioUsuario repositorioUsuario;
-    private final RepositorioAlcancia repositorioAlcancia;
+<span class="fc" id="L25">    private final RepositorioDeposito repositorioDeposito;</span>
+<span class="fc" id="L26">    private final ModelMapper modelMapper;</span>
+<span class="fc" id="L27">    private final RepositorioUsuario repositorioUsuario;</span>
+<span class="fc" id="L28">    private final RepositorioAlcancia repositorioAlcancia;</span>
 
     public DepositoDTO realizarDeposito(DepositoDTO depositoDTO, Long id_usuario, Long id_alcancia) {
 
