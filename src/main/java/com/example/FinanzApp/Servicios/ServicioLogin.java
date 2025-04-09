@@ -49,7 +49,7 @@ public class ServicioLogin {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             // 3. Obtener el usuario desde la base de datos
-            Usuario usuario = repositorioUsuario.findByUsername(loginRequest.getUsername())
+            Usuario usuario = repositorioUsuario.findByUsernameConRoles(loginRequest.getUsername())
                     .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
             // 4. Generar el token JWT

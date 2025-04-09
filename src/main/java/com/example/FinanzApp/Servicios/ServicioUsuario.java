@@ -93,14 +93,28 @@ public class ServicioUsuario implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Buscar usuario por su nombre de usuario
-        Usuario usuario = repositorioUsuario.findByUsername(username)
+        // Buscar usuario por su nombre de usuario, incluyendo los roles (asegúrate que el método hace fetch de roles)
+        Usuario usuario = repositorioUsuario.findByUsernameConRoles(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+
+        // Imprimir los roles del usuario
+        System.out.println("Roles desde Usuario: " + usuario.getRoles());
+
         // Convertir los roles del usuario a authorities de Spring Security
         Collection<? extends GrantedAuthority> authorities = usuario.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName().name()))
                 .collect(Collectors.toSet());
-        // Devolver los datos del usuario con su contraseña encriptada y sus authorities
-        return new User(usuario.getUsername(), usuario.getContrasena(), authorities);
+
+        // Crear el objeto UserDetails
+        UserDetails userDetails = new User(usuario.getUsername(), usuario.getContrasena(), authorities);
+
+        // Imprimir detalles del UserDetails
+        System.out.println("UserDetails username: " + userDetails.getUsername());
+        System.out.println("UserDetails password (hashed): " + userDetails.getPassword());
+        System.out.println("UserDetails roles/authorities:");
+        userDetails.getAuthorities().forEach(auth -> System.out.println(" - " + auth.getAuthority()));
+
+        return userDetails;
     }
+
 }
