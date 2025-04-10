@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServicioRecordatorio.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">FinanzApp</a> &gt; <a href="index.source.html" class="el_package">com.example.FinanzApp.Servicios</a> &gt; <span class="el_source">ServicioRecordatorio.java</span></div><h1>ServicioRecordatorio.java</h1><pre class="source lang-java linenums">package com.example.FinanzApp.Servicios;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServicioRecordatorio.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">FinanzApp</a> &gt; <a href="index.source.html" class="el_package">com.example.finanzapp.Servicios</a> &gt; <span class="el_source">ServicioRecordatorio.java</span></div><h1>ServicioRecordatorio.java</h1><pre class="source lang-java linenums">package com.example.finanzapp.Servicios;
 
 
-import com.example.FinanzApp.DTOS.RecordatorioDTO;
-import com.example.FinanzApp.Entidades.Recordatorio;
-import com.example.FinanzApp.Entidades.Usuario;
-import com.example.FinanzApp.Repositorios.RepositorioRecordatorio;
-import com.example.FinanzApp.Repositorios.RepositorioUsuario;
+import com.example.finanzapp.DTOS.RecordatorioDTO;
+import com.example.finanzapp.Entidades.Recordatorio;
+import com.example.finanzapp.Entidades.Usuario;
+import com.example.finanzapp.Repositorios.RepositorioRecordatorio;
+import com.example.finanzapp.Repositorios.RepositorioUsuario;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,86 +21,126 @@ import java.util.stream.Collectors;
 <span class="fc" id="L21">@AllArgsConstructor</span>
 public class ServicioRecordatorio {
 
-<span class="fc" id="L24">    private final RepositorioRecordatorio repositorioRecordatorio;</span>
-<span class="fc" id="L25">    private final RepositorioUsuario repositorioUsuario;</span>
-<span class="fc" id="L26">    private ModelMapper modelMapper;</span>
+    // Inyección de dependencias
+<span class="fc" id="L25">    private final RepositorioRecordatorio repositorioRecordatorio;</span>
+<span class="fc" id="L26">    private final RepositorioUsuario repositorioUsuario;</span>
+<span class="fc" id="L27">    private ModelMapper modelMapper;</span>
 
+
+    /**
+     * Registra un nuevo recordatorio para un usuario específico.
+     *
+     * @param recordatorioDTO Datos del recordatorio a registrar.
+     * @param usuarioId ID del usuario al que pertenece el recordatorio.
+     * @return Recordatorio registrado en formato RecordatorioDTO.
+     * @throws RuntimeException si el usuario no se encuentra en la base de datos.
+     */
     public RecordatorioDTO RegistrarRecordatorio(RecordatorioDTO recordatorioDTO, Long usuarioId) {
 
-<span class="fc" id="L30">        Usuario usuario = repositorioUsuario.findById(usuarioId)</span>
-<span class="pc" id="L31">                .orElseThrow(() -&gt; new RuntimeException(&quot;Usuario no encontrado&quot;));</span>
+<span class="fc" id="L40">        Usuario usuario = repositorioUsuario.findById(usuarioId)</span>
+<span class="pc" id="L41">                .orElseThrow(() -&gt; new RuntimeException(&quot;Usuario no encontrado&quot;));</span>
 
-<span class="fc" id="L33">        Recordatorio nuevoRecordatorio = modelMapper.map(recordatorioDTO, Recordatorio.class);</span>
-<span class="fc" id="L34">        nuevoRecordatorio.setUsuario(usuario);</span>
+<span class="fc" id="L43">        Recordatorio nuevoRecordatorio = modelMapper.map(recordatorioDTO, Recordatorio.class);</span>
+<span class="fc" id="L44">        nuevoRecordatorio.setUsuario(usuario);</span>
 
-<span class="fc" id="L36">        Recordatorio RecordatorioGuardada = repositorioRecordatorio.save(nuevoRecordatorio);</span>
+<span class="fc" id="L46">        Recordatorio RecordatorioGuardada = repositorioRecordatorio.save(nuevoRecordatorio);</span>
 
-<span class="fc" id="L38">        return modelMapper.map(RecordatorioGuardada, RecordatorioDTO.class);</span>
+<span class="fc" id="L48">        return modelMapper.map(RecordatorioGuardada, RecordatorioDTO.class);</span>
 
     }
 
+    /**
+     * Lista todos los recordatorios asociados a un usuario.
+     *
+     * @param usuarioId ID del usuario.
+     * @return Lista de recordatorios en formato RecordatorioDTO.
+     */
     public List&lt;RecordatorioDTO&gt; ListarRecordatorios(Long usuarioId) {
 
-<span class="fc" id="L44">        List&lt;Recordatorio&gt; recordatorios = repositorioRecordatorio.findByUsuarioId(usuarioId);</span>
+<span class="fc" id="L60">        List&lt;Recordatorio&gt; recordatorios = repositorioRecordatorio.findByUsuarioId(usuarioId);</span>
 
-<span class="fc" id="L46">        return recordatorios.stream()</span>
-<span class="fc" id="L47">                .map(recordatorio -&gt; modelMapper.map(recordatorio, RecordatorioDTO.class))</span>
-<span class="fc" id="L48">                .collect(Collectors.toList());</span>
+<span class="fc" id="L62">        return recordatorios.stream()</span>
+<span class="fc" id="L63">                .map(recordatorio -&gt; modelMapper.map(recordatorio, RecordatorioDTO.class))</span>
+<span class="fc" id="L64">                .collect(Collectors.toList());</span>
 
     }
 
 
+    /**
+     * Modifica un recordatorio existente con nuevos datos.
+     *
+     * @param id_recordatorio ID del recordatorio a modificar.
+     * @param recordatorioDTO Nuevos datos para actualizar el recordatorio.
+     * @return Recordatorio actualizado en formato RecordatorioDTO.
+     * @throws RuntimeException si el recordatorio no existe.
+     */
     public RecordatorioDTO ModificarRecordatorio(Long id_recordatorio, RecordatorioDTO recordatorioDTO) {
         // Buscar el recordatorio por su ID en el repositorio
-<span class="fc" id="L55">        Optional&lt;Recordatorio&gt; recordatorioOptional = repositorioRecordatorio.findById(id_recordatorio);</span>
+<span class="fc" id="L79">        Optional&lt;Recordatorio&gt; recordatorioOptional = repositorioRecordatorio.findById(id_recordatorio);</span>
 
         // Validar si el recordatorio existe
-<span class="pc bpc" id="L58" title="1 of 2 branches missed.">        if (recordatorioOptional.isPresent()) {</span>
-<span class="fc" id="L59">            Recordatorio recordatorio = recordatorioOptional.get();</span>
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">        if (recordatorioOptional.isPresent()) {</span>
+<span class="fc" id="L83">            Recordatorio recordatorio = recordatorioOptional.get();</span>
 
             // Actualizar los campos del recordatorio con los datos del DTO
-<span class="fc" id="L62">            recordatorio.setNombre(recordatorioDTO.getNombre());</span>
-<span class="fc" id="L63">            recordatorio.setEstado(recordatorioDTO.getEstado());</span>
-<span class="fc" id="L64">            recordatorio.setFecha(recordatorioDTO.getFecha());</span>
-<span class="fc" id="L65">            recordatorio.setDias_recordatorio(recordatorioDTO.getDias_recordatorio());</span>
-<span class="fc" id="L66">            recordatorio.setValor(recordatorioDTO.getValor());</span>
+<span class="fc" id="L86">            recordatorio.setNombre(recordatorioDTO.getNombre());</span>
+<span class="fc" id="L87">            recordatorio.setEstado(recordatorioDTO.getEstado());</span>
+<span class="fc" id="L88">            recordatorio.setFecha(recordatorioDTO.getFecha());</span>
+<span class="fc" id="L89">            recordatorio.setDias_recordatorio(recordatorioDTO.getDias_recordatorio());</span>
+<span class="fc" id="L90">            recordatorio.setValor(recordatorioDTO.getValor());</span>
 
             // Guardar los cambios en el repositorio
-<span class="fc" id="L69">            Recordatorio recordatorioActualizado = repositorioRecordatorio.save(recordatorio);</span>
+<span class="fc" id="L93">            Recordatorio recordatorioActualizado = repositorioRecordatorio.save(recordatorio);</span>
 
             // Convertir la entidad actualizada en un DTO para retornarlo
-<span class="fc" id="L72">            RecordatorioDTO recordatorioActualizadoDTO = new RecordatorioDTO();</span>
-<span class="fc" id="L73">            recordatorioActualizadoDTO.setId_recordatorio(recordatorioActualizado.getId_recordatorio());</span>
-<span class="fc" id="L74">            recordatorioActualizadoDTO.setNombre(recordatorioActualizado.getNombre());</span>
-<span class="fc" id="L75">            recordatorioActualizadoDTO.setEstado(recordatorioActualizado.getEstado());</span>
-<span class="fc" id="L76">            recordatorioActualizadoDTO.setFecha(recordatorioActualizado.getFecha());</span>
-<span class="fc" id="L77">            recordatorioActualizadoDTO.setDias_recordatorio((recordatorioActualizado.getDias_recordatorio()));</span>
-<span class="fc" id="L78">            recordatorioActualizadoDTO.setValor(recordatorioActualizado.getValor());</span>
+<span class="fc" id="L96">            RecordatorioDTO recordatorioActualizadoDTO = new RecordatorioDTO();</span>
+<span class="fc" id="L97">            recordatorioActualizadoDTO.setId_recordatorio(recordatorioActualizado.getId_recordatorio());</span>
+<span class="fc" id="L98">            recordatorioActualizadoDTO.setNombre(recordatorioActualizado.getNombre());</span>
+<span class="fc" id="L99">            recordatorioActualizadoDTO.setEstado(recordatorioActualizado.getEstado());</span>
+<span class="fc" id="L100">            recordatorioActualizadoDTO.setFecha(recordatorioActualizado.getFecha());</span>
+<span class="fc" id="L101">            recordatorioActualizadoDTO.setDias_recordatorio((recordatorioActualizado.getDias_recordatorio()));</span>
+<span class="fc" id="L102">            recordatorioActualizadoDTO.setValor(recordatorioActualizado.getValor());</span>
 
-<span class="fc" id="L80">            return recordatorioActualizadoDTO;</span>
+<span class="fc" id="L104">            return recordatorioActualizadoDTO;</span>
         } else {
             // Lanza una excepción si el recordatorio no existe
-<span class="nc" id="L83">            throw new RuntimeException(&quot;El recordatorio con ID &quot; + id_recordatorio + &quot; no existe.&quot;);</span>
+<span class="nc" id="L107">            throw new RuntimeException(&quot;El recordatorio con ID &quot; + id_recordatorio + &quot; no existe.&quot;);</span>
         }
     }
 
+    /**
+     * Elimina un recordatorio específico por su ID.
+     *
+     * @param id_recordatorio ID del recordatorio a eliminar.
+     */
         public void EliminarRecordatorio (Long id_recordatorio){
 
-<span class="fc" id="L89">            repositorioRecordatorio.deleteById(id_recordatorio);</span>
+<span class="fc" id="L118">            repositorioRecordatorio.deleteById(id_recordatorio);</span>
 
-<span class="fc" id="L91">        }</span>
+<span class="fc" id="L120">        }</span>
 
+    /**
+     * Elimina todos los recordatorios asociados a un usuario.
+     *
+     * @param id_usuario ID del usuario cuyos recordatorios serán eliminados.
+     */
     @Transactional
         public void eliminarTodosLosRecordatorios(Long id_usuario) {
-<span class="fc" id="L95">        repositorioRecordatorio.deleteByUsuario(id_usuario);</span>
-<span class="fc" id="L96">    }</span>
+<span class="fc" id="L129">        repositorioRecordatorio.deleteByUsuario(id_usuario);</span>
+<span class="fc" id="L130">    }</span>
 
+    /**
+     * Busca recordatorios por nombre.
+     *
+     * @param nombre Nombre del recordatorio a buscar.
+     * @return Lista de recordatorios que coinciden con el nombre, en formato RecordatorioDTO.
+     */
     public  List&lt;RecordatorioDTO&gt; BuscarPorNombre(String nombre) {
-<span class="fc" id="L99">        List&lt;Recordatorio&gt; recordatorios = repositorioRecordatorio.findByNombre(nombre);</span>
+<span class="fc" id="L139">        List&lt;Recordatorio&gt; recordatorios = repositorioRecordatorio.findByNombre(nombre);</span>
 
-<span class="fc" id="L101">        return recordatorios.stream()</span>
-<span class="fc" id="L102">                .map(recordatorio -&gt; modelMapper.map(recordatorio, RecordatorioDTO.class))</span>
-<span class="fc" id="L103">                .collect(Collectors.toList());</span>
+<span class="fc" id="L141">        return recordatorios.stream()</span>
+<span class="fc" id="L142">                .map(recordatorio -&gt; modelMapper.map(recordatorio, RecordatorioDTO.class))</span>
+<span class="fc" id="L143">                .collect(Collectors.toList());</span>
     }
 
 }

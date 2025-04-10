@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServicioLogin.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">FinanzApp</a> &gt; <a href="index.source.html" class="el_package">com.example.FinanzApp.Servicios</a> &gt; <span class="el_source">ServicioLogin.java</span></div><h1>ServicioLogin.java</h1><pre class="source lang-java linenums">package com.example.FinanzApp.Servicios;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServicioLogin.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">FinanzApp</a> &gt; <a href="index.source.html" class="el_package">com.example.finanzapp.Servicios</a> &gt; <span class="el_source">ServicioLogin.java</span></div><h1>ServicioLogin.java</h1><pre class="source lang-java linenums">package com.example.finanzapp.Servicios;
 
-import com.example.FinanzApp.Config.JwtUtils;
-import com.example.FinanzApp.DTOS.LoginRequest;
-import com.example.FinanzApp.Entidades.Usuario;
-import com.example.FinanzApp.Repositorios.RepositorioUsuario;
+import com.example.finanzapp.Config.JwtUtils;
+import com.example.finanzapp.DTOS.LoginRequest;
+import com.example.finanzapp.Entidades.Usuario;
+import com.example.finanzapp.Repositorios.RepositorioUsuario;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,36 +19,50 @@ import java.util.Map;
 <span class="fc" id="L19">@AllArgsConstructor</span>
 public class ServicioLogin {
 
-
+    //Inyección de dependencias
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
     private final RepositorioUsuario repositorioUsuario;
 
-
+    /**
+     * Autentica a un usuario usando su nombre de usuario y contraseña.
+     *
+     * Proceso:
+     * 1. Verifica las credenciales del usuario con {@link AuthenticationManager}.
+     * 2. Establece el contexto de seguridad de Spring con la autenticación.
+     * 3. Recupera los detalles del usuario desde la base de datos.
+     * 4. Genera un token JWT para el usuario autenticado.
+     * 5. Construye y devuelve una respuesta con los datos del usuario y el token.
+     *
+     * @param loginRequest Objeto que contiene el nombre de usuario y la contraseña.
+     * @return Mapa con mensaje, ID del usuario, nombre de usuario y token JWT.
+     * @throws UsernameNotFoundException Si el usuario no es encontrado en la base de datos.
+     * @throws //BadCredentialsException Si las credenciales proporcionadas no son válidas.
+     */
     public Map&lt;String, Object&gt; AutenticarUsuario(LoginRequest loginRequest) {
 
             // 1. Autenticar al usuario
-<span class="fc" id="L31">            Authentication authentication = authenticationManager.authenticate(</span>
-<span class="fc" id="L32">                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getContrasena()));</span>
+<span class="fc" id="L45">            Authentication authentication = authenticationManager.authenticate(</span>
+<span class="fc" id="L46">                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getContrasena()));</span>
 
             // 2. Establecer la autenticación en el contexto de seguridad
-<span class="fc" id="L35">            SecurityContextHolder.getContext().setAuthentication(authentication);</span>
+<span class="fc" id="L49">            SecurityContextHolder.getContext().setAuthentication(authentication);</span>
 
             // 3. Obtener el usuario desde la base de datos
-<span class="fc" id="L38">            Usuario usuario = repositorioUsuario.findByUsername(loginRequest.getUsername())</span>
-<span class="fc" id="L39">                    .orElseThrow(() -&gt; new UsernameNotFoundException(&quot;Usuario no encontrado&quot;));</span>
+<span class="fc" id="L52">            Usuario usuario = repositorioUsuario.findByUsername(loginRequest.getUsername())</span>
+<span class="fc" id="L53">                    .orElseThrow(() -&gt; new UsernameNotFoundException(&quot;Usuario no encontrado&quot;));</span>
 
             // 4. Generar el token JWT
-<span class="fc" id="L42">            String jwt = jwtUtils.generateToken(usuario.getId_usuario(), usuario.getUsername());</span>
+<span class="fc" id="L56">            String jwt = jwtUtils.generateToken(usuario.getId_usuario(), usuario.getUsername());</span>
 
             // 5. Construir la respuesta
-<span class="fc" id="L45">            Map&lt;String, Object&gt; response = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L46">            response.put(&quot;mensaje&quot;, &quot;Autenticación exitosa&quot;);</span>
-<span class="fc" id="L47">            response.put(&quot;id&quot;, usuario.getId_usuario());</span>
-<span class="fc" id="L48">            response.put(&quot;nombre&quot;, usuario.getUsername());</span>
-<span class="fc" id="L49">            response.put(&quot;token&quot;, jwt);</span>
+<span class="fc" id="L59">            Map&lt;String, Object&gt; response = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L60">            response.put(&quot;mensaje&quot;, &quot;Autenticación exitosa&quot;);</span>
+<span class="fc" id="L61">            response.put(&quot;id&quot;, usuario.getId_usuario());</span>
+<span class="fc" id="L62">            response.put(&quot;nombre&quot;, usuario.getUsername());</span>
+<span class="fc" id="L63">            response.put(&quot;token&quot;, jwt);</span>
 
-<span class="fc" id="L51">            return response;</span>
+<span class="fc" id="L65">            return response;</span>
 
     }
 }

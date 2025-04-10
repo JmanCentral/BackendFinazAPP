@@ -1,4 +1,3 @@
-
 #IMAGEN DEL CONTENEDOR
 
 FROM eclipse-temurin:17.0.14_7-jdk
@@ -27,4 +26,4 @@ RUN ./mvnw clean install
 
 #LEVANTAR NUESTRA APLICACIÓN CUANDO EL CONTENEDOR INICIE
 
-ENTRYPOINT ["java","-jar","/root/target/FinanzApp-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-jar","/root/target/finanzapp-0.0.1-SNAPSHOT.jar"]

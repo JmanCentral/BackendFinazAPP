@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
-Test set: com.example.FinanzApp.ServiciosTest.ServicioAlcanciaTest
+Test set: com.example.finanzapp.ServiciosTest.ServicioAlcanciaTest
 -------------------------------------------------------------------------------
-Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.514 s -- in com.example.FinanzApp.ServiciosTest.ServicioAlcanciaTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.744 s -- in com.example.finanzapp.ServiciosTest.ServicioAlcanciaTest

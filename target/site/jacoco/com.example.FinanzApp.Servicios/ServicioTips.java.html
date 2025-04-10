@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServicioTips.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">FinanzApp</a> &gt; <a href="index.source.html" class="el_package">com.example.FinanzApp.Servicios</a> &gt; <span class="el_source">ServicioTips.java</span></div><h1>ServicioTips.java</h1><pre class="source lang-java linenums">package com.example.FinanzApp.Servicios;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServicioTips.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">FinanzApp</a> &gt; <a href="index.source.html" class="el_package">com.example.finanzapp.Servicios</a> &gt; <span class="el_source">ServicioTips.java</span></div><h1>ServicioTips.java</h1><pre class="source lang-java linenums">package com.example.finanzapp.Servicios;
 
-import com.example.FinanzApp.Components.GeminiAdapter;
-import com.example.FinanzApp.Config.APIgemini;
-import com.example.FinanzApp.DTOS.TipsDTO;
-import com.example.FinanzApp.Entidades.Gasto;
-import com.example.FinanzApp.Repositorios.RepositorioGasto;
+import com.example.finanzapp.Components.GeminiAdapter;
+import com.example.finanzapp.Config.APIgemini;
+import com.example.finanzapp.DTOS.TipsDTO;
+import com.example.finanzapp.Entidades.Gasto;
+import com.example.finanzapp.Repositorios.RepositorioGasto;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,48 +23,75 @@ import java.util.Objects;
 <span class="fc" id="L23">@Slf4j</span>
 public class ServicioTips {
 
+    // URL base de la API de Gemini usada para generar contenido. Se le concatena la clave de API al final.
     private static final String GEMINI_API_URL = &quot;https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=&quot;;
 
+    //Inyección de dependencias
     private final APIgemini apiGemini;
-    private final RestTemplate restTemplate;
-    private final RepositorioGasto gastoRepository;
+    private final RestTemplate restTemplate; //Cliente HTTP utilizado para enviar peticiones POST a la API de Gemini.
+    private final RepositorioGasto gastoRepository; // utilizar el CRUD de la entidad del gasto
     private final GeminiAdapter geminiAdapter;
 
+    /**
+     * Obtiene una lista de consejos financieros personalizados para un usuario.
+     *
+     * Este método realiza lo siguiente:
+     * - Recupera todos los gastos del usuario desde la base de datos.
+     * - Genera un prompt a partir de esos gastos en un formato estructurado.
+     * - Envía el prompt a la API de Gemini.
+     * - Convierte la respuesta de la API en una lista de {@link TipsDTO}.
+     *
+     * @param usuarioId ID del usuario cuyos gastos serán analizados.
+     * @return Lista de consejos financieros personalizados.
+     */
     public List&lt;TipsDTO&gt; obtenerConsejosFinancieros(Long usuarioId) {
-<span class="fc" id="L34">        List&lt;Gasto&gt; gastos = gastoRepository.findGastosByUsuarioId(usuarioId);</span>
-<span class="fc" id="L35">        String prompt = generarPrompt(gastos);</span>
+<span class="fc" id="L48">        List&lt;Gasto&gt; gastos = gastoRepository.findGastosByUsuarioId(usuarioId);</span>
+<span class="fc" id="L49">        String prompt = generarPrompt(gastos);</span>
 
-<span class="fc" id="L37">        String requestJson = &quot;{\&quot;contents\&quot;:[{\&quot;parts\&quot;:[{\&quot;text\&quot;:\&quot;&quot; + prompt + &quot;\&quot;}]}]}&quot;;</span>
-<span class="fc" id="L38">        String url = GEMINI_API_URL + apiGemini.getApiKey();</span>
+<span class="fc" id="L51">        String requestJson = &quot;{\&quot;contents\&quot;:[{\&quot;parts\&quot;:[{\&quot;text\&quot;:\&quot;&quot; + prompt + &quot;\&quot;}]}]}&quot;;</span>
+<span class="fc" id="L52">        String url = GEMINI_API_URL + apiGemini.getApiKey();</span>
 
-<span class="fc" id="L40">        HttpHeaders headers = new HttpHeaders();</span>
-<span class="fc" id="L41">        headers.setContentType(MediaType.APPLICATION_JSON);</span>
-<span class="fc" id="L42">        HttpEntity&lt;String&gt; requestEntity = new HttpEntity&lt;&gt;(requestJson, headers);</span>
+<span class="fc" id="L54">        HttpHeaders headers = new HttpHeaders();</span>
+<span class="fc" id="L55">        headers.setContentType(MediaType.APPLICATION_JSON);</span>
+<span class="fc" id="L56">        HttpEntity&lt;String&gt; requestEntity = new HttpEntity&lt;&gt;(requestJson, headers);</span>
 
-<span class="fc" id="L44">        ResponseEntity&lt;JsonNode&gt; responseEntity = restTemplate.postForEntity(url, requestEntity, JsonNode.class);</span>
+<span class="fc" id="L58">        ResponseEntity&lt;JsonNode&gt; responseEntity = restTemplate.postForEntity(url, requestEntity, JsonNode.class);</span>
 
-<span class="fc" id="L46">        log.info(&quot;Respuesta cruda de la API: {}&quot;, Objects.requireNonNull(responseEntity.getBody()).toPrettyString());</span>
+<span class="fc" id="L60">        log.info(&quot;Respuesta cruda de la API: {}&quot;, Objects.requireNonNull(responseEntity.getBody()).toPrettyString());</span>
 
-<span class="fc" id="L48">        return GeminiAdapter.convertirDesdeJson(Objects.requireNonNull(responseEntity.getBody()));</span>
+<span class="fc" id="L62">        return GeminiAdapter.convertirDesdeJson(Objects.requireNonNull(responseEntity.getBody()));</span>
     }
 
+    /**
+     * Formatea un gasto en una cadena simplificada para incluirla en el prompt.
+     *
+     * @param gasto Objeto {@link Gasto} a formatear.
+     * @return Cadena con el formato: &quot;Categoría: Valor COP, Nombre del gasto,&quot;
+     */
     private String formatearGasto(Gasto gasto) {
-<span class="fc" id="L52">        return String.format(&quot;%s: %.2f COP, %s, &quot;, gasto.getCategoria(), gasto.getValor(), gasto.getNombre_gasto());</span>
+<span class="fc" id="L72">        return String.format(&quot;%s: %.2f COP, %s, &quot;, gasto.getCategoria(), gasto.getValor(), gasto.getNombre_gasto());</span>
     }
 
+    /**
+     * Genera un prompt en lenguaje natural a partir de una lista de gastos.
+     * Este prompt es utilizado por la API de Gemini para generar los consejos.
+     *
+     * @param gastos Lista de gastos del usuario.
+     * @return Cadena de texto con el prompt generado.
+     */
     private String generarPrompt(List&lt;Gasto&gt; gastos) {
-<span class="fc" id="L56">        StringBuilder prompt = new StringBuilder(&quot;Analiza los siguientes gastos y genera 5 exactamente  consejos financieros personalizados: &quot;);</span>
-<span class="fc bfc" id="L57" title="All 2 branches covered.">        for (Gasto gasto : gastos) {</span>
-<span class="fc" id="L58">            prompt.append(formatearGasto(gasto));</span>
-<span class="fc" id="L59">        }</span>
-<span class="fc" id="L60">        prompt.append(&quot;\nNo incluyas introducción, explicaciones adicionales ni información extra. Solo devuelve la lista de consejos en el formato indicado.&quot;);</span>
-<span class="fc" id="L61">        prompt.append(&quot;\nFormato de salida estricto:\n&quot;);</span>
-<span class="fc" id="L62">        prompt.append(&quot;- Consejo 1: [Aquí el primer consejo]\n&quot;);</span>
-<span class="fc" id="L63">        prompt.append(&quot;- Consejo 2: [Aquí el segundo consejo]\n&quot;);</span>
-<span class="fc" id="L64">        prompt.append(&quot;- Consejo 3: [Aquí el tercer consejo]\n&quot;);</span>
-<span class="fc" id="L65">        prompt.append(&quot;- Consejo 4: [Aquí el cuarto consejo]\n&quot;);</span>
-<span class="fc" id="L66">        prompt.append(&quot;- Consejo 5: [Aquí el quinto consejo]\n&quot;);</span>
-<span class="fc" id="L67">        return prompt.toString();</span>
+<span class="fc" id="L83">        StringBuilder prompt = new StringBuilder(&quot;Analiza los siguientes gastos y genera 5 exactamente  consejos financieros personalizados: &quot;);</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        for (Gasto gasto : gastos) {</span>
+<span class="fc" id="L85">            prompt.append(formatearGasto(gasto));</span>
+<span class="fc" id="L86">        }</span>
+<span class="fc" id="L87">        prompt.append(&quot;\nNo incluyas introducción, explicaciones adicionales ni información extra. Solo devuelve la lista de consejos en el formato indicado.&quot;);</span>
+<span class="fc" id="L88">        prompt.append(&quot;\nFormato de salida estricto:\n&quot;);</span>
+<span class="fc" id="L89">        prompt.append(&quot;- Consejo 1: [Aquí el primer consejo]\n&quot;);</span>
+<span class="fc" id="L90">        prompt.append(&quot;- Consejo 2: [Aquí el segundo consejo]\n&quot;);</span>
+<span class="fc" id="L91">        prompt.append(&quot;- Consejo 3: [Aquí el tercer consejo]\n&quot;);</span>
+<span class="fc" id="L92">        prompt.append(&quot;- Consejo 4: [Aquí el cuarto consejo]\n&quot;);</span>
+<span class="fc" id="L93">        prompt.append(&quot;- Consejo 5: [Aquí el quinto consejo]\n&quot;);</span>
+<span class="fc" id="L94">        return prompt.toString();</span>
     }
 }
 

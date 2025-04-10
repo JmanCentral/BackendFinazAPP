@@ -9,7 +9,7 @@
 		<relativePath/>
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>FinanzApp</artifactId>
+	<artifactId>finanzapp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>FinanzApp</name>
 	<description>Backend app finanzas</description>
@@ -162,9 +162,8 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>3.3.1</version>
 				<configuration>
-					<mainClass>com.example.FinanzApp.FinanzAppApplication.class</mainClass>  <!-- Reemplaza con tu clase principal -->
+					<mainClass>com.example.finanzapp.FinanzAppApplication</mainClass>
 				</configuration>
 			</plugin>
 			<plugin>
