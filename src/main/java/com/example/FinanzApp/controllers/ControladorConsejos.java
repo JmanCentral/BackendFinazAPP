@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,6 +38,7 @@ public class ControladorConsejos {
 
     @Operation(summary = "Obtener consejos", description = "Recupera una lista de consejos financieros aleatorios.")
     @GetMapping("/Obtener")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<ConsejosDTO>> obtenerConsejos() {
         List<ConsejosDTO> consejos = servicioConsejos.obtenerConsejosAleatorios();
         log.info("Se han recuperado {} consejos financieros.", consejos.size());

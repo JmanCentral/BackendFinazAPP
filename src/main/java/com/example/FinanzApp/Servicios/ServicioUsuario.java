@@ -97,6 +97,7 @@ public class ServicioUsuario implements UserDetailsService {
         Usuario usuario = repositorioUsuario.findByUsernameConRoles(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
+        System.out.println("Usuario: " + usuario);
         // Imprimir los roles del usuario
         System.out.println("Roles desde Usuario: " + usuario.getRoles());
 
