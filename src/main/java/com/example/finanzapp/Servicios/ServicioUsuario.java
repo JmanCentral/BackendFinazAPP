@@ -1,9 +1,14 @@
 package com.example.finanzapp.Servicios;
 
+import com.example.finanzapp.Config.APIzeroBound;
 import com.example.finanzapp.DTOS.UsuarioDTO;
 import com.example.finanzapp.Entidades.ERole;
 import com.example.finanzapp.Entidades.Roles;
 import com.example.finanzapp.Entidades.Usuario;
+import com.example.finanzapp.Excepciones.Usuario.CorreoInvalidoException;
+import com.example.finanzapp.Excepciones.Usuario.EmailYaRegistradoException;
+import com.example.finanzapp.Excepciones.Usuario.RolNoEncontradoException;
+import com.example.finanzapp.Excepciones.Usuario.UsuarioYaRegistradoException;
 import com.example.finanzapp.Repositorios.RepositorioRoles;
 import com.example.finanzapp.Repositorios.RepositorioUsuario;
 import lombok.AllArgsConstructor;
@@ -32,43 +37,40 @@ public class ServicioUsuario implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;  // Para encriptar contraseñas
     private final RepositorioUsuario repositorioUsuario;  // Repositorio para operaciones CRUD de usuarios
     private final RepositorioRoles repositorioRoles; // Repositorio para obtener roles disponibles
+    private final APIzeroBound apIzeroBound;
 
-
-
-    /**
-     * Registra un nuevo usuario en el sistema.
-     * Convierte el DTO en una entidad, encripta la contraseña y asigna roles.
-     *
-     * @param usuarioDTO Objeto DTO con la información del usuario
-     * @return UsuarioDTO del usuario registrado
-     */
     public UsuarioDTO registrarUsuario(UsuarioDTO usuarioDTO) {
 
-        // Mapea los datos del DTO a la entidad Usuario
-        Usuario nuevoUsuario = modelMapper.map(usuarioDTO, Usuario.class);
-        nuevoUsuario.setContrasena(passwordEncoder.encode(usuarioDTO.getContrasena())); // Encriptar
 
-        // Asignar roles
+        if (repositorioUsuario.existsByEmail(usuarioDTO.getEmail())) {
+            throw new EmailYaRegistradoException("El correo ya está registrado.");
+        }
+
+        if (repositorioUsuario.existsByUsername(usuarioDTO.getUsername())) {
+            throw new UsuarioYaRegistradoException("El nombre de usuario ya existe.");
+        }
+
+        if (!apIzeroBound.esCorreoValido(usuarioDTO.getEmail())) {
+            throw new CorreoInvalidoException("Correo electrónico inválido según ZeroBounce.");
+        }
+
+        // 3. Mapear y guardar
+        Usuario nuevoUsuario = modelMapper.map(usuarioDTO, Usuario.class);
+        nuevoUsuario.setContrasena(passwordEncoder.encode(usuarioDTO.getContrasena()));
+
         Set<Roles> roles = usuarioDTO.getRoles().stream()
                 .map(rol -> repositorioRoles.findByName(ERole.valueOf(rol))
-                        .orElseThrow(() -> new RuntimeException("Error: Rol no encontrado")))
+                        .orElseThrow(() -> new RolNoEncontradoException("Rol no encontrado: " + rol)))
                 .collect(Collectors.toSet());
 
-        // Asigna los roles al nuevo usuario
         nuevoUsuario.setRoles(roles);
-        // Guarda el usuario en la base de datos
+
         Usuario usuarioGuardado = repositorioUsuario.save(nuevoUsuario);
-        // Devuelve el usuario guardado mapeado como DTO
+
         return modelMapper.map(usuarioGuardado, UsuarioDTO.class);
     }
 
 
-    /**
-     * Obtiene los datos de un usuario por su ID.
-     *
-     * @param id_uuario ID del usuario a buscar
-     * @return UsuarioDTO si existe, de lo contrario null
-     */
     public UsuarioDTO obtenerUusarioPorID (long id_uuario) {
 
         Optional<Usuario> usuario = repositorioUsuario.findById(id_uuario);
@@ -83,13 +85,6 @@ public class ServicioUsuario implements UserDetailsService {
 
     }
 
-    /**
-     * Carga los detalles del usuario (necesario para la autenticación con Spring Security).
-     *
-     * @param username Nombre de usuario
-     * @return UserDetails con nombre, contraseña y roles
-     * @throws UsernameNotFoundException si el usuario no existe
-     */
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

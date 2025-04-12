@@ -24,14 +24,8 @@ public class ControladorUsuario {
     @Operation(summary = "Registrar un nuevo usuario", description = "Registra un usuario en la base de datos y devuelve su información")
     @PostMapping("/registro")
     public ResponseEntity<UsuarioDTO> registrarUsuario(@RequestBody UsuarioDTO usuario) {
-
         UsuarioDTO usuarioinsertado = servicioUsuario.registrarUsuario(usuario);
-
-        if (usuarioinsertado != null) {
-            return ResponseEntity.ok(usuarioinsertado);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioinsertado);
     }
 
 

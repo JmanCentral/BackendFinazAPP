@@ -12,5 +12,4 @@ public class APIgemini {
     @Value("${gemini.api.key}")
     private String apiKey;
 
-
 }
