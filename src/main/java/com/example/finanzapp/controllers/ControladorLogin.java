@@ -27,11 +27,7 @@ public class ControladorLogin {
 
         Map<String, Object> response = servicioLogin.AutenticarUsuario(loginRequest);
 
-        if (response == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        } else {
-            return  ResponseEntity.ok(response);
-        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
 }
