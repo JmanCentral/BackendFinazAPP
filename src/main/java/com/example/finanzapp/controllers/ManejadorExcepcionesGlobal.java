@@ -41,5 +41,10 @@ public class ManejadorExcepcionesGlobal {
     public ResponseEntity<?> handleCredencialesIncorrectas(CredencialesIncorrectasException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", ex.getMessage()));
     }
+
+    @ExceptionHandler(CuentaBloqueadaException.class)
+    public ResponseEntity<?> handleCuentaBloqueada(CuentaBloqueadaException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", ex.getMessage()));
+    }
 }
 
