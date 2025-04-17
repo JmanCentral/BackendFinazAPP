@@ -1,13 +1,14 @@
 package com.example.finanzapp.Config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 
-@Component
+@Configuration
 public class APIzeroBound {
 
     @Value("${zerobound.api.key}")

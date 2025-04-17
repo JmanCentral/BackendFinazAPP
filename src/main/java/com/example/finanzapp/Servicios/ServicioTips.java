@@ -32,18 +32,6 @@ public class ServicioTips {
     private final RepositorioGasto gastoRepository; // utilizar el CRUD de la entidad del gasto
     private final GeminiAdapter geminiAdapter;
 
-    /**
-     * Obtiene una lista de consejos financieros personalizados para un usuario.
-     *
-     * Este método realiza lo siguiente:
-     * - Recupera todos los gastos del usuario desde la base de datos.
-     * - Genera un prompt a partir de esos gastos en un formato estructurado.
-     * - Envía el prompt a la API de Gemini.
-     * - Convierte la respuesta de la API en una lista de {@link TipsDTO}.
-     *
-     * @param usuarioId ID del usuario cuyos gastos serán analizados.
-     * @return Lista de consejos financieros personalizados.
-     */
     public List<TipsDTO> obtenerConsejosFinancieros(Long usuarioId) {
         List<Gasto> gastos = gastoRepository.findGastosByUsuarioId(usuarioId);
         String prompt = generarPrompt(gastos);
@@ -62,23 +50,10 @@ public class ServicioTips {
         return GeminiAdapter.convertirDesdeJson(Objects.requireNonNull(responseEntity.getBody()));
     }
 
-    /**
-     * Formatea un gasto en una cadena simplificada para incluirla en el prompt.
-     *
-     * @param gasto Objeto {@link Gasto} a formatear.
-     * @return Cadena con el formato: "Categoría: Valor COP, Nombre del gasto,"
-     */
     private String formatearGasto(Gasto gasto) {
         return String.format("%s: %.2f COP, %s, ", gasto.getCategoria(), gasto.getValor(), gasto.getNombre_gasto());
     }
 
-    /**
-     * Genera un prompt en lenguaje natural a partir de una lista de gastos.
-     * Este prompt es utilizado por la API de Gemini para generar los consejos.
-     *
-     * @param gastos Lista de gastos del usuario.
-     * @return Cadena de texto con el prompt generado.
-     */
     private String generarPrompt(List<Gasto> gastos) {
         StringBuilder prompt = new StringBuilder("Analiza los siguientes gastos y genera 5 exactamente  consejos financieros personalizados: ");
         for (Gasto gasto : gastos) {
