@@ -12,7 +12,7 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
 
-    private static final String FRONTEND_URL = "http://192.168.10.10:4200/reset-password?token=";
+    private static final String FRONTEND_URL = "http://100.115.249.2:4200/reset-password?token=";
 
     @Async
     public void sendPasswordResetEmail(String to, String token) {

@@ -15,7 +15,6 @@ public class FinanzAppApplication {
 				.ignoreIfMissing()
 				.load();
 
-		// Inyectar las variables de entorno al sistema
 		dotenv.entries().forEach(entry ->
 				System.setProperty(entry.getKey(), entry.getValue())
 		);
