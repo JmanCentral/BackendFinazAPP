@@ -31,7 +31,6 @@ public class ControladorUsuario {
 
     @Operation(summary = "Obtener un usuario por ID", description = "Obtiene la información de un usuario basado en su ID")
     @GetMapping("/ObtenerUsuario/{id_usuario}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UsuarioDTO> obtenerUsuario(@PathVariable Long id_usuario) {
 
         UsuarioDTO usuario = servicioUsuario.obtenerUusarioPorID(id_usuario);
