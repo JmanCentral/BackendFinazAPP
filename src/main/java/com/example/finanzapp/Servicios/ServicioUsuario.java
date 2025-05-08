@@ -9,6 +9,7 @@ import com.example.finanzapp.Excepciones.Usuario.CorreoInvalidoException;
 import com.example.finanzapp.Excepciones.Usuario.EmailYaRegistradoException;
 import com.example.finanzapp.Excepciones.Usuario.RolNoEncontradoException;
 import com.example.finanzapp.Excepciones.Usuario.UsuarioYaRegistradoException;
+import com.example.finanzapp.Repositorios.RepositorioIntentos;
 import com.example.finanzapp.Repositorios.RepositorioRoles;
 import com.example.finanzapp.Repositorios.RepositorioUsuario;
 import lombok.AllArgsConstructor;

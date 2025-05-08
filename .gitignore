@@ -12,6 +12,7 @@ HELP.md
 .springBeans
 .sts4-cache
 /.env
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
@@ -27,7 +28,6 @@ HELP.md
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
-
 
 ### VS Code ###
 .vscode/
