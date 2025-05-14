@@ -39,7 +39,7 @@ public class SecurityConfig {
                     auth.requestMatchers("/Finanzapp/registro", "/Finanzapp/login" , "/api/password/forgot" , "/api/password/reset",  "/v3/api-docs/**",      // Documentación OpenAPI (Swagger 3)
                             "/swagger-ui/**",       // Interfaz web de Swagger
                             "/swagger-ui.html",     // Página principal de Swagger UI
-                            "/webjars/**").permitAll();
+                            "/webjars/**", "/Finanzapp/ObtenerUsuario/{id_usuario}").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -1,6 +1,7 @@
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Components\CodigoGenerador.java
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Components\GeminiAdapter.java
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Config\APIgemini.java
+C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Config\APIzeroBound.java
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Config\AppConfig.java
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Config\ExceptionHandling.java
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Config\JwtAutenticationFilter.java
@@ -21,6 +22,7 @@ C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\control
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\controllers\ControladorRecordatorio.java
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\controllers\ControladorTips.java
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\controllers\ControladorUsuario.java
+C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\controllers\ManejadorExcepcionesGlobal.java
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\controllers\PasswordController.java
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\DTOS\AlcanciaDTO.java
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\DTOS\AlertaDTO.java
@@ -47,9 +49,18 @@ C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Entidad
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Entidades\Gasto.java
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Entidades\GastoProjection.java
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Entidades\Ingreso.java
+C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Entidades\Intentos.java
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Entidades\Recordatorio.java
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Entidades\Roles.java
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Entidades\Usuario.java
+C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Excepciones\Usuario\CorreoInvalidoException.java
+C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Excepciones\Usuario\CredencialesIncorrectasException.java
+C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Excepciones\Usuario\CuentaBloqueadaException.java
+C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Excepciones\Usuario\EmailYaRegistradoException.java
+C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Excepciones\Usuario\RolNoEncontradoException.java
+C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Excepciones\Usuario\UsernameInvalidoException.java
+C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Excepciones\Usuario\UsuarioNoEncontradoException.java
+C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Excepciones\Usuario\UsuarioYaRegistradoException.java
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\FinanzAppApplication.java
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Repositorios\RepositorioAlcancia.java
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Repositorios\RepositorioAlerta.java
@@ -58,6 +69,7 @@ C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Reposit
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Repositorios\RepositorioDeposito.java
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Repositorios\RepositorioGasto.java
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Repositorios\RepositorioIngreso.java
+C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Repositorios\RepositorioIntentos.java
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Repositorios\RepositorioRecordatorio.java
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Repositorios\RepositorioRoles.java
 C:\Users\r 3\Desktop\BackendFinazAPP\src\main\java\com\example\finanzapp\Repositorios\RepositorioUsuario.java
