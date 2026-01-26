@@ -286,16 +286,18 @@ Expone los endpoints HTTP y maneja las solicitudes del cliente.
 
 ```
 com.finazapp.controllers
-├── AuthController          # Autenticación y registro
-├── UserController          # Gestión de usuarios
-├── IncomeController        # Ingresos
-├── ExpenseController       # Gastos
-├── CategoryController      # Categorías
-├── SavingGoalController    # Metas de ahorro (alcancías)
-├── ReminderController      # Recordatorios
-├── AlertController         # Alertas
-├── AdviceController        # Consejos financieros
-└── ReportController        # Reportes y análisis
+├── ControladorLogin          # Autenticación y registro
+├── ControladorUsuario        # Gestión de usuarios
+├── ControladorIngreso        # Ingresos
+├── ControladorGasto          # Gastos
+├── ControladorDeposito       # dineró para metas futuras
+├── ControladorAlcancia       # Metas de ahorro (alcancías)
+├── ControladorRecordatorio   # Recordatorios
+├── ControladorAlerta         # Alertas
+├── ControladorConsejo        # Consejos financieros
+├── ControladorTips           # Consejos personalizados por usuario
+├── ControladorCalificación   # Calificar consejos predeterminados
+
 ```
 
 **Responsabilidades:**
@@ -310,15 +312,18 @@ Contiene la lógica de negocio y orquestra operaciones entre datos.
 
 ```
 com.finazapp.services
-├── AuthService             # Lógica de autenticación
-├── UserService             # Operaciones de usuarios
-├── IncomeService           # Cálculos de ingresos
-├── ExpenseService          # Análisis de gastos
-├── SavingGoalService       # Gestión de metas
-├── ReminderService         # Control de recordatorios
-├── AlertService            # Sistema de alertas
-├── AdviceService           # Generación de consejos
-└── ReportService           # Generación de reportes
+├── ServicioAutenticacion      # Gestiona la autenticación de usuarios, incluyendo el registro, login, y manejo de sesiones.
+├── ServicioUsuario           # Encargado de la gestión de los datos del usuario (actualización de perfil, eliminación de cuenta, etc.).
+├── ServicioIngreso           # Controla la gestión de ingresos de los usuarios (registro de ingresos, clasificación, análisis de flujo de efectivo, etc.).
+├── ServicioGasto             # Se ocupa de la administración de los gastos, permitiendo registrar, categorizar y analizar los gastos.
+├── ServicioDeposito          # Gestiona los depósitos realizados por el usuario para sus metas de ahorro futuras, permitiendo transferencias y gestión de saldo.
+├── ServicioAlcancia          # Encargado de las metas de ahorro del usuario, gestionando el seguimiento, progreso, y cumplimiento de las metas establecidas.
+├── ServicioRecordatorio      # Administra los recordatorios que los usuarios configuran (fecha de vencimiento de pagos, plazos de ahorro, etc.).
+├── ServicioAlerta            # Se encarga de enviar alertas al usuario en caso de que haya gastos excesivos, metas de ahorro no alcanzadas, o cualquier situación financiera crítica.
+├── ServicioConsejo           # Proporciona consejos financieros generales, basados en tendencias o situaciones comunes del mercado o comportamiento general.
+├── ServicioTips              # Ofrece consejos personalizados basados en el comportamiento, historial y preferencias del usuario. Usa inteligencia artificial o reglas predefinidas.
+├── ServicioCalificacion      # Permite a los usuarios calificar y valorar los consejos financieros predeterminados, ayudando a mejorar la calidad y relevancia de los mismos.
+
 ```
 
 **Responsabilidades:**
@@ -333,16 +338,18 @@ Acceso a datos mediante Spring Data JPA.
 
 ```
 com.finazapp.repositories
-├── UserRepository
-├── IncomeRepository
-├── ExpenseRepository
-├── CategoryRepository
-├── SavingGoalRepository
-├── DepositRepository
-├── ReminderRepository
-├── AlertRepository
-├── AdviceRepository
-└── RoleRepository
+├── RepositorioAutenticacion     # Maneja el acceso y almacenamiento de los datos de autenticación (usuarios registrados, credenciales, sesiones activas).
+├── RepositorioUsuario          # Administra la persistencia de la información relacionada con el usuario (datos personales, configuración de la cuenta, preferencias).
+├── RepositorioIngreso          # Almacena los registros de ingresos del usuario (salarios, pagos extra, etc.) y realiza consultas sobre el flujo de dinero.
+├── RepositorioGasto            # Gestiona los registros de gastos (categorías, montos, fechas) y permite consultar los historiales de gasto de los usuarios.
+├── RepositorioDeposito         # Maneja las transacciones de dinero hacia las metas de ahorro del usuario, como depósitos y consultas de saldo.
+├── RepositorioAlcancia         # Administra la información sobre las metas de ahorro o alcancías (nombre de la meta, monto objetivo, fecha límite).
+├── RepositorioRecordatorio     # Almacena los recordatorios configurados por el usuario (fecha, tipo de recordatorio, estado de cumplimiento).
+├── RepositorioAlerta           # Gestiona las alertas de la aplicación (alertas de gastos, alertas de fechas de vencimiento, alertas por metas no alcanzadas).
+├── RepositorioConsejo          # Almacena y gestiona los consejos financieros generales proporcionados a los usuarios (tipo de consejo, fecha de creación, autor).
+├── RepositorioTips             # Almacena los consejos personalizados dados a los usuarios, basados en su historial de gastos, metas y preferencias.
+├── RepositorioCalificacion     # Gestiona las calificaciones y valoraciones de los consejos recibidos por los usuarios (feedback sobre la utilidad de los consejos).
+
 ```
 
 **Responsabilidades:**
@@ -357,16 +364,17 @@ Representación de las tablas de la base de datos.
 
 ```
 com.finazapp.entities
-├── User                    # Usuario del sistema
-├── Income                  # Ingresos
-├── Expense                 # Gastos
-├── Category                # Categorías de gasto
-├── SavingGoal              # Metas de ahorro
-├── Deposit                 # Depósitos a alcancías
-├── Reminder                # Recordatorios
-├── Alert                   # Alertas
-├── Advice                  # Consejos financieros
-└── Role                    # Roles de usuario
+├── Usuario            # Usuario del sistema
+├── Ingreso            # Ingresos
+├── Gasto              # Gastos
+├── Categoria          # Categorías de gasto
+├── Alcancia           # Metas de ahorro
+├── Deposito           # Depósitos a la alcancía
+├── Recordatorio       # Recordatorios
+├── Alerta             # Alertas
+├── Consejo            # Consejos financieros
+└── Rol                # Roles de usuario
+
 ```
 
 #### 5️⃣ Capa de Configuración (Config)
@@ -389,16 +397,22 @@ Objetos para transferencia segura de datos.
 
 ```
 com.finazapp.dtos
-├── UserDTO
-├── IncomeDTO
-├── ExpenseDTO
-├── SavingGoalDTO
-├── ReminderDTO
-├── AlertDTO
-├── AdviceDTO
-├── AuthRequestDTO
-├── AuthResponseDTO
-└── ReportDTO
+├── UsuarioDTO              # Datos del usuario
+├── IngresoDTO              # Ingresos
+├── GastoDTO                # Gastos
+├── CategoriaDTO            # Categorías de gasto
+├── AlcanciaDTO             # Metas de ahorro
+├── DepositoDTO             # Depósitos
+├── RecordatorioDTO         # Recordatorios
+├── AlertaDTO               # Alertas
+├── ConsejoDTO              # Consejos financieros
+├── CalificacionDTO         # Calificación de consejos
+├── ProyeccionDTO           # Proyección de gastos
+├── TipsDTO                 # Tips financieros
+├── LoginRequestDTO         # Login
+├── EmailRequestDTO         # Envío de correos
+└── RespuestaCorreoDTO      # Respuesta de correo
+
 ```
 
 #### 7️⃣ Capa de Excepciones y Manejo de Errores
@@ -406,13 +420,15 @@ com.finazapp.dtos
 Centralización de errores con respuestas estructuradas.
 
 ```
-com.finazapp.exceptions
-├── ResourceNotFoundException
-├── BadRequestException
-├── UnauthorizedException
-├── ConflictException
-├── ApiExceptionHandler        # @ControllerAdvice
-└── ErrorResponse              # Estructura de respuesta
+com.finazapp.excepciones.usuario
+├── CorreoInvalidoException          # Email con formato inválido
+├── CredencialesIncorrectasException # Usuario o contraseña incorrectos
+├── EmailYaRegistradoException       # Email ya registrado
+├── RolNoEncontradoException         # Rol no existe
+├── UsernameInvalidoException        # Username inválido
+├── UsuarioNoEncontradoException     # Usuario no existe
+└── UsuarioYaRegistradoException     # Usuario ya registrado
+
 ```
 
 ### Patrones de Diseño
@@ -436,19 +452,36 @@ Separa la representación interna de la API pública:
 ```java
 // Entidad (Interna)
 @Entity
-public class User {
-    private Long id;
+public class Usuario {
+   @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id_usuario;
+    @Column(name = "USERNAME" , unique = true)
+    private String username;
+    @Column(nullable = false, name = "EMAIL",unique = true)
+    @Pattern(
+            regexp = "^[a-zA-Z0-9._%+-]+@(gmail\\.com|hotmail\\.com|[a-zA-Z0-9.-]+\\.edu\\.co)$",
+            message = "El correo debe ser de dominio @gmail.com, @hotmail.com o terminar en .edu.co"
+    )
     private String email;
-    private String passwordHash;
-    private LocalDateTime createdAt;
+    @Column(name = "NOMBRE")
+    private String nombre;
+    @Column(name = "APELLIDO")
+    private String apellido;
+    @Column(name = "CONTRASENA")
+    private String contrasena;
 }
 
 // DTO (API Pública)
 @Data
-public class UserDTO {
-    private Long id;
+public class UsuarioDTO {
+    private Long id_usuario;
+    private String username;
+    private String nombre;
     private String email;
-    private String fullName;
+    private String apellido;
+    private String contrasena;
+    private Set<String> roles;
 }
 ```
 
@@ -457,9 +490,20 @@ public class UserDTO {
 Abstracción de acceso a datos:
 
 ```java
-public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByEmail(String email);
-    List<User> findByCreatedAtAfter(LocalDateTime date);
+public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+
+    Optional<Usuario> findById(Long id);
+
+    Optional<Usuario> findByUsername(String nombreUsuario);
+
+    Optional<Usuario> findByEmail(String email);
+
+    List<Usuario> findAll();
+
+    boolean existsByEmail(String email);
+
+    boolean existsByUsername(String username);
+
 }
 ```
 
@@ -467,13 +511,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 ```java
 @Service
+@RequerestAllconstructors
 public class UserService {
     
-    @Autowired
-    private UserRepository userRepository;
+    private final UsuarioRepository usuarioRepository;
     
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     
     // Métodos...
 }
@@ -545,74 +589,8 @@ CAPAS TRANSVERSALES:
 
 ### Diagrama Entidad-Relación (ERD)
 
-```
+<img width="793" height="566" alt="image" src="https://github.com/user-attachments/assets/12ee87c8-1d1a-4a17-930e-ea30d2ae3ded" />
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│                         MODELO ENTIDAD-RELACIÓN                              │
-└──────────────────────────────────────────────────────────────────────────────┘
-
-                              ┌─────────────┐
-                              │   ROLES     │
-                              ├─────────────┤
-                              │ id (PK)     │
-                              │ name        │
-                              └──────┬──────┘
-                                     │
-                      (1:N) ┌────────┴────────┐
-                           │                  │
-                    ┌──────▼─────────┐   ┌──────────────┐
-                    │ USERS (1)      │   │  CATEGORIES  │
-                    ├────────────────┤   ├──────────────┤
-                    │ id (PK)        │   │ id (PK)      │
-                    │ email (UNIQUE) │   │ name         │
-                    │ password_hash  │   │ description  │
-                    │ full_name      │   │ icon         │
-                    │ created_at     │   └──────┬───────┘
-                    │ role_id (FK)   │          │
-                    └──────┬─────────┘          │
-                           │                    │
-          ┌────────────────┼────────────────┐  │
-          │                │                │  │
-    (1:N) │           (1:N) │            (1:N) │
-          │                │                │  │
-    ┌─────▼────────┐ ┌──────▼────┐  ┌─────▼────────────┐
-    │   INCOMES    │ │  EXPENSES │  │ SAVING_GOALS     │
-    ├──────────────┤ ├───────────┤  ├──────────────────┤
-    │ id (PK)      │ │ id (PK)   │  │ id (PK)          │
-    │ user_id (FK) │ │user_id(FK)│  │ user_id (FK)     │
-    │ amount       │ │ amount    │  │ goal_name        │
-    │ description  │ │ description  │ target_amount    │
-    │ date         │ │ date      │  │ current_amount   │
-    │ is_recurring │ │ category_id  │ due_date         │
-    │ created_at   │ │ created_at   │ created_at       │
-    └──────────────┘ └───────────┤  └──────┬───────────┘
-                                │          │
-                         (1:N)  │          │ (1:N)
-                                │          │
-                    ┌───────────▼──┐  ┌───▼──────────────┐
-                    │  REMINDERS   │  │    DEPOSITS      │
-                    ├──────────────┤  ├──────────────────┤
-                    │ id (PK)      │  │ id (PK)          │
-                    │ user_id (FK) │  │ saving_goal_id(FK)
-                    │ description  │  │ amount           │
-                    │ due_date     │  │ deposit_date     │
-                    │ is_paid      │  │ created_at       │
-                    │ is_overdue   │  └──────────────────┘
-                    │ created_at   │
-                    └──────────────┘
-
-                    ┌──────────────┐  ┌──────────────┐
-                    │    ALERTS    │  │   ADVICE     │
-                    ├──────────────┤  ├──────────────┤
-                    │ id (PK)      │  │ id (PK)      │
-                    │ user_id (FK) │  │ user_id (FK) │
-                    │ category(FK) │  │ title        │
-                    │ limit_amount │  │ description  │
-                    │ alert_type   │  │ type         │
-                    │ is_active    │  │ liked        │
-                    │ created_at   │  │ created_at   │
-                    └──────────────┘  └──────────────┘
-```
 
 ### Descripción de Entidades
 
@@ -1522,437 +1500,6 @@ public class CorsConfig implements WebMvcConfigurer {
     }
 }
 ```
-
-### Mejoras de Seguridad Recomendadas
-
-#### ✅ Ya Implementadas
-- ✓ Autenticación JWT
-- ✓ Hashing de contraseñas (BCrypt)
-- ✓ Validación de entrada
-- ✓ Manejo centralizado de excepciones
-
-#### 🔄 En Implementación
-- ⏳ HTTPS (SSL/TLS) - Certificados Let's Encrypt
-- ⏳ Rotación de claves JWT
-- ⏳ Rate limiting
-- ⏳ EncryptedSharedPreferences para tokens
-
-#### 📋 Recomendadas a Futuro
-- 🎯 OAuth2 / Google Sign-In
-- 🎯 Autenticación multifactor (2FA)
-- 🎯 Auditoría de accesos
-- 🎯 Cumplimiento GDPR/CCPA
-
----
-
-## ⚙️ Configuración
-
-### Variables de Entorno
-
-```bash
-# .env (En producción, usar AWS Secrets Manager)
-DB_URL=jdbc:postgresql://localhost:5432/finazapp
-DB_USERNAME=finazapp_user
-DB_PASSWORD=tu_contraseña_segura
-
-JWT_SECRET=tu_clave_secreta_super_segura_minimo_32_caracteres
-JWT_EXPIRATION=86400000
-
-MAIL_HOST=smtp.gmail.com
-MAIL_PORT=587
-MAIL_USERNAME=tu_email@gmail.com
-MAIL_PASSWORD=tu_app_password
-
-RESET_PASSWORD_URL=http://localhost:3000/reset-password?token=
-
-GOOGLE_AI_API_KEY=tu_api_key_gemini
-```
-
-### Perfiles de Spring
-
-#### Perfil Development (application-dev.properties)
-
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/finazapp_dev
-spring.jpa.hibernate.ddl-auto=create-drop
-spring.jpa.show-sql=true
-logging.level.com.finazapp=DEBUG
-server.port=8080
-```
-
-#### Perfil Production (application-prod.properties)
-
-```properties
-spring.datasource.url=jdbc:postgresql://prod-db.rds.amazonaws.com:5432/finazapp
-spring.datasource.hikari.maximum-pool-size=20
-spring.datasource.hikari.minimum-idle=5
-spring.jpa.hibernate.ddl-auto=validate
-spring.jpa.show-sql=false
-logging.level.com.finazapp=INFO
-server.port=8080
-server.ssl.enabled=true
-server.ssl.key-store=keystore.p12
-server.ssl.key-store-password=${SSL_KEYSTORE_PASSWORD}
-```
-
-### Ejecutar con Perfil Específico
-
-```bash
-# Development
-mvn spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=dev"
-
-# Production
-java -jar target/finazapp-backend.jar --spring.profiles.active=prod
-```
-
----
-
-## 🔧 Mantenimiento
-
-### Mantenimiento Preventivo
-
-#### Frontend & Backend
-
-```bash
-# Verificar vulnerabilidades en dependencias
-mvn dependency-check:check
-
-# Actualizar dependencias de Maven
-mvn clean install -U
-
-# Ejecutar análisis SonarQube (si está configurado)
-mvn sonar:sonar
-```
-
-#### Base de Datos
-
-```sql
--- Hacer backup automático
-pg_dump -U finazapp_user finazapp > backup_$(date +%Y%m%d_%H%M%S).sql
-
--- Analizar y optimizar tablas
-ANALYZE;
-REINDEX;
-
--- Ver estadísticas
-SELECT 
-    tablename, 
-    pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) AS size
-FROM pg_tables 
-WHERE schemaname = 'public'
-ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC;
-```
-
-### Mantenimiento Correctivo
-
-#### Problemas Comunes y Soluciones
-
-##### ❌ Error: Database connection refused
-
-```bash
-# Verificar que PostgreSQL está corriendo
-sudo systemctl status postgresql
-
-# Reiniciar PostgreSQL
-sudo systemctl restart postgresql
-
-# Verificar conexión
-psql -U finazapp_user -d finazapp -c "SELECT 1"
-```
-
-##### ❌ Error: JWT Token expired
-
-```java
-// El token expiró. Usuario debe hacer login nuevamente
-POST /api/auth/login
-
-// Opción: Implementar refresh token (futuro)
-POST /api/auth/refresh-token
-```
-
-##### ❌ Error: Constraint violation - Duplicate email
-
-```
-Solución: El email ya existe. Usar email diferente en registro.
-```
-
-##### ❌ Error: OutOfMemoryException
-
-```bash
-# Aumentar memoria JVM
-java -Xmx2g -Xms1g -jar target/finazapp-backend.jar
-```
-
-### Bitácora de Cambios
-
-Ver archivo [CHANGELOG.md](CHANGELOG.md) para historial de versiones y cambios.
-
----
-
-## 🧪 Testing
-
-### Pruebas Unitarias
-
-```bash
-# Ejecutar todas las pruebas
-mvn test
-
-# Pruebas de un módulo específico
-mvn test -Dtest=UserServiceTest
-
-# Pruebas sin mostrar output
-mvn test -q
-```
-
-### Pruebas de Integración
-
-```bash
-# Ejecutar pruebas de integración
-mvn verify
-
-# Con cobertura de código
-mvn clean verify jacoco:report
-```
-
-### Ejemplo de Prueba Unitaria
-
-```java
-@SpringBootTest
-@DisplayName("UserService Tests")
-class UserServiceTest {
-    
-    @Mock
-    private UserRepository userRepository;
-    
-    @InjectMocks
-    private UserService userService;
-    
-    @Test
-    @DisplayName("Debe registrar usuario correctamente")
-    void testRegisterUser() {
-        // Arrange
-        RegisterRequest request = new RegisterRequest(
-            "test@gmail.com", 
-            "Password123", 
-            "Test User"
-        );
-        
-        // Act
-        UserDTO result = userService.register(request);
-        
-        // Assert
-        assertNotNull(result);
-        assertEquals("test@gmail.com", result.getEmail());
-        assertEquals("Test User", result.getFullName());
-    }
-}
-```
-
----
-
-## 🚀 Despliegue en AWS
-
-### EC2 + RDS
-
-```bash
-# 1. Conectarse a instancia EC2
-ssh -i key.pem ubuntu@your-instance-ip
-
-# 2. Instalar Java
-sudo apt update
-sudo apt install openjdk-17-jdk
-
-# 3. Descargar aplicación
-wget https://your-repo/finazapp-backend.jar
-
-# 4. Crear servicio systemd
-sudo nano /etc/systemd/system/finazapp.service
-```
-
-**archivo finazapp.service:**
-```ini
-[Unit]
-Description=FinazApp Backend
-After=network.target
-
-[Service]
-Type=simple
-User=ubuntu
-WorkingDirectory=/home/ubuntu
-ExecStart=/usr/bin/java -jar finazapp-backend.jar
-Restart=always
-RestartSec=10
-
-[Install]
-WantedBy=multi-user.target
-```
-
-```bash
-# 5. Iniciar servicio
-sudo systemctl daemon-reload
-sudo systemctl start finazapp
-sudo systemctl enable finazapp
-
-# 6. Verificar estado
-sudo systemctl status finazapp
-```
-
-### Docker (Alternativa)
-
-```dockerfile
-# Dockerfile
-FROM openjdk:17-jdk-slim
-
-WORKDIR /app
-
-COPY target/finazapp-backend.jar app.jar
-
-EXPOSE 8080
-
-ENTRYPOINT ["java", "-jar", "app.jar"]
-```
-
-```bash
-# Construir imagen
-docker build -t finazapp-backend:latest .
-
-# Ejecutar contenedor
-docker run -d \
-  -e SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/finazapp \
-  -e SPRING_DATASOURCE_USERNAME=finazapp_user \
-  -e SPRING_DATASOURCE_PASSWORD=password \
-  -p 8080:8080 \
-  --name finazapp-backend \
-  finazapp-backend:latest
-```
-
----
-
-## 📚 Recursos Útiles
-
-### Documentación Oficial
-
-- [Spring Boot Documentation](https://spring.io/projects/spring-boot)
-- [Spring Data JPA Guide](https://spring.io/projects/spring-data-jpa)
-- [Spring Security Reference](https://docs.spring.io/spring-security/reference/)
-- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
-- [JWT.io](https://jwt.io)
-
-### Librerías Principales
-
-| Librería | Versión | Propósito |
-|----------|---------|----------|
-| spring-boot-starter-web | 3.x | APIs REST |
-| spring-boot-starter-data-jpa | 3.x | Persistencia ORM |
-| spring-boot-starter-security | 3.x | Autenticación |
-| spring-boot-starter-mail | 3.x | Envío de emails |
-| jjwt | 0.11+ | Tokens JWT |
-| postgresql | 42.x | Driver BD |
-| lombok | 1.18+ | Reducir boilerplate |
-| mapstruct | 1.5+ | Mapeo de DTOs |
-| springdoc-openapi | 2.x | Documentación Swagger |
-
----
-
-## 📖 Guía Rápida de Comandos Maven
-
-```bash
-# Compilar proyecto
-mvn clean compile
-
-# Ejecutar pruebas
-mvn test
-
-# Compilar y empaquetar
-mvn clean package
-
-# Instalar en repositorio local
-mvn clean install
-
-# Ejecutar aplicación
-mvn spring-boot:run
-
-# Generar documentación
-mvn javadoc:javadoc
-
-# Ver árbol de dependencias
-mvn dependency:tree
-```
-
----
-
-## 🤝 Contribuciones
-
-1. Hacer fork del repositorio
-2. Crear una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Hacer commit de cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abrir un Pull Request
-
-### Estándares de Código
-
-- Usar Java conventions
-- Máximo 120 caracteres por línea
-- Javadoc para métodos públicos
-- Nombres descriptivos en inglés
-- Pruebas unitarias obligatorias
-
----
-
-## 📄 Licencia
-
-Este proyecto está licenciado bajo la Licencia MIT. Ver archivo `LICENSE` para más detalles.
-
----
-
-## 👥 Autores
-
-- **Alexander Forero Consuegra** - Backend Architecture
-- **Manuel Humberto Pinzón Hernández** - Database Design & Security
-- **Julián Camilo Mancipe Triviño** - API Development & Testing
-
-**Docente Supervisor:** Ingeniero Oscar David Murcia Portilla
-
-**Institución:** Facultad de Ingeniería y Ciencias Básicas, Universidad Central
-
-**Código del Proyecto:** 43390865 - Práctica de Ingeniería V
-
----
-
-## 📞 Soporte
-
-Para reportar bugs o sugerencias:
-- Crear un [Issue](https://github.com/JmanCentral/BackendFinazAPP/issues)
-- Email: soporte@finazapp.com
-- Documentación: Ver [Wiki](https://github.com/JmanCentral/BackendFinazAPP/wiki)
-
----
-
-## 🗺️ Roadmap
-
-### Versión 1.0 (Actual)
-- ✅ Gestión de usuarios
-- ✅ Control de ingresos y gastos
-- ✅ Metas de ahorro
-- ✅ Recordatorios y alertas
-- ✅ API REST con JWT
-
-### Versión 1.1 (Próxima)
-- 🔄 HTTPS / SSL-TLS
-- 🔄 Refresh tokens
-- 🔄 Rate limiting
-- 🔄 Mejora de reportes
-
-### Versión 2.0 (Futuro)
-- 📋 Autenticación OAuth2 / Google Sign-In
-- 📋 Autenticación multifactor (2FA)
-- 📋 Web app (React/Vue)
-- 📋 Integración con APIs bancarias
-- 📋 Notificaciones push mejoradas
-- 📋 Machine Learning para predicciones
-
----
-
 **Última actualización:** 21 de Mayo de 2025
 
 ---
