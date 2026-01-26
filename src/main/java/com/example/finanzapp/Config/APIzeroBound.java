@@ -1,5 +1,7 @@
 package com.example.finanzapp.Config;
 
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -13,7 +15,8 @@ public class APIzeroBound {
     @Value("${zerobound.api.key}")
     private String apiKeyZerobound;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    private RestTemplate restTemplate;
 
     public boolean esCorreoValido(String email) {
         String url = String.format(

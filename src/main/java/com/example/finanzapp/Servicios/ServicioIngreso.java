@@ -59,6 +59,8 @@ public class ServicioIngreso implements Serializable {
                 .toList();
     }
 
+
+
     /**
      * Busca ingresos mensuales de un usuario en el mes actual.
      *

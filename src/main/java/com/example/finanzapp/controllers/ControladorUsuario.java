@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 @Log4j2
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/Finanzapp")
 @Tag(name = "Usuarios", description = "Endpoints para la gestión de usuarios")
 public class ControladorUsuario {

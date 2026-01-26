@@ -10,7 +10,7 @@ public class AlcanciaDTO {
     private Long idAlcancia;
     private String nombre_alcancia;
     private Double meta;
-    private Double saldoActual = 0.0;
+    private Double saldoActual = (Double) 0.0;
     private String codigo;
     private LocalDate fechaCreacion;
 }
