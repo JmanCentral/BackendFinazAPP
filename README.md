@@ -10,32 +10,6 @@
 
 ---
 
-## 📋 Tabla de Contenidos
-
-- [Descripción General](#descripción-general)
-- [Características Principales](#características-principales)
-- [Requisitos del Sistema](#requisitos-del-sistema)
-- [Instalación](#instalación)
-- [Arquitectura del Sistema](#arquitectura-del-sistema)
-    - [Estructura de Capas](#estructura-de-capas)
-    - [Patrones de Diseño](#patrones-de-diseño)
-    - [Diagrama de Arquitectura](#diagrama-de-arquitectura)
-- [Modelo de Datos](#modelo-de-datos)
-    - [Diagrama Entidad-Relación](#diagrama-entidad-relación)
-    - [Descripción de Entidades](#descripción-de-entidades)
-    - [Relaciones Entre Tablas](#relaciones-entre-tablas)
-- [API REST](#api-rest)
-    - [Autenticación](#autenticación)
-    - [Endpoints Principales](#endpoints-principales)
-    - [Documentación Swagger](#documentación-swagger)
-- [Seguridad](#seguridad)
-- [Configuración](#configuración)
-- [Mantenimiento](#mantenimiento)
-- [Contribuciones](#contribuciones)
-- [Licencia](#licencia)
-
----
-
 ## 📖 Descripción General
 
 **FinazApp Backend** es una aplicación monolítica desarrollada con Spring Boot que proporciona todos los servicios backend para la gestión integral de finanzas personales. Implementa una arquitectura por capas robusta con autenticación basada en JWT, validación de datos, y manejo centralizado de errores.
@@ -539,51 +513,16 @@ public class ApiExceptionHandler {
 
 ### Diagrama de Arquitectura
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     ARQUITECTURA POR CAPAS                      │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                   │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │ CAPA DE PRESENTACIÓN (Controllers/REST Endpoints)       │   │
-│  │ @RestController, @RequestMapping, @GetMapping, etc.     │   │
-│  └──────────────────────┬──────────────────────────────────┘   │
-│                         │                                         │
-│  ┌──────────────────────▼──────────────────────────────────┐   │
-│  │ CAPA DE SERVICIOS (Business Logic)                      │   │
-│  │ @Service, @Transactional, Validaciones de Dominio      │   │
-│  └──────────────────────┬──────────────────────────────────┘   │
-│                         │                                         │
-│  ┌──────────────────────▼──────────────────────────────────┐   │
-│  │ CAPA DE DATOS (Repositories/DAOs)                       │   │
-│  │ extends JpaRepository, Query Methods                     │   │
-│  └──────────────────────┬──────────────────────────────────┘   │
-│                         │                                         │
-│  ┌──────────────────────▼──────────────────────────────────┐   │
-│  │ CAPA DE ENTIDADES (Models/Entities)                     │   │
-│  │ @Entity, @Table, Relaciones (@OneToMany, @ManyToOne)   │   │
-│  └──────────────────────┬──────────────────────────────────┘   │
-│                         │                                         │
-│                         ▼                                         │
-│            SPRING DATA JPA (ORM - Hibernate)               │
-│                         │                                         │
-│  ┌──────────────────────▼──────────────────────────────────┐   │
-│  │        JDBC Driver (PostgreSQL Driver)                  │   │
-│  └──────────────────────┬──────────────────────────────────┘   │
-│                         │                                         │
-│                         ▼                                         │
-│                   PostgreSQL Database                       │
-│                                                                   │
-└─────────────────────────────────────────────────────────────────┘
-
-CAPAS TRANSVERSALES:
-├── Security Config: Spring Security, JWT, CORS
-├── Exception Handling: @ControllerAdvice, Custom Exceptions
-├── DTOs & Mappers: ModelMapper, Conversión de datos
-└── Logging & Monitoring: SLF4J, Aspectos de auditoría
-```
+<img width="1003" height="663" alt="image" src="https://github.com/user-attachments/assets/cabd1156-fb26-4d94-a3d1-c9ca92e48d78" />
 
 ---
+
+### Diagrama de Despliegue
+
+<img width="1013" height="581" alt="image" src="https://github.com/user-attachments/assets/cec692ab-85c0-4ceb-abda-aef8c2f4fafc" />
+
+---
+
 
 ## 📊 Modelo de Datos
 
@@ -594,29 +533,28 @@ CAPAS TRANSVERSALES:
 
 ### Descripción de Entidades
 
-#### 👤 USERS (Usuarios)
+#### 👤 USUARIO 
 
 ```sql
 CREATE TABLE users (
-    id BIGSERIAL PRIMARY KEY,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    full_name VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    role_id BIGINT REFERENCES roles(id)
+    id_usuario BIGSERIAL PRIMARY KEY,
+    username VARCHAR(255) UNIQUE NOT NULL,
+    nombre VARCHAR(255) NOT NULL,
+    apellido VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
 );
 ```
 
-| Campo | Tipo | Descripción |
-|-------|------|-------------|
-| `id` | BIGSERIAL | Identificador único del usuario |
-| `email` | VARCHAR(255) | Email único para autenticación |
-| `password_hash` | VARCHAR(255) | Contraseña hasheada con BCrypt |
-| `full_name` | VARCHAR(255) | Nombre completo del usuario |
-| `created_at` | TIMESTAMP | Fecha de creación de cuenta |
-| `updated_at` | TIMESTAMP | Última actualización |
-| `role_id` | BIGINT | Relación con tabla ROLES |
+| Campo      | Tipo         | Descripción                     |
+| ---------- | ------------ | ------------------------------- |
+| id_usuario | BIGSERIAL    | Identificador único del usuario |
+| username   | VARCHAR(255) | Nombre de usuario único         |
+| nombre     | VARCHAR(255) | Nombre del usuario              |
+| apellido   | VARCHAR(255) | Apellido del usuario            |
+| email      | VARCHAR(255) | Correo electrónico              |
+| password   | VARCHAR(255) | Contraseña hasheada             |
+
 
 **Validaciones:**
 - Email único y válido
@@ -625,97 +563,76 @@ CREATE TABLE users (
 
 ---
 
-#### 💰 INCOMES (Ingresos)
+#### 💰 ROLES
 
 ```sql
-CREATE TABLE incomes (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    amount DECIMAL(10, 2) NOT NULL,
-    description VARCHAR(500),
-    income_date DATE NOT NULL,
-    is_recurring BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE roles (
+    id_rol BIGSERIAL PRIMARY KEY,
+    nombre_rol VARCHAR(100) NOT NULL
 );
 
-CREATE INDEX idx_incomes_user_id ON incomes(user_id);
-CREATE INDEX idx_incomes_date ON incomes(income_date);
 ```
 
-| Campo | Tipo | Descripción |
-|-------|------|-------------|
-| `id` | BIGSERIAL | Identificador único |
-| `user_id` | BIGINT | Referencia a usuario (FK) |
-| `amount` | DECIMAL(10,2) | Monto del ingreso |
-| `description` | VARCHAR(500) | Descripción del ingreso |
-| `income_date` | DATE | Fecha del ingreso |
-| `is_recurring` | BOOLEAN | Si se repite mensualmente |
-| `created_at` | TIMESTAMP | Fecha de registro |
-
-**Tipos de Ingreso:**
-- 💼 Sueldo (recurrente)
-- 🎁 Bonificación (único)
-- 📈 Inversiones (único/recurrente)
-- 🏦 Otros ingresos (flexible)
+| Campo      | Tipo         | Descripción           |
+| ---------- | ------------ | --------------------- |
+| id_rol     | BIGSERIAL    | Identificador del rol |
+| nombre_rol | VARCHAR(100) | Nombre del rol        |
 
 ---
 
-#### 💸 EXPENSES (Gastos)
+#### 💸 INGRESO
 
 ```sql
-CREATE TABLE expenses (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    category_id BIGINT NOT NULL REFERENCES categories(id),
-    amount DECIMAL(10, 2) NOT NULL,
-    description VARCHAR(500),
-    expense_date DATE NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE ingreso (
+    id_ingreso BIGSERIAL PRIMARY KEY,
+    nombre_ingreso VARCHAR(255),
+    valor DECIMAL(10,2) NOT NULL,
+    fecha DATE NOT NULL,
+    tipo_ingreso VARCHAR(100),
+    id_usuario BIGINT REFERENCES usuario(id_usuario)
 );
 
-CREATE INDEX idx_expenses_user_id ON expenses(user_id);
-CREATE INDEX idx_expenses_category_id ON expenses(category_id);
-CREATE INDEX idx_expenses_date ON expenses(expense_date);
 ```
 
-| Campo | Tipo | Descripción |
-|-------|------|-------------|
-| `id` | BIGSERIAL | Identificador único |
-| `user_id` | BIGINT | Referencia a usuario (FK) |
-| `category_id` | BIGINT | Referencia a categoría (FK) |
-| `amount` | DECIMAL(10,2) | Monto del gasto |
-| `description` | VARCHAR(500) | Descripción del gasto |
-| `expense_date` | DATE | Fecha del gasto |
+| Campo          | Tipo          | Descripción               |
+| -------------- | ------------- | ------------------------- |
+| id_ingreso     | BIGSERIAL     | Identificador del ingreso |
+| nombre_ingreso | VARCHAR(255)  | Nombre o descripción      |
+| valor          | DECIMAL(10,2) | Monto del ingreso         |
+| fecha          | DATE          | Fecha del ingreso         |
+| tipo_ingreso   | VARCHAR(100)  | Tipo de ingreso           |
+| id_usuario     | BIGINT        | Usuario propietario       |
+
 
 **Validaciones:**
 - Cantidad positiva
-- Categoría válida
-- Descripción opcional
+- tipo ingreso (casual o mensual)
+- Descripción
 
 ---
 
-#### 🏷️ CATEGORIES (Categorías)
+#### 🏷️ GASTO
 
 ```sql
-CREATE TABLE categories (
-    id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL UNIQUE,
-    description VARCHAR(500),
-    icon VARCHAR(50),
-    color VARCHAR(7),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE gasto (
+    id_gasto BIGSERIAL PRIMARY KEY,
+    nombre_gasto VARCHAR(255),
+    categoria VARCHAR(100),
+    fecha_gasto DATE NOT NULL,
+    valor DECIMAL(10,2) NOT NULL,
+    id_usuario BIGINT REFERENCES usuario(id_usuario)
 );
 ```
 
-| Campo | Tipo | Descripción |
-|-------|------|-------------|
-| `id` | BIGSERIAL | Identificador único |
-| `name` | VARCHAR(100) | Nombre único de categoría |
-| `description` | VARCHAR(500) | Descripción de la categoría |
-| `icon` | VARCHAR(50) | Ícono representativo |
-| `color` | VARCHAR(7) | Código color (ej: #FF5733) |
+| Campo        | Tipo          | Descripción             |
+| ------------ | ------------- | ----------------------- |
+| id_gasto     | BIGSERIAL     | Identificador del gasto |
+| nombre_gasto | VARCHAR(255)  | Descripción             |
+| categoria    | VARCHAR(100)  | Categoría del gasto     |
+| fecha_gasto  | DATE          | Fecha del gasto         |
+| valor        | DECIMAL(10,2) | Monto                   |
+| id_usuario   | BIGINT        | Usuario asociado        |
+
 
 **Categorías Predefinidas:**
 - 🏠 Servicios (agua, luz, internet, etc.)
@@ -726,165 +643,122 @@ CREATE TABLE categories (
 - 📚 Educación (cursos, libros, etc.)
 - 🎮 Entretenimiento (cine, videojuegos, etc.)
 - ❓ Otros
+---
+
+#### 🎯 ALCANCIA
+
+```sql
+CREATE TABLE alcancia (
+    id_alcancia BIGSERIAL PRIMARY KEY,
+    nombre_alcancia VARCHAR(255) NOT NULL,
+    meta DECIMAL(10,2) NOT NULL,
+    saldo_actual DECIMAL(10,2) DEFAULT 0,
+    fecha_creacion DATE NOT NULL
+);
+
+```
+
+| Campo           | Tipo          | Descripción       |
+| --------------- | ------------- | ----------------- |
+| id_alcancia     | BIGSERIAL     | Identificador     |
+| nombre_alcancia | VARCHAR(255)  | Nombre de la meta |
+| meta            | DECIMAL(10,2) | Monto objetivo    |
+| saldo_actual    | DECIMAL(10,2) | Ahorro actual     |
+| fecha_creacion  | DATE          | Fecha de creación |
+|
 
 ---
 
-#### 🎯 SAVING_GOALS (Metas de Ahorro / Alcancías Digitales)
+#### 💳 DEPOSITO
 
 ```sql
-CREATE TABLE saving_goals (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    goal_name VARCHAR(255) NOT NULL,
-    description VARCHAR(500),
-    target_amount DECIMAL(10, 2) NOT NULL,
-    current_amount DECIMAL(10, 2) DEFAULT 0,
-    due_date DATE,
-    status VARCHAR(50) DEFAULT 'ACTIVE',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE deposito (
+    id_deposito BIGSERIAL PRIMARY KEY,
+    monto DECIMAL(10,2) NOT NULL,
+    fecha_deposito DATE NOT NULL,
+    nombre VARCHAR(255),
+    id_alcancia BIGINT REFERENCES alcancia(id_alcancia),
+    id_usuario BIGINT REFERENCES usuario(id_usuario)
 );
-
-CREATE INDEX idx_saving_goals_user_id ON saving_goals(user_id);
 ```
 
-| Campo | Tipo | Descripción |
-|-------|------|-------------|
-| `id` | BIGSERIAL | Identificador único |
-| `user_id` | BIGINT | Referencia a usuario (FK) |
-| `goal_name` | VARCHAR(255) | Nombre de la meta |
-| `description` | VARCHAR(500) | Descripción |
-| `target_amount` | DECIMAL(10,2) | Cantidad objetivo |
-| `current_amount` | DECIMAL(10,2) | Cantidad ahorrada actual |
-| `due_date` | DATE | Fecha límite |
-| `status` | VARCHAR(50) | ACTIVE, COMPLETED, CANCELED |
-
-**Estados:**
-- `ACTIVE`: Meta en progreso
-- `COMPLETED`: Meta alcanzada
-- `CANCELED`: Meta cancelada
+| Campo          | Tipo          | Descripción      |
+| -------------- | ------------- | ---------------- |
+| id_deposito    | BIGSERIAL     | Identificador    |
+| monto          | DECIMAL(10,2) | Monto depositado |
+| fecha_deposito | DATE          | Fecha            |
+| nombre         | VARCHAR(255)  | Descripción      |
+| id_alcancia    | BIGINT        | Alcancía destino |
+| id_usuario     | BIGINT        | Usuario          |
 
 ---
 
-#### 💳 DEPOSITS (Depósitos a Alcancías)
+#### 🔔 RECORDATORIO
 
 ```sql
-CREATE TABLE deposits (
-    id BIGSERIAL PRIMARY KEY,
-    saving_goal_id BIGINT NOT NULL REFERENCES saving_goals(id) ON DELETE CASCADE,
-    amount DECIMAL(10, 2) NOT NULL,
-    deposit_date DATE NOT NULL,
-    description VARCHAR(500),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE recordatorio (
+    id_recordatorio BIGSERIAL PRIMARY KEY,
+    nombre_recordatorio VARCHAR(255),
+    estado VARCHAR(50),
+    fecha_recordatorio DATE NOT NULL,
+    tiempo_recordatorio TIME,
+    valor DECIMAL(10,2),
+    id_usuario BIGINT REFERENCES usuario(id_usuario)
 );
 
-CREATE INDEX idx_deposits_saving_goal_id ON deposits(saving_goal_id);
-CREATE INDEX idx_deposits_date ON deposits(deposit_date);
 ```
 
-| Campo | Tipo | Descripción |
-|-------|------|-------------|
-| `id` | BIGSERIAL | Identificador único |
-| `saving_goal_id` | BIGINT | Referencia a meta (FK) |
-| `amount` | DECIMAL(10,2) | Monto depositado |
-| `deposit_date` | DATE | Fecha del depósito |
-| `description` | VARCHAR(500) | Descripción |
+| Campo               | Tipo          | Descripción    |
+| ------------------- | ------------- | -------------- |
+| id_recordatorio     | BIGSERIAL     | Identificador  |
+| nombre_recordatorio | VARCHAR(255)  | Descripción    |
+| estado              | VARCHAR(50)   | Estado         |
+| fecha_recordatorio  | DATE          | Fecha          |
+| tiempo_recordatorio | TIME          | Hora           |
+| valor               | DECIMAL(10,2) | Valor asociado |
+| id_usuario          | BIGINT        | Usuario        |
 
-**Nota:** Los depósitos actualizan automáticamente `current_amount` en `SAVING_GOALS`.
 
 ---
 
-#### 🔔 REMINDERS (Recordatorios de Pagos)
+#### ⚠️ ALERTA
 
 ```sql
-CREATE TABLE reminders (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    description VARCHAR(500) NOT NULL,
-    due_date DATE NOT NULL,
-    amount DECIMAL(10, 2),
-    is_paid BOOLEAN DEFAULT FALSE,
-    is_overdue BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE alerta (
+    id_alerta BIGSERIAL PRIMARY KEY,
+    nombre_alerta VARCHAR(255),
+    descripcion VARCHAR(500),
+    fecha_alerta DATE NOT NULL,
+    id_usuario BIGINT REFERENCES usuario(id_usuario)
 );
 
-CREATE INDEX idx_reminders_user_id ON reminders(user_id);
-CREATE INDEX idx_reminders_due_date ON reminders(due_date);
 ```
 
-| Campo | Tipo | Descripción |
-|-------|------|-------------|
-| `id` | BIGSERIAL | Identificador único |
-| `user_id` | BIGINT | Referencia a usuario (FK) |
-| `description` | VARCHAR(500) | Descripción del pago |
-| `due_date` | DATE | Fecha de vencimiento |
-| `amount` | DECIMAL(10,2) | Monto a pagar |
-| `is_paid` | BOOLEAN | Si ya fue pagado |
-| `is_overdue` | BOOLEAN | Si está vencido |
+| Campo         | Tipo         | Descripción   |
+| ------------- | ------------ | ------------- |
+| id_alerta     | BIGSERIAL    | Identificador |
+| nombre_alerta | VARCHAR(255) | Nombre        |
+| descripcion   | VARCHAR(500) | Detalle       |
+| fecha_alerta  | DATE         | Fecha         |
+| id_usuario    | BIGINT       | Usuario       |
+
 
 ---
 
-#### ⚠️ ALERTS (Alertas de Presupuesto)
+#### 💡 CONSEJOS
 
 ```sql
-CREATE TABLE alerts (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    category_id BIGINT NOT NULL REFERENCES categories(id),
-    limit_amount DECIMAL(10, 2) NOT NULL,
-    alert_type VARCHAR(50) DEFAULT 'CATEGORY_LIMIT',
-    is_active BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE consejos (
+    id_consejo BIGSERIAL PRIMARY KEY,
+    nombre_consejo VARCHAR(255) NOT NULL
 );
-
-CREATE INDEX idx_alerts_user_id ON alerts(user_id);
-CREATE INDEX idx_alerts_category_id ON alerts(category_id);
 ```
 
-| Campo | Tipo | Descripción |
-|-------|------|-------------|
-| `id` | BIGSERIAL | Identificador único |
-| `user_id` | BIGINT | Referencia a usuario (FK) |
-| `category_id` | BIGINT | Referencia a categoría (FK) |
-| `limit_amount` | DECIMAL(10,2) | Límite de presupuesto |
-| `alert_type` | VARCHAR(50) | Tipo de alerta |
-| `is_active` | BOOLEAN | Si la alerta está activa |
+| Campo          | Tipo         | Descripción        |
+| -------------- | ------------ | ------------------ |
+| id_consejo     | BIGSERIAL    | Identificador      |
+| nombre_consejo | VARCHAR(255) | Consejo financiero |
 
-**Tipos de Alertas:**
-- `CATEGORY_LIMIT`: Alerta al superar límite por categoría
-- `GENERAL_LIMIT`: Alerta para gasto general
-- `GOAL_ALERT`: Alerta para metas de ahorro
-
----
-
-#### 💡 ADVICE (Consejos Financieros)
-
-```sql
-CREATE TABLE advice (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    title VARCHAR(255) NOT NULL,
-    description TEXT NOT NULL,
-    advice_type VARCHAR(100),
-    context_based BOOLEAN DEFAULT FALSE,
-    liked BOOLEAN DEFAULT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE INDEX idx_advice_user_id ON advice(user_id);
-```
-
-| Campo | Tipo | Descripción |
-|-------|------|-------------|
-| `id` | BIGSERIAL | Identificador único |
-| `user_id` | BIGINT | Referencia a usuario (FK) |
-| `title` | VARCHAR(255) | Título del consejo |
-| `description` | TEXT | Descripción detallada |
-| `advice_type` | VARCHAR(100) | Tipo de consejo (ahorro, gasto, inversión) |
-| `context_based` | BOOLEAN | Si es personalizado para el usuario |
-| `liked` | BOOLEAN | Me gusta (NULL = sin calificar) |
 
 **Tipos de Consejos:**
 - 💰 Ahorro: Recomendaciones para ahorrar
@@ -894,25 +768,25 @@ CREATE INDEX idx_advice_user_id ON advice(user_id);
 
 ---
 
-#### 🔐 ROLES (Roles de Usuario)
+#### 🔐 CALIFICACIONES
 
 ```sql
-CREATE TABLE roles (
-    id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL UNIQUE
+CREATE TABLE calificaciones (
+    id_calificacion BIGSERIAL PRIMARY KEY,
+    me_gusta BOOLEAN,
+    no_me_gusta BOOLEAN,
+    id_consejo BIGINT REFERENCES consejos(id_consejo),
+    id_usuario BIGINT REFERENCES usuario(id_usuario)
 );
-
--- Datos por defecto
-INSERT INTO roles(id, name) VALUES (1, 'USER');
 ```
 
-| Campo | Tipo | Descripción |
-|-------|------|-------------|
-| `id` | BIGSERIAL | Identificador único |
-| `name` | VARCHAR(100) | Nombre único del rol |
-
-**Roles Actuales:**
-- `USER`: Usuario estándar con acceso a funcionalidades básicas
+| Campo           | Tipo      | Descripción   |
+| --------------- | --------- | ------------- |
+| id_calificacion | BIGSERIAL | Identificador |
+| me_gusta        | BOOLEAN   | Like          |
+| no_me_gusta     | BOOLEAN   | Dislike       |
+| id_consejo      | BIGINT    | Consejo       |
+| id_usuario      | BIGINT    | Usuario       |
 
 ---
 
@@ -921,428 +795,19 @@ INSERT INTO roles(id, name) VALUES (1, 'USER');
 #### 📍 Relaciones Principales
 
 ```
-USERS (1) ──────────── (N) INCOMES
-├─ Un usuario tiene muchos ingresos
-└─ Eliminación en cascada: DELETE USER → DELETE INCOMES
+USUARIO (1) ── (N) INGRESO
+USUARIO (1) ── (N) GASTO
+USUARIO (1) ── (N) DEPOSITO
+USUARIO (1) ── (N) RECORDATORIO
+USUARIO (1) ── (N) ALERTA
+USUARIO (1) ── (N) CALIFICACIONES
+USUARIO (N) ── (M) ROLES (vía USER_ROLES)
 
-USERS (1) ──────────── (N) EXPENSES
-├─ Un usuario tiene muchos gastos
-└─ Eliminación en cascada: DELETE USER → DELETE EXPENSES
-
-USERS (1) ──────────── (N) SAVING_GOALS
-├─ Un usuario tiene múltiples metas de ahorro
-└─ Eliminación en cascada: DELETE USER → DELETE SAVING_GOALS
-
-USERS (1) ──────────── (N) REMINDERS
-├─ Un usuario tiene múltiples recordatorios
-└─ Eliminación en cascada: DELETE USER → DELETE REMINDERS
-
-USERS (1) ──────────── (N) ALERTS
-├─ Un usuario tiene múltiples alertas
-└─ Eliminación en cascada: DELETE USER → DELETE ALERTS
-
-USERS (1) ──────────── (N) ADVICE
-├─ Un usuario recibe múltiples consejos
-└─ Eliminación en cascada: DELETE USER → DELETE ADVICE
-
-USERS (N) ────────── (1) ROLES
-├─ Un usuario tiene un rol
-└─ Un rol puede tener múltiples usuarios
-
-CATEGORIES (1) ────── (N) EXPENSES
-├─ Una categoría tiene muchos gastos
-└─ Sin eliminación en cascada: PROTECT
-
-CATEGORIES (1) ────── (N) ALERTS
-├─ Una categoría tiene múltiples alertas
-└─ Sin eliminación en cascada: PROTECT
-
-SAVING_GOALS (1) ──── (N) DEPOSITS
-├─ Una meta puede tener múltiples depósitos
-├─ Actualiza current_amount automáticamente
-└─ Eliminación en cascada: DELETE GOAL → DELETE DEPOSITS
-```
-
-#### 🔄 Operaciones Entre Entidades
+ALCANCIA (1) ── (N) DEPOSITO
+CONSEJOS (1) ── (N) CALIFICACIONES
 
 ```
-INGRESO REGISTRADO
-├─ INSERT en INCOMES
-└─ UPDATE en SAVING_GOALS.current_amount (si hay depósito automático)
-
-GASTO REGISTRADO
-├─ INSERT en EXPENSES
-├─ CHECK si supera ALERTS.limit_amount
-│  └─ TRIGGER: Generar alerta
-└─ UPDATE en IA para ADVICE personalizado
-
-META DE AHORRO CREADA
-├─ INSERT en SAVING_GOALS
-└─ TRIGGER: Enviar notificación inicial
-
-DEPÓSITO A META
-├─ INSERT en DEPOSITS
-├─ UPDATE en SAVING_GOALS.current_amount
-└─ CHECK si alcanzó target_amount
-   └─ UPDATE SAVING_GOALS.status = 'COMPLETED'
-
-RECORDATORIO VENCIDO
-├─ UPDATE REMINDERS.is_overdue = TRUE
-├─ TRIGGER: Notificación al usuario
-└─ CHECK si es recurrente: Crear nuevo
-
-USUARIO ELIMINADO
-├─ DELETE FROM ADVICE WHERE user_id = ?
-├─ DELETE FROM ALERTS WHERE user_id = ?
-├─ DELETE FROM REMINDERS WHERE user_id = ?
-├─ DELETE FROM DEPOSITS WHERE saving_goal_id IN (...)
-├─ DELETE FROM SAVING_GOALS WHERE user_id = ?
-├─ DELETE FROM EXPENSES WHERE user_id = ?
-├─ DELETE FROM INCOMES WHERE user_id = ?
-└─ DELETE FROM USERS WHERE id = ?
-```
-
 ---
-
-## 🔌 API REST
-
-### Autenticación
-
-#### Registro de Usuario
-
-```http
-POST /api/auth/register
-Content-Type: application/json
-
-{
-  "email": "usuario@gmail.com",
-  "password": "MiContraseña123!",
-  "fullName": "Juan Pérez"
-}
-```
-
-**Respuesta (201 Created):**
-```json
-{
-  "id": 1,
-  "email": "usuario@gmail.com",
-  "fullName": "Juan Pérez",
-  "createdAt": "2025-02-20T10:30:00Z",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-}
-```
-
-#### Login
-
-```http
-POST /api/auth/login
-Content-Type: application/json
-
-{
-  "email": "usuario@gmail.com",
-  "password": "MiContraseña123!"
-}
-```
-
-**Respuesta (200 OK):**
-```json
-{
-  "id": 1,
-  "email": "usuario@gmail.com",
-  "fullName": "Juan Pérez",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "expiresIn": 86400
-}
-```
-
-#### Recuperar Contraseña
-
-```http
-POST /api/auth/forgot-password
-Content-Type: application/json
-
-{
-  "email": "usuario@gmail.com"
-}
-```
-
----
-
-### Endpoints Principales
-
-#### 📊 Usuarios
-
-```http
-# Obtener perfil actual
-GET /api/users/profile
-Authorization: Bearer {JWT_TOKEN}
-
-# Actualizar perfil
-PUT /api/users/{id}
-Authorization: Bearer {JWT_TOKEN}
-Content-Type: application/json
-{
-  "fullName": "Nuevo Nombre",
-  "email": "nuevo@gmail.com"
-}
-
-# Eliminar usuario
-DELETE /api/users/{id}
-Authorization: Bearer {JWT_TOKEN}
-```
-
-#### 💰 Ingresos
-
-```http
-# Listar ingresos del usuario
-GET /api/incomes
-Authorization: Bearer {JWT_TOKEN}
-
-# Crear nuevo ingreso
-POST /api/incomes
-Authorization: Bearer {JWT_TOKEN}
-Content-Type: application/json
-{
-  "amount": 2000.00,
-  "description": "Sueldo mensual",
-  "incomeDate": "2025-02-20",
-  "isRecurring": true
-}
-
-# Obtener ingreso específico
-GET /api/incomes/{id}
-Authorization: Bearer {JWT_TOKEN}
-
-# Actualizar ingreso
-PUT /api/incomes/{id}
-Authorization: Bearer {JWT_TOKEN}
-Content-Type: application/json
-{
-  "amount": 2100.00,
-  "description": "Sueldo actualizado"
-}
-
-# Eliminar ingreso
-DELETE /api/incomes/{id}
-Authorization: Bearer {JWT_TOKEN}
-
-# Filtrar ingresos por rango de fechas
-GET /api/incomes?startDate=2025-01-01&endDate=2025-02-28
-Authorization: Bearer {JWT_TOKEN}
-```
-
-#### 💸 Gastos
-
-```http
-# Listar gastos del usuario
-GET /api/expenses
-Authorization: Bearer {JWT_TOKEN}
-
-# Crear nuevo gasto
-POST /api/expenses
-Authorization: Bearer {JWT_TOKEN}
-Content-Type: application/json
-{
-  "amount": 50.00,
-  "description": "Almuerzo",
-  "categoryId": 3,
-  "expenseDate": "2025-02-20"
-}
-
-# Obtener gasto específico
-GET /api/expenses/{id}
-Authorization: Bearer {JWT_TOKEN}
-
-# Actualizar gasto
-PUT /api/expenses/{id}
-Authorization: Bearer {JWT_TOKEN}
-Content-Type: application/json
-{
-  "amount": 55.00,
-  "categoryId": 3
-}
-
-# Eliminar gasto
-DELETE /api/expenses/{id}
-Authorization: Bearer {JWT_TOKEN}
-
-# Gastos por categoría
-GET /api/expenses/category/{categoryId}
-Authorization: Bearer {JWT_TOKEN}
-
-# Gastos en rango de fechas
-GET /api/expenses?startDate=2025-01-01&endDate=2025-02-28
-Authorization: Bearer {JWT_TOKEN}
-```
-
-#### 🎯 Metas de Ahorro
-
-```http
-# Listar metas del usuario
-GET /api/saving-goals
-Authorization: Bearer {JWT_TOKEN}
-
-# Crear nueva meta
-POST /api/saving-goals
-Authorization: Bearer {JWT_TOKEN}
-Content-Type: application/json
-{
-  "goalName": "Viaje a Cartagena",
-  "targetAmount": 5000.00,
-  "dueDate": "2025-12-31",
-  "description": "Ahorro para vacaciones"
-}
-
-# Obtener meta específica
-GET /api/saving-goals/{id}
-Authorization: Bearer {JWT_TOKEN}
-
-# Actualizar meta
-PUT /api/saving-goals/{id}
-Authorization: Bearer {JWT_TOKEN}
-Content-Type: application/json
-{
-  "goalName": "Viaje mejorado",
-  "targetAmount": 6000.00
-}
-
-# Eliminar meta
-DELETE /api/saving-goals/{id}
-Authorization: Bearer {JWT_TOKEN}
-
-# Obtener progreso de meta
-GET /api/saving-goals/{id}/progress
-Authorization: Bearer {JWT_TOKEN}
-```
-
-#### 💳 Depósitos
-
-```http
-# Listar depósitos de una meta
-GET /api/deposits/goal/{savingGoalId}
-Authorization: Bearer {JWT_TOKEN}
-
-# Crear depósito
-POST /api/deposits
-Authorization: Bearer {JWT_TOKEN}
-Content-Type: application/json
-{
-  "savingGoalId": 1,
-  "amount": 500.00,
-  "depositDate": "2025-02-20",
-  "description": "Primer depósito"
-}
-
-# Eliminar depósito
-DELETE /api/deposits/{id}
-Authorization: Bearer {JWT_TOKEN}
-```
-
-#### 🔔 Recordatorios
-
-```http
-# Listar recordatorios
-GET /api/reminders
-Authorization: Bearer {JWT_TOKEN}
-
-# Crear recordatorio
-POST /api/reminders
-Authorization: Bearer {JWT_TOKEN}
-Content-Type: application/json
-{
-  "description": "Pagar servicios",
-  "dueDate": "2025-03-05",
-  "amount": 150.00
-}
-
-# Marcar como pagado
-PUT /api/reminders/{id}/mark-paid
-Authorization: Bearer {JWT_TOKEN}
-
-# Actualizar recordatorio
-PUT /api/reminders/{id}
-Authorization: Bearer {JWT_TOKEN}
-Content-Type: application/json
-{
-  "description": "Pagar servicios y otros",
-  "dueDate": "2025-03-10"
-}
-
-# Eliminar recordatorio
-DELETE /api/reminders/{id}
-Authorization: Bearer {JWT_TOKEN}
-```
-
-#### ⚠️ Alertas
-
-```http
-# Listar alertas
-GET /api/alerts
-Authorization: Bearer {JWT_TOKEN}
-
-# Crear alerta
-POST /api/alerts
-Authorization: Bearer {JWT_TOKEN}
-Content-Type: application/json
-{
-  "categoryId": 2,
-  "limitAmount": 500.00,
-  "alertType": "CATEGORY_LIMIT"
-}
-
-# Actualizar alerta
-PUT /api/alerts/{id}
-Authorization: Bearer {JWT_TOKEN}
-Content-Type: application/json
-{
-  "limitAmount": 600.00,
-  "isActive": true
-}
-
-# Eliminar alerta
-DELETE /api/alerts/{id}
-Authorization: Bearer {JWT_TOKEN}
-```
-
-#### 💡 Consejos
-
-```http
-# Listar consejos
-GET /api/advice
-Authorization: Bearer {JWT_TOKEN}
-
-# Calificar consejo (Me gusta / No me gusta)
-PUT /api/advice/{id}/like
-Authorization: Bearer {JWT_TOKEN}
-Content-Type: application/json
-{
-  "liked": true
-}
-
-# Obtener consejo específico
-GET /api/advice/{id}
-Authorization: Bearer {JWT_TOKEN}
-```
-
-#### 📈 Reportes
-
-```http
-# Reporte general del mes
-GET /api/reports/monthly?year=2025&month=2
-Authorization: Bearer {JWT_TOKEN}
-
-# Reporte anual
-GET /api/reports/yearly?year=2025
-Authorization: Bearer {JWT_TOKEN}
-
-# Reporte por categoría
-GET /api/reports/category?categoryId=1&startDate=2025-01-01&endDate=2025-02-28
-Authorization: Bearer {JWT_TOKEN}
-
-# Resumen financiero
-GET /api/reports/summary
-Authorization: Bearer {JWT_TOKEN}
-```
 
 ### Documentación Swagger
 
